@@ -108,23 +108,25 @@
 
 
 
-  <meta name="description" content="个人学习博客">
-<meta property="og:type" content="website">
-<meta property="og:title" content="萌面超人">
-<meta property="og:url" content="http://yoursite.com/index.html">
+  <meta name="description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
+<meta name="keywords" content="Linux">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cache占用过多内存解决方案">
+<meta property="og:url" content="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="个人学习博客">
+<meta property="og:description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
 <meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-04T14:17:13.166Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="萌面超人">
-<meta name="twitter:description" content="个人学习博客">
+<meta name="twitter:title" content="Cache占用过多内存解决方案">
+<meta name="twitter:description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/">
+  <link rel="canonical" href="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/">
 
 
 
@@ -134,7 +136,7 @@
   };
 </script>
 
-  <title>萌面超人</title>
+  <title>Cache占用过多内存解决方案 | 萌面超人</title>
   
 
 
@@ -183,8 +185,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
@@ -221,7 +222,7 @@
         
         
           
-          <li class="menu-item menu-item-home menu-item-active">
+          <li class="menu-item menu-item-home">
     <a href="/" rel="section">
       <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
   </li>
@@ -297,9 +298,9 @@
           
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -331,11 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/04/Cache占用过多内存解决方案/" itemprop="url">
-                  Cache占用过多内存解决方案
-                </a>
+          <h1 class="post-title" itemprop="name headline">Cache占用过多内存解决方案
               
             
           </h1>
@@ -398,9 +395,7 @@
       
 
       
-        
-          
-            <h1 id="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><a href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案" class="headerlink" title="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"></a>Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</h1><h2 id="常见原因分析"><a href="#常见原因分析" class="headerlink" title="常见原因分析"></a>常见原因分析</h2><h3 id="1-程序的原因导致内存泄漏"><a href="#1-程序的原因导致内存泄漏" class="headerlink" title="1. 程序的原因导致内存泄漏"></a>1. 程序的原因导致内存泄漏</h3><p>检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析</p>
+        <h1 id="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><a href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案" class="headerlink" title="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"></a>Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</h1><h2 id="常见原因分析"><a href="#常见原因分析" class="headerlink" title="常见原因分析"></a>常见原因分析</h2><h3 id="1-程序的原因导致内存泄漏"><a href="#1-程序的原因导致内存泄漏" class="headerlink" title="1. 程序的原因导致内存泄漏"></a>1. 程序的原因导致内存泄漏</h3><p>检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析</p>
 <h3 id="2-日志接收报文"><a href="#2-日志接收报文" class="headerlink" title="2. 日志接收报文"></a>2. 日志接收报文</h3><p>检查是否是因为日志接收报文过大，将日志关掉试试。</p>
 <h3 id="3-Cached的值过大，导致系统没有可以再分配的内存空间"><a href="#3-Cached的值过大，导致系统没有可以再分配的内存空间" class="headerlink" title="3. Cached的值过大，导致系统没有可以再分配的内存空间"></a>3. Cached的值过大，导致系统没有可以再分配的内存空间</h3><p>Cached只要用来缓存文件的，经常读写的文件会被缓存到Cached中，可以增加读写效率，该功能是Linux系统内核提供的，从2.6.16以后的核心版本才提供，也就是老版的操作系统，如红旗DC 5.0、RHEL 4.x之前的版本都没有。</p>
 <h4 id="对应解决方案"><a href="#对应解决方案" class="headerlink" title="对应解决方案"></a>对应解决方案</h4><ol>
@@ -418,8 +413,6 @@
 <p>/sbin/service crond status</p>
 <p>附:Linux定时任务详解<br><a href="https://www.cnblogs.com/intval/p/5763929.html" target="_blank" rel="noopener">https://www.cnblogs.com/intval/p/5763929.html</a></p>
 
-          
-        
       
     </div>
 
@@ -437,339 +430,36 @@
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr-2/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/04/Effective-Java-3dr-2/" itemprop="url">
-                  Effective Java 3dr(2)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-04 16:37:30 / 修改时间：16:59:30" itemprop="dateCreated datePublished" datetime="2018-11-04T16:37:30+08:00">2018-11-04</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/Linux/" rel="tag"># Linux</a>
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="第2章-创建和销毁对象"><a href="#第2章-创建和销毁对象" class="headerlink" title="第2章 创建和销毁对象"></a>第2章 创建和销毁对象</h1><h2 id="第1条-考虑用静态工厂方法代替构造器"><a href="#第1条-考虑用静态工厂方法代替构造器" class="headerlink" title="第1条 考虑用静态工厂方法代替构造器"></a>第1条 考虑用静态工厂方法代替构造器</h2><ol>
-<li>静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候，它们使代码变得更加简洁。</li>
-<li>静态工厂方法的主要缺点在于，类如果不含公有的或者受保护的构造器，就不能被子类化。静态工厂方法的第二个缺点在于，它们与其他的静态方法实际上没有任何区别。</li>
-</ol>
-<h2 id="第2条-遇到多个构造器参数时要考虑用构建器"><a href="#第2条-遇到多个构造器参数时要考虑用构建器" class="headerlink" title="第2条 遇到多个构造器参数时要考虑用构建器"></a>第2条 遇到多个构造器参数时要考虑用构建器</h2><ol>
-<li><p>与构造器相比，builder的微略优势在千，builder可以有多个可变(varargs) 参数。带有Builder实例的方法通常利用有限制的通配符类型(bounded wildcard type, 见第28 条）来约束构建器的类型参数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//构建每个节点的方法，它利用一个客户端提供的Builder实例来构建树：</span><br><span class="line">Tree buildTree(Bui l der&lt;? extends Node&gt; node Builder) &#123; . . . &#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Builder模式的确也有它自身的不足。为了创建对象，必须先创建它的构建器。虽然创建<br>构建器的开销如果一开始就使用构造器或者静态工厂，等到类需要多个参数时才添加构建器，就会无法控制，那些过时的构造器或者静态工厂显得十分不协调。因此，<strong>通常最好一开始就使用构建器</strong>。</p>
-</li>
-</ol>
-<p>如果类的构造器或者静态工厂中具有多个参数，设计这种类时，Builder模式就是种不错的选择</p>
-<h2 id="第3条-用私有构造器或者枚举类型强化-Singleton属性"><a href="#第3条-用私有构造器或者枚举类型强化-Singleton属性" class="headerlink" title="第3条 用私有构造器或者枚举类型强化 Singleton属性"></a>第3条 用私有构造器或者枚举类型强化 Singleton属性</h2><p>在实现Singleton的第二种方法中，公有的成员是个静态工厂方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Si ngl eton wi th st atic factory</span><br><span class="line">publ ic class Elvis &#123;</span><br><span class="line">private static final Elvis INSTANCE 9 new Elvis();</span><br><span class="line">private Elvis() &#123; ... &#125;</span><br><span class="line">publ ic static El vis getinstance() &#123; return INSTANCE; &#125;</span><br><span class="line">&#125; public void leaveTheBuilding</span><br></pre></td></tr></table></figure></p>
-<p>对于静态方法Elvis.getlnstance的所有调用，都会返回同一个对象引用，所以，永远不会创建其他的Elvis实例（ 上述提醒依然适用）。<strong>单元素的枚举类型已经成为实现Singleton的最佳方法</strong></p>
-<h2 id="第4条-通过私有构造器强化不可实例化的能力"><a href="#第4条-通过私有构造器强化不可实例化的能力" class="headerlink" title="第4条 通过私有构造器强化不可实例化的能力"></a>第4条 通过私有构造器强化不可实例化的能力</h2><ol>
-<li><strong>企图通过将类做成抽象类来强制该类不可被实例化，这是行不通的</strong>。该类可以被子类化，并且该子类也可以被实例化。这样做甚至会误导用户，以为这种类是专门为了继承而设计的。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Noninstantiable utility class</span><br><span class="line">public class UtilityClass &#123;</span><br><span class="line">    // Suppress default constructor for noninstantiability</span><br><span class="line">    private Uti 1 i tyCl ass() &#123;</span><br><span class="line">        throw new AssertionError();</span><br><span class="line">    &#125; &#125; .</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<h2 id="第5条-避免创建不必要的对象"><a href="#第5条-避免创建不必要的对象" class="headerlink" title="第5条 避免创建不必要的对象"></a>第5条 避免创建不必要的对象</h2><p><strong>要优先使用基本类型而不是装箱基本类型，要当心无意识的自动装箱</strong>。因为装箱后需要创建对象，创建对象会产生花销，应避免。当你应该重用现有对象时，请不要创建新对象。</p>
-<h2 id="第6条-消除过期的对象引用"><a href="#第6条-消除过期的对象引用" class="headerlink" title="第6条 消除过期的对象引用"></a>第6条 消除过期的对象引用</h2><ol>
-<li>如果一个对象引用被无意识地保留起来了，那<br>么，垃圾回收机制不仅不会处理这个对象，而且也不会处理被这个对象所引用的所有其他对象。例如：在elements数组的“活动部分”之外的任何引用都是过期的。活动部分是指elements中下标小于size的那些元素。如果数组size–，被减掉的就不是活动部分，而且也没删除。</li>
-<li>（1）只要类是自己管理内存，程序员就应该警惕内存泄漏问题。（2）内存泄汤的另一个常见来源是缓存。（3）内存泄漏的第三个常见来源是监听器和其他回调。确保回调立即被当作垃圾回收的最佳方法是只保存它们的弱引用,例如，只将它们保存成WeakHashMap 中的键。</li>
-</ol>
-<h2 id="第7条-避免使用终结方法"><a href="#第7条-避免使用终结方法" class="headerlink" title="第7条 避免使用终结方法"></a>第7条 避免使用终结方法</h2><p>总之，除非是作为安全网，或者是为了终止非关键的本地资源，否则请不要使用终结方法。在这些很少见的情况下，既然使用了终结方法，就要记住调用s uper.finalize 。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/hello-world/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/04/hello-world/" itemprop="url">
-                  Hello World
-                </a>
-              
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
+              <a href="/2018/11/04/Effective-Java-3dr-2/" rel="next" title="Effective Java 3dr(2)">
+                <i class="fa fa-chevron-left"></i> Effective Java 3dr(2)
+              </a>
             
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-04 16:22:49" itemprop="dateCreated datePublished" datetime="2018-11-04T16:22:49+08:00">2018-11-04</time>
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -779,14 +469,15 @@
   </article>
 
 
-    
-  </section>
-
-  
+  </div>
 
 
           </div>
           
+
+  
+
+
 
         </div>
         
@@ -807,8 +498,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
             
@@ -881,6 +581,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><span class="nav-number">1.</span> <span class="nav-text">Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见原因分析"><span class="nav-number">1.1.</span> <span class="nav-text">常见原因分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-程序的原因导致内存泄漏"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 程序的原因导致内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-日志接收报文"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 日志接收报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Cached的值过大，导致系统没有可以再分配的内存空间"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. Cached的值过大，导致系统没有可以再分配的内存空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对应解决方案"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">对应解决方案</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1018,6 +734,10 @@
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
 
   
 
