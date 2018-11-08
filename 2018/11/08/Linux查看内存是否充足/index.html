@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
+  <meta name="description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
 <meta name="keywords" content="Linux">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Cache占用过多内存解决方案">
-<meta property="og:url" content="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/index.html">
+<meta property="og:title" content="Linux查看内存是否充足">
+<meta property="og:url" content="http://yoursite.com/2018/11/08/Linux查看内存是否充足/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
+<meta property="og:description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-04T14:17:13.166Z">
+<meta property="og:updated_time" content="2018-11-08T13:22:54.021Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Cache占用过多内存解决方案">
-<meta name="twitter:description" content="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案常见原因分析1. 程序的原因导致内存泄漏检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析 2. 日志接收报文检查是否是">
+<meta name="twitter:title" content="Linux查看内存是否充足">
+<meta name="twitter:description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/">
+  <link rel="canonical" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Cache占用过多内存解决方案 | 萌面超人</title>
+  <title>Linux查看内存是否充足 | 萌面超人</title>
   
 
 
@@ -315,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小华">
@@ -332,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Cache占用过多内存解决方案
+          <h1 class="post-title" itemprop="name headline">Linux查看内存是否充足
               
             
           </h1>
@@ -357,7 +357,7 @@
                 
               
 
-              <time title="创建时间：2018-11-04 22:14:36 / 修改时间：22:17:13" itemprop="dateCreated datePublished" datetime="2018-11-04T22:14:36+08:00">2018-11-04</time>
+              <time title="创建时间：2018-11-08 21:22:17 / 修改时间：21:22:54" itemprop="dateCreated datePublished" datetime="2018-11-08T21:22:17+08:00">2018-11-08</time>
             
 
             
@@ -395,23 +395,22 @@
       
 
       
-        <h1 id="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><a href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案" class="headerlink" title="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"></a>Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</h1><h2 id="常见原因分析"><a href="#常见原因分析" class="headerlink" title="常见原因分析"></a>常见原因分析</h2><h3 id="1-程序的原因导致内存泄漏"><a href="#1-程序的原因导致内存泄漏" class="headerlink" title="1. 程序的原因导致内存泄漏"></a>1. 程序的原因导致内存泄漏</h3><p>检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析</p>
-<h3 id="2-日志接收报文"><a href="#2-日志接收报文" class="headerlink" title="2. 日志接收报文"></a>2. 日志接收报文</h3><p>检查是否是因为日志接收报文过大，将日志关掉试试。</p>
-<h3 id="3-Cached的值过大，导致系统没有可以再分配的内存空间"><a href="#3-Cached的值过大，导致系统没有可以再分配的内存空间" class="headerlink" title="3. Cached的值过大，导致系统没有可以再分配的内存空间"></a>3. Cached的值过大，导致系统没有可以再分配的内存空间</h3><p>Cached只要用来缓存文件的，经常读写的文件会被缓存到Cached中，可以增加读写效率，该功能是Linux系统内核提供的，从2.6.16以后的核心版本才提供，也就是老版的操作系统，如红旗DC 5.0、RHEL 4.x之前的版本都没有。</p>
-<h4 id="对应解决方案"><a href="#对应解决方案" class="headerlink" title="对应解决方案"></a>对应解决方案</h4><ol>
-<li>修改/proc/sys/vm/drop_caches，释放Slab占用的cache内存空间（参考drop_caches的官方文档）【手动】</li>
+        <h1 id="Linux查看内存是否充足"><a href="#Linux查看内存是否充足" class="headerlink" title="Linux查看内存是否充足"></a>Linux查看内存是否充足</h1><p><strong>一、内存优化检查主要工具</strong></p>
+<ol>
+<li>free</li>
+<li>top</li>
+<li>vmstat</li>
 </ol>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Writing to this will cause the kernel to drop clean caches, dentries and inodes from memory, causing that memory to become free.</span><br><span class="line">To free pagecache:</span><br><span class="line">* echo 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free dentries and inodes:</span><br><span class="line">* echo 2 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free pagecache, dentries and inodes:</span><br><span class="line">* echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">As this is a non-destructive operation, and dirty objects are notfreeable, the user should run &quot;sync&quot; first in order to make sure allcached objects are freed.</span><br><span class="line">This tunable was added in 2.6.16</span><br><span class="line">//注意：在执行这三条命令前先执行sync命令.</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>编写shell脚本定时清理内存<br>1、编写脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line">used=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $3&#125;&apos;`</span><br><span class="line">free=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $4&#125;&apos;`</span><br><span class="line">echo &quot;===========================&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">date &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">echo &quot;Memory usage before | [Use：$&#123;used&#125;MB][Free：$&#123;free&#125;MB]&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">if [ $free -le 4000 ] ; then</span><br><span class="line">                sync &amp;&amp; echo 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">                sync &amp;&amp; echo 2 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">                sync &amp;&amp; echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">				used_ok=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $3&#125;&apos;`</span><br><span class="line">				free_ok=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $4&#125;&apos;`</span><br><span class="line">				echo &quot;Memory usage after | [Use：$&#123;used_ok&#125;MB][Free：$&#123;free_ok&#125;MB]&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">                echo &quot;OK&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">else</span><br><span class="line">                echo &quot;Not required&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">fi</span><br><span class="line">exit 1</span><br></pre></td></tr></table></figure>
-</li>
+<p><strong>二、和内存相关的几个指标</strong></p>
+<ol>
+<li>平均负载</li>
+<li>i/o</li>
 </ol>
-<p>2、使用crontab -e命令编辑当前用户的crontab<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 6 * * * /usr/local/tomcat/sztFileFront/bin/freemem.sh</span><br></pre></td></tr></table></figure></p>
-<p>3、重启crond服务</p>
-<p>/sbin/service crond restart</p>
-<p>4、查看crond服务是否重启成功</p>
-<p>/sbin/service crond status</p>
-<p>附:Linux定时任务详解<br><a href="https://www.cnblogs.com/intval/p/5763929.html" target="_blank" rel="noopener">https://www.cnblogs.com/intval/p/5763929.html</a></p>
+<p><strong>三、如何判断linux服务器是否需要添加内存</strong></p>
+<p> 关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，<br>备注：si是swap Page-ins ,so是swap Page-out</p>
+<p>用top和free查看到的结果有时候两台服务器的的内存空闲量都差不多，但是服务器的负载却会有着很大的差距，只能通过vmstat的si/so检测，发现是否需要添加内存。</p>
+<p>总结：linux内存没有一个工具的能够准确确定内存的使用量，只能使用vmstat的 si和so参数来判断。</p>
+<p>[root@localhost ~]# vmstat<br>procs | memory | swap| io | system | cpu |<br>—|—|—|—|—|—<br>r  b |swpd   free   buff  cache|si   so |bi    bo  |in   cs |us sy id wa st<br>1  0 |13872 1340816  76 309800 | 0    0 | 4     3  | 3    4 |0 0 99  0  0</p>
 
       
     </div>
@@ -445,8 +444,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/04/Effective-Java-3dr-2/" rel="next" title="Effective Java 3dr(2)">
-                <i class="fa fa-chevron-left"></i> Effective Java 3dr(2)
+              <a href="/2018/11/08/详解tomcat的连接数与线程池/" rel="next" title="详解tomcat的连接数与线程池">
+                <i class="fa fa-chevron-left"></i> 详解tomcat的连接数与线程池
               </a>
             
           </div>
@@ -454,10 +453,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/08/详解tomcat的连接数与线程池/" rel="prev" title="详解tomcat的连接数与线程池">
-                详解tomcat的连接数与线程池 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -597,7 +592,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><span class="nav-number">1.</span> <span class="nav-text">Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#常见原因分析"><span class="nav-number">1.1.</span> <span class="nav-text">常见原因分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-程序的原因导致内存泄漏"><span class="nav-number">1.1.1.</span> <span class="nav-text">1. 程序的原因导致内存泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-日志接收报文"><span class="nav-number">1.1.2.</span> <span class="nav-text">2. 日志接收报文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Cached的值过大，导致系统没有可以再分配的内存空间"><span class="nav-number">1.1.3.</span> <span class="nav-text">3. Cached的值过大，导致系统没有可以再分配的内存空间</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#对应解决方案"><span class="nav-number">1.1.3.1.</span> <span class="nav-text">对应解决方案</span></a></li></ol></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux查看内存是否充足"><span class="nav-number">1.</span> <span class="nav-text">Linux查看内存是否充足</span></a></li></ol></div>
             
 
           </div>

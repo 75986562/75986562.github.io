@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候，它们使代码变得更加简洁。 静态工厂方法的主要缺点">
+  <meta name="description" content="Effective Java 2rd Nodes 第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候">
 <meta name="keywords" content="Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Java 3dr(2)">
 <meta property="og:url" content="http://yoursite.com/2018/11/04/Effective-Java-3dr-2/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候，它们使代码变得更加简洁。 静态工厂方法的主要缺点">
+<meta property="og:description" content="Effective Java 2rd Nodes 第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-04T08:59:30.000Z">
+<meta property="og:updated_time" content="2018-11-08T13:20:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Java 3dr(2)">
-<meta name="twitter:description" content="第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候，它们使代码变得更加简洁。 静态工厂方法的主要缺点">
+<meta name="twitter:description" content="Effective Java 2rd Nodes 第2章 创建和销毁对象第1条 考虑用静态工厂方法代替构造器 静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候">
 
 
 
@@ -357,12 +357,24 @@
                 
               
 
-              <time title="创建时间：2018-11-04 16:37:30 / 修改时间：16:59:30" itemprop="dateCreated datePublished" datetime="2018-11-04T16:37:30+08:00">2018-11-04</time>
+              <time title="创建时间：2018-11-04 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-04T16:37:30+08:00">2018-11-04</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
               
             
           </span>
@@ -413,30 +425,41 @@
       
 
       
-        <h1 id="第2章-创建和销毁对象"><a href="#第2章-创建和销毁对象" class="headerlink" title="第2章 创建和销毁对象"></a>第2章 创建和销毁对象</h1><h2 id="第1条-考虑用静态工厂方法代替构造器"><a href="#第1条-考虑用静态工厂方法代替构造器" class="headerlink" title="第1条 考虑用静态工厂方法代替构造器"></a>第1条 考虑用静态工厂方法代替构造器</h2><ol>
+        <h1 id="Effective-Java-2rd-Nodes"><a href="#Effective-Java-2rd-Nodes" class="headerlink" title="Effective Java 2rd Nodes"></a>Effective Java 2rd Nodes</h1><hr>
+<h1 id="第2章-创建和销毁对象"><a href="#第2章-创建和销毁对象" class="headerlink" title="第2章 创建和销毁对象"></a>第2章 创建和销毁对象</h1><h2 id="第1条-考虑用静态工厂方法代替构造器"><a href="#第1条-考虑用静态工厂方法代替构造器" class="headerlink" title="第1条 考虑用静态工厂方法代替构造器"></a>第1条 考虑用静态工厂方法代替构造器</h2><ol>
 <li>静态工厂方法与构造器不同的第一大优势在于，它们有名称，更易于阅读。静态工厂方法与构造器不同的第二大优势在于，不必在每次调用它们的时候都创建一个新对象。静态工厂方法与构造器不同的第三大优势在于，它们可以返回原返回类型的任何子类型的对象。静态工厂方法的第四大优势在千，在创建参数化类型实例的时候，它们使代码变得更加简洁。</li>
 <li>静态工厂方法的主要缺点在于，类如果不含公有的或者受保护的构造器，就不能被子类化。静态工厂方法的第二个缺点在于，它们与其他的静态方法实际上没有任何区别。</li>
 </ol>
 <h2 id="第2条-遇到多个构造器参数时要考虑用构建器"><a href="#第2条-遇到多个构造器参数时要考虑用构建器" class="headerlink" title="第2条 遇到多个构造器参数时要考虑用构建器"></a>第2条 遇到多个构造器参数时要考虑用构建器</h2><ol>
 <li><p>与构造器相比，builder的微略优势在千，builder可以有多个可变(varargs) 参数。带有Builder实例的方法通常利用有限制的通配符类型(bounded wildcard type, 见第28 条）来约束构建器的类型参数。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">//构建每个节点的方法，它利用一个客户端提供的Builder实例来构建树：</span><br><span class="line">Tree buildTree(Bui l der&lt;? extends Node&gt; node Builder) &#123; . . . &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//构建每个节点的方法，它利用一个客户端提供的Builder实例来构建树：</span></span><br><span class="line"><span class="function">Tree <span class="title">buildTree</span><span class="params">(Bui l der&lt;? extends Node&gt; node Builder)</span> </span>&#123; . . . &#125;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>Builder模式的确也有它自身的不足。为了创建对象，必须先创建它的构建器。虽然创建<br>构建器的开销如果一开始就使用构造器或者静态工厂，等到类需要多个参数时才添加构建器，就会无法控制，那些过时的构造器或者静态工厂显得十分不协调。因此，<strong>通常最好一开始就使用构建器</strong>。</p>
 </li>
 </ol>
 <p>如果类的构造器或者静态工厂中具有多个参数，设计这种类时，Builder模式就是种不错的选择</p>
-<h2 id="第3条-用私有构造器或者枚举类型强化-Singleton属性"><a href="#第3条-用私有构造器或者枚举类型强化-Singleton属性" class="headerlink" title="第3条 用私有构造器或者枚举类型强化 Singleton属性"></a>第3条 用私有构造器或者枚举类型强化 Singleton属性</h2><p>在实现Singleton的第二种方法中，公有的成员是个静态工厂方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Si ngl eton wi th st atic factory</span><br><span class="line">publ ic class Elvis &#123;</span><br><span class="line">private static final Elvis INSTANCE 9 new Elvis();</span><br><span class="line">private Elvis() &#123; ... &#125;</span><br><span class="line">publ ic static El vis getinstance() &#123; return INSTANCE; &#125;</span><br><span class="line">&#125; public void leaveTheBuilding</span><br></pre></td></tr></table></figure></p>
+<h2 id="第3条-用私有构造器或者枚举类型强化-Singleton属性"><a href="#第3条-用私有构造器或者枚举类型强化-Singleton属性" class="headerlink" title="第3条 用私有构造器或者枚举类型强化 Singleton属性"></a>第3条 用私有构造器或者枚举类型强化 Singleton属性</h2><p>在实现Singleton的第二种方法中，公有的成员是个静态工厂方法：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Si ngl eton wi th st atic factory</span></span><br><span class="line">publ ic <span class="class"><span class="keyword">class</span> <span class="title">Elvis</span> </span>&#123;</span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Elvis INSTANCE <span class="number">9</span> <span class="keyword">new</span> Elvis();</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="title">Elvis</span><span class="params">()</span> </span>&#123; ... &#125;</span><br><span class="line"><span class="function">publ ic <span class="keyword">static</span> El vis <span class="title">getinstance</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> INSTANCE; &#125;</span><br><span class="line">&#125; <span class="keyword">public</span> <span class="keyword">void</span> leaveTheBuilding</span><br></pre></td></tr></table></figure></p>
 <p>对于静态方法Elvis.getlnstance的所有调用，都会返回同一个对象引用，所以，永远不会创建其他的Elvis实例（ 上述提醒依然适用）。<strong>单元素的枚举类型已经成为实现Singleton的最佳方法</strong></p>
 <h2 id="第4条-通过私有构造器强化不可实例化的能力"><a href="#第4条-通过私有构造器强化不可实例化的能力" class="headerlink" title="第4条 通过私有构造器强化不可实例化的能力"></a>第4条 通过私有构造器强化不可实例化的能力</h2><ol>
-<li><strong>企图通过将类做成抽象类来强制该类不可被实例化，这是行不通的</strong>。该类可以被子类化，并且该子类也可以被实例化。这样做甚至会误导用户，以为这种类是专门为了继承而设计的。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">// Noninstantiable utility class</span><br><span class="line">public class UtilityClass &#123;</span><br><span class="line">    // Suppress default constructor for noninstantiability</span><br><span class="line">    private Uti 1 i tyCl ass() &#123;</span><br><span class="line">        throw new AssertionError();</span><br><span class="line">    &#125; &#125; .</span><br></pre></td></tr></table></figure>
+<li><strong>企图通过将类做成抽象类来强制该类不可被实例化，这是行不通的</strong>。该类可以被子类化，并且该子类也可以被实例化。这样做甚至会误导用户，以为这种类是专门为了继承而设计的。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Noninstantiable utility class</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UtilityClass</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Suppress default constructor for noninstantiability</span></span><br><span class="line">    <span class="keyword">private</span> Uti <span class="number">1</span> <span class="function">i tyCl <span class="title">ass</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> AssertionError();</span><br><span class="line">    &#125; &#125; .</span><br></pre></td></tr></table></figure>
 </li>
 </ol>
-<h2 id="第5条-避免创建不必要的对象"><a href="#第5条-避免创建不必要的对象" class="headerlink" title="第5条 避免创建不必要的对象"></a>第5条 避免创建不必要的对象</h2><p><strong>要优先使用基本类型而不是装箱基本类型，要当心无意识的自动装箱</strong>。因为装箱后需要创建对象，创建对象会产生花销，应避免。当你应该重用现有对象时，请不要创建新对象。</p>
-<h2 id="第6条-消除过期的对象引用"><a href="#第6条-消除过期的对象引用" class="headerlink" title="第6条 消除过期的对象引用"></a>第6条 消除过期的对象引用</h2><ol>
+<h2 id="第5条-使用依赖注入取代硬连接资源"><a href="#第5条-使用依赖注入取代硬连接资源" class="headerlink" title="第5条 使用依赖注入取代硬连接资源"></a>第5条 使用依赖注入取代硬连接资源</h2><p>许多类依赖于一个或多个底层资源。例如，拼写检查器依赖于字典。将此类类实现为静态实用工具类并不少见(条目 4)</p>
+<p>可以通过使dictionary属性设置为非final，并添加一个方法来更改现有拼写检查器中的字典，从而让拼写检查器支持多个字典，但是在并发环境中，这是笨拙的、容易出错的和不可行的。<strong>静态实用类和单例对于那些行为被底层资源参数化的类来说是不合适的</strong>。<br>所需要的是能够支持类的多个实例，满足这一需求的简单模式是在创建新实例时将资源传递到构造方法中。这是依赖项注入（dependency injection）的一种形式：字典是拼写检查器的一个依赖项，当它创建时被注入到拼写检查器中。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Dependency injection provides flexibility and testability</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpellChecker</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Lexicon dictionary;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">SpellChecker</span><span class="params">(Lexicon dictionary)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.dictionary = Objects.requireNonNull(dictionary);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isValid</span><span class="params">(String word)</span> </span>&#123; ... &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">suggestions</span><span class="params">(String typo)</span> </span>&#123; ... &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>依赖项注入可以使用任意数量的资源和任意依赖图。 它保持了不变性（条目 17），因此多个客户端可以共享依赖对象（假设客户需要相同的底层资源）。依赖注入同样适用于构造方法，静态工厂（条目 1）和 builder模式（条目 2）。<br>总之，不要使用单例或静态的实用类来实现一个类，该类依赖于一个或多个底层资源，这些资源的行为会影响类的行为，并且不让类直接创建这些资源。相反，将资源或工厂传递给构造方法(或静态工厂或builder模式)。这种称为依赖注入的实践将极大地增强类的灵活性、可重用性和可测试性。</p>
+<h2 id="第6条-避免创建不必要的对象"><a href="#第6条-避免创建不必要的对象" class="headerlink" title="第6条 避免创建不必要的对象"></a>第6条 避免创建不必要的对象</h2><p><strong>要优先使用基本类型而不是装箱基本类型，要当心无意识的自动装箱</strong>。因为装箱后需要创建对象，创建对象会产生花销，应避免。当你应该重用现有对象时，请不要创建新对象。</p>
+<h2 id="第7条-消除过期的对象引用"><a href="#第7条-消除过期的对象引用" class="headerlink" title="第7条 消除过期的对象引用"></a>第7条 消除过期的对象引用</h2><ol>
 <li>如果一个对象引用被无意识地保留起来了，那<br>么，垃圾回收机制不仅不会处理这个对象，而且也不会处理被这个对象所引用的所有其他对象。例如：在elements数组的“活动部分”之外的任何引用都是过期的。活动部分是指elements中下标小于size的那些元素。如果数组size–，被减掉的就不是活动部分，而且也没删除。</li>
 <li>（1）只要类是自己管理内存，程序员就应该警惕内存泄漏问题。（2）内存泄汤的另一个常见来源是缓存。（3）内存泄漏的第三个常见来源是监听器和其他回调。确保回调立即被当作垃圾回收的最佳方法是只保存它们的弱引用,例如，只将它们保存成WeakHashMap 中的键。</li>
 </ol>
-<h2 id="第7条-避免使用终结方法"><a href="#第7条-避免使用终结方法" class="headerlink" title="第7条 避免使用终结方法"></a>第7条 避免使用终结方法</h2><p>总之，除非是作为安全网，或者是为了终止非关键的本地资源，否则请不要使用终结方法。在这些很少见的情况下，既然使用了终结方法，就要记住调用s uper.finalize 。</p>
+<h2 id="第8条-避免使用终结方法"><a href="#第8条-避免使用终结方法" class="headerlink" title="第8条 避免使用终结方法"></a>第8条 避免使用终结方法</h2><p>总之，除非是作为安全网，或者是为了终止非关键的本地资源，否则请不要使用终结方法。在这些很少见的情况下，既然使用了终结方法，就要记住调用super.finalize 。</p>
+<h2 id="第9条-使用try-with-resources语句替代try-finally语句"><a href="#第9条-使用try-with-resources语句替代try-finally语句" class="headerlink" title="第9条 使用try-with-resources语句替代try-finally语句"></a>第9条 使用try-with-resources语句替代try-finally语句</h2><p>Java类库中包含许多必须通过调用close方法手动关闭的资源。 比如InputStream，OutputStream和java.sql.Connection。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// try-finally is ugly when used with more than one resource!</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copy</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    InputStream in = <span class="keyword">new</span> FileInputStream(src);</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        OutputStream out = <span class="keyword">new</span> FileOutputStream(dst);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_SIZE];</span><br><span class="line">            <span class="keyword">int</span> n;</span><br><span class="line">            <span class="keyword">while</span> ((n = in.read(buf)) &gt;= <span class="number">0</span>)</span><br><span class="line">                out.write(buf, <span class="number">0</span>, n);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            out.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        in.close();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在firstLineOfFile方法中，由于底层物理设备发生故障，对readLine方法的调用可能会引发异常，并且由于相同的原因，调用close方法可能会失败。 在这种情况下，第二个异常完全冲掉了第一个异常。</p>
+<p>当Java 7引入了try-with-resources语句时，所有这些问题一下子都得到了解决[JLS,14.20.3]。要使用这个构造，资源必须实现 AutoCloseable接口，该接口由一个返回为void的close组成.</p>
+<p>以下是我们的使用try-with-resources的两个示例:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// try-with-resources - the the best way to close resources!</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> String <span class="title">firstLineOfFile</span><span class="params">(String path)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> (BufferedReader br = <span class="keyword">new</span> BufferedReader(</span><br><span class="line">           <span class="keyword">new</span> FileReader(path))) &#123;</span><br><span class="line">       <span class="keyword">return</span> br.readLine();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// try-with-resources on multiple resources - short and sweet</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">copy</span><span class="params">(String src, String dst)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">    <span class="keyword">try</span> (InputStream   in = <span class="keyword">new</span> FileInputStream(src);</span><br><span class="line">         OutputStream out = <span class="keyword">new</span> FileOutputStream(dst)) &#123;</span><br><span class="line">        <span class="keyword">byte</span>[] buf = <span class="keyword">new</span> <span class="keyword">byte</span>[BUFFER_SIZE];</span><br><span class="line">        <span class="keyword">int</span> n;</span><br><span class="line">        <span class="keyword">while</span> ((n = in.read(buf)) &gt;= <span class="number">0</span>)</span><br><span class="line">            out.write(buf, <span class="number">0</span>, n);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>结论明确：在处理必须关闭的资源时，使用try-with-resources语句替代try-finally语句。 生成的代码更简洁，更清晰，并且生成的异常更有用。 try-with-resources语句在编写必须关闭资源的代码时会更容易，也不会出错，而使用try-finally语句实际上是不可能的。</p>
 
       
     </div>
@@ -552,7 +575,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-count">5</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -584,7 +607,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -620,7 +645,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第2章-创建和销毁对象"><span class="nav-number">1.</span> <span class="nav-text">第2章 创建和销毁对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1条-考虑用静态工厂方法代替构造器"><span class="nav-number">1.1.</span> <span class="nav-text">第1条 考虑用静态工厂方法代替构造器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第2条-遇到多个构造器参数时要考虑用构建器"><span class="nav-number">1.2.</span> <span class="nav-text">第2条 遇到多个构造器参数时要考虑用构建器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3条-用私有构造器或者枚举类型强化-Singleton属性"><span class="nav-number">1.3.</span> <span class="nav-text">第3条 用私有构造器或者枚举类型强化 Singleton属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4条-通过私有构造器强化不可实例化的能力"><span class="nav-number">1.4.</span> <span class="nav-text">第4条 通过私有构造器强化不可实例化的能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5条-避免创建不必要的对象"><span class="nav-number">1.5.</span> <span class="nav-text">第5条 避免创建不必要的对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第6条-消除过期的对象引用"><span class="nav-number">1.6.</span> <span class="nav-text">第6条 消除过期的对象引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第7条-避免使用终结方法"><span class="nav-number">1.7.</span> <span class="nav-text">第7条 避免使用终结方法</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Effective-Java-2rd-Nodes"><span class="nav-number">1.</span> <span class="nav-text">Effective Java 2rd Nodes</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#第2章-创建和销毁对象"><span class="nav-number">2.</span> <span class="nav-text">第2章 创建和销毁对象</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第1条-考虑用静态工厂方法代替构造器"><span class="nav-number">2.1.</span> <span class="nav-text">第1条 考虑用静态工厂方法代替构造器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第2条-遇到多个构造器参数时要考虑用构建器"><span class="nav-number">2.2.</span> <span class="nav-text">第2条 遇到多个构造器参数时要考虑用构建器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第3条-用私有构造器或者枚举类型强化-Singleton属性"><span class="nav-number">2.3.</span> <span class="nav-text">第3条 用私有构造器或者枚举类型强化 Singleton属性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第4条-通过私有构造器强化不可实例化的能力"><span class="nav-number">2.4.</span> <span class="nav-text">第4条 通过私有构造器强化不可实例化的能力</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第5条-使用依赖注入取代硬连接资源"><span class="nav-number">2.5.</span> <span class="nav-text">第5条 使用依赖注入取代硬连接资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第6条-避免创建不必要的对象"><span class="nav-number">2.6.</span> <span class="nav-text">第6条 避免创建不必要的对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第7条-消除过期的对象引用"><span class="nav-number">2.7.</span> <span class="nav-text">第7条 消除过期的对象引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第8条-避免使用终结方法"><span class="nav-number">2.8.</span> <span class="nav-text">第8条 避免使用终结方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第9条-使用try-with-resources语句替代try-finally语句"><span class="nav-number">2.9.</span> <span class="nav-text">第9条 使用try-with-resources语句替代try-finally语句</span></a></li></ol></li></ol></div>
             
 
           </div>
