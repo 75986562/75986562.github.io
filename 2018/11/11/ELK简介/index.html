@@ -117,9 +117,9 @@
 <meta property="og:description" content="文章来源：https://www.cnblogs.com/kevingrace/p/5919021.html ELK简介为什么要用ELK我们需要对日志进行集中化管理，将所有机器上的日志信息收集、汇总到一起。完整的日志数据具有非常重要的作用：  信息查找。通过检索日志信息，定位相应的bug，找出解决方案。 服务诊断。通过对日志信息进行统计、分析，了解服务器的负荷和服务运行状态，找出耗时请求进行优化等">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:image" content="http://yoursite.com/ELK简介/ELK工作原理图.png">
-<meta property="og:image" content="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425171745495-2019221212.png">
-<meta property="og:image" content="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425172936102-2010066031.png">
-<meta property="og:image" content="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425173152360-1768691984.png">
+<meta property="og:image" content="http://yoursite.com/ELK简介/Logstash工作原理.png">
+<meta property="og:image" content="http://yoursite.com/ELK简介/ELK部署01">
+<meta property="og:image" content="http://yoursite.com/ELK简介/ELK部署02">
 <meta property="og:updated_time" content="2018-11-11T05:20:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ELK简介">
@@ -434,7 +434,7 @@
 </ol>
 <p><strong>ELK工作原理展示图:</strong><br><img src="/ELK简介/ELK工作原理图.png" alt="ELK工作原理展示图"></p>
 <p>如上图：Logstash收集AppServer产生的Log，并存放到ElasticSearch集群中，而Kibana则从ES集群中查询数据生成图表，再返回给Browser。</p>
-<h3 id="Logstash工作原理"><a href="#Logstash工作原理" class="headerlink" title="Logstash工作原理"></a>Logstash工作原理</h3><p>Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。<br><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425171745495-2019221212.png" alt="image"></p>
+<h3 id="Logstash工作原理"><a href="#Logstash工作原理" class="headerlink" title="Logstash工作原理"></a>Logstash工作原理</h3><p>Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。<br><img src="/ELK简介/Logstash工作原理.png" alt="image"></p>
 <p>一些常用的输入为：<br><em>file</em>：从文件系统的文件中读取，类似于tial -f命令<br><em>syslog</em>：在514端口上监听系统日志消息，并根据RFC3164标准进行解析<br><em>redis</em>：从redis service中读取<br><em>beats</em>：从filebeat中读取<br><em>Filters</em>：数据中间处理，对数据进行操作。</p>
 <p>一些常用的过滤器为：<br><em>grok</em>：解析任意文本数据，Grok 是 Logstash 最重要的插件。它的主要作用就是将文本格式的字符串，转换成为具体的结构化的数据，配合正则表达式使用。内置120多个解析语法。<br>mutate：对字段进行转换。例如对字段进行删除、替换、修改、重命名等。<br><em>drop</em>：丢弃一部分events不进行处理。<br><em>clone</em>：拷贝 event，这个过程中也可以添加或移除字段。<br><em>geoip</em>：添加地理信息(为前台kibana图形化展示使用)<br><em>Outputs</em>：outputs是logstash处理管道的最末端组件。一个event可以在处理过程中经过多重输出，但是一旦所有的outputs都执行结束，这个event也就完成生命周期。</p>
 <p>一些常见的outputs为：<br><em>elasticsearch</em>：可以高效的保存数据，并且能够方便和简单的进行查询。<br><em>file</em>：将event数据保存到文件中。<br><em>graphite</em>：将event数据发送到图形化组件中，一个很流行的开源存储图形化展示的组件。<br><em>Codecs</em>：codecs 是基于数据流的过滤器，它可以作为input，output的一部分配置。Codecs可以帮助你轻松的分割发送过来已经被序列化的数据。</p>
@@ -447,12 +447,12 @@
 <li>部署Elasticsearch集群，当然取决于你的数据量了，数据量小的话可以使用单台服务，如果做集群的话，最好是有3个以上节点，同时还需要部署相关的监控插件；</li>
 <li>部署Kibana服务，提供Web服务。</li>
 </ol>
-<p><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425172936102-2010066031.png" alt="image"></p>
+<p><img src="/ELK简介/ELK部署01" alt="image"></p>
 <p>在前期部署阶段，主要工作是Logstash节点和Elasticsearch集群的部署，而在后期使用阶段，主要工作就是Elasticsearch集群的监控和使用Kibana来检索、分析日志数据了，当然也可以直接编写程序来消费Elasticsearch中的数据。</p>
 <p>在上面的部署方案中，我们将Logstash分为Shipper和Indexer两种角色来完成不同的工作，中间通过Redis做数据管道，为什么要这样做？为什么不是直接在每台机器上使用Logstash提取数据、处理、存入Elasticsearch？</p>
 <p>首先，采用这样的架构部署，有三点优势：<strong>第一</strong>，降低对日志所在机器的影响，这些机器上一般都部署着反向代理或应用服务，本身负载就很重了，所以尽可能的在这些机器上少做事；<strong>第二</strong>，如果有很多台机器需要做日志收集，那么让每台机器都向Elasticsearch持续写入数据，必然会对Elasticsearch造成压力，因此需要对数据进行缓冲，同时，这样的缓冲也可以一定程度的保护数据不丢失；<strong>第三</strong>，将日志数据的格式化与处理放到Indexer中统一做，可以在一处修改代码、部署，避免需要到多台机器上去修改配置。 </p>
 <p>其次，我们需要做的是将数据放入一个消息队列中进行缓冲，所以Redis只是其中一个选择，也可以是RabbitMQ、Kafka等等，在实际生产中，Redis与Kafka用的比较多。由于Redis集群一般都是通过key来做分片，无法对list类型做集群，在数据量大的时候必然不合适了，而Kafka天生就是分布式的消息队列系统。</p>
-<p><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425173152360-1768691984.png" alt="image"></p>
+<p><img src="/ELK简介/ELK部署02" alt="image"></p>
 
       
     </div>

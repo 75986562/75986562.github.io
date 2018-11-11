@@ -434,7 +434,7 @@
 </ol>
 <p><strong>ELK工作原理展示图:</strong><br><img src="/ELK简介/ELK工作原理图.png" alt="ELK工作原理展示图"></p>
 <p>如上图：Logstash收集AppServer产生的Log，并存放到ElasticSearch集群中，而Kibana则从ES集群中查询数据生成图表，再返回给Browser。</p>
-<h3 id="Logstash工作原理"><a href="#Logstash工作原理" class="headerlink" title="Logstash工作原理"></a>Logstash工作原理</h3><p>Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。<br><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425171745495-2019221212.png" alt="image"></p>
+<h3 id="Logstash工作原理"><a href="#Logstash工作原理" class="headerlink" title="Logstash工作原理"></a>Logstash工作原理</h3><p>Logstash事件处理有三个阶段：inputs → filters → outputs。是一个接收，处理，转发日志的工具。支持系统日志，webserver日志，错误日志，应用日志，总之包括所有可以抛出来的日志类型。<br><img src="/ELK简介/Logstash工作原理.png" alt="image"></p>
 <p>一些常用的输入为：<br><em>file</em>：从文件系统的文件中读取，类似于tial -f命令<br><em>syslog</em>：在514端口上监听系统日志消息，并根据RFC3164标准进行解析<br><em>redis</em>：从redis service中读取<br><em>beats</em>：从filebeat中读取<br><em>Filters</em>：数据中间处理，对数据进行操作。</p>
 <p>一些常用的过滤器为：<br><em>grok</em>：解析任意文本数据，Grok 是 Logstash 最重要的插件。它的主要作用就是将文本格式的字符串，转换成为具体的结构化的数据，配合正则表达式使用。内置120多个解析语法。<br>mutate：对字段进行转换。例如对字段进行删除、替换、修改、重命名等。<br><em>drop</em>：丢弃一部分events不进行处理。<br><em>clone</em>：拷贝 event，这个过程中也可以添加或移除字段。<br><em>geoip</em>：添加地理信息(为前台kibana图形化展示使用)<br><em>Outputs</em>：outputs是logstash处理管道的最末端组件。一个event可以在处理过程中经过多重输出，但是一旦所有的outputs都执行结束，这个event也就完成生命周期。</p>
 <p>一些常见的outputs为：<br><em>elasticsearch</em>：可以高效的保存数据，并且能够方便和简单的进行查询。<br><em>file</em>：将event数据保存到文件中。<br><em>graphite</em>：将event数据发送到图形化组件中，一个很流行的开源存储图形化展示的组件。<br><em>Codecs</em>：codecs 是基于数据流的过滤器，它可以作为input，output的一部分配置。Codecs可以帮助你轻松的分割发送过来已经被序列化的数据。</p>
@@ -447,12 +447,12 @@
 <li>部署Elasticsearch集群，当然取决于你的数据量了，数据量小的话可以使用单台服务，如果做集群的话，最好是有3个以上节点，同时还需要部署相关的监控插件；</li>
 <li>部署Kibana服务，提供Web服务。</li>
 </ol>
-<p><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425172936102-2010066031.png" alt="image"></p>
+<p><img src="/ELK简介/ELK部署01" alt="image"></p>
 <p>在前期部署阶段，主要工作是Logstash节点和Elasticsearch集群的部署，而在后期使用阶段，主要工作就是Elasticsearch集群的监控和使用Kibana来检索、分析日志数据了，当然也可以直接编写程序来消费Elasticsearch中的数据。</p>
 <p>在上面的部署方案中，我们将Logstash分为Shipper和Indexer两种角色来完成不同的工作，中间通过Redis做数据管道，为什么要这样做？为什么不是直接在每台机器上使用Logstash提取数据、处理、存入Elasticsearch？</p>
 <p>首先，采用这样的架构部署，有三点优势：<strong>第一</strong>，降低对日志所在机器的影响，这些机器上一般都部署着反向代理或应用服务，本身负载就很重了，所以尽可能的在这些机器上少做事；<strong>第二</strong>，如果有很多台机器需要做日志收集，那么让每台机器都向Elasticsearch持续写入数据，必然会对Elasticsearch造成压力，因此需要对数据进行缓冲，同时，这样的缓冲也可以一定程度的保护数据不丢失；<strong>第三</strong>，将日志数据的格式化与处理放到Indexer中统一做，可以在一处修改代码、部署，避免需要到多台机器上去修改配置。 </p>
 <p>其次，我们需要做的是将数据放入一个消息队列中进行缓冲，所以Redis只是其中一个选择，也可以是RabbitMQ、Kafka等等，在实际生产中，Redis与Kafka用的比较多。由于Redis集群一般都是通过key来做分片，无法对list类型做集群，在数据量大的时候必然不合适了，而Kafka天生就是分布式的消息队列系统。</p>
-<p><img src="https://images2018.cnblogs.com/blog/907596/201804/907596-20180425173152360-1768691984.png" alt="image"></p>
+<p><img src="/ELK简介/ELK部署02" alt="image"></p>
 
           
         
@@ -1425,6 +1425,180 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr((26~33)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/04/Effective-Java-3dr((26~33)/" itemprop="url">
+                  Effective Java 3dr(26~33)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-04 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-04T16:37:30+08:00">2018-11-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 23:40:30" itemprop="dateModified" datetime="2018-11-08T23:40:30+08:00">2018-11-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第五章-范型"><a href="#第五章-范型" class="headerlink" title="第五章 范型"></a>第五章 范型</h1><h2 id="第26条-不要使用原始类型"><a href="#第26条-不要使用原始类型" class="headerlink" title="第26条 不要使用原始类型"></a>第26条 不要使用原始类型</h2><p>快速回顾一下：<br>Set<object>代表可以存放任何对象类型的set；<br>Set&lt;?&gt;表示可以存放任何未知对象类型的set；<br>Set是原始类型，根据范型系统输出。<br>前两个是安全的，最后一个不是。</object></p>
+<h2 id="第27条-消除-unchecked（未检查）-警告"><a href="#第27条-消除-unchecked（未检查）-警告" class="headerlink" title="第27条 消除 unchecked（未检查） 警告"></a>第27条 消除 unchecked（未检查） 警告</h2><p>当你遇到你不能消除的警告时，如果你能保证被警告的代码类型是什么，就可以使用（也只能使用这种方式）@SuppressWarnings(“unchecked”）注解来消除警告。SuppressWarnings注解可以用在声明任何对象时，例如声明一个变量、方法、结构体或类等。但是永远要保证尽可能小范围的使用SuppressWarnings注解。<br>每次当你使用@SuppressWarnings(“unchecked”)注解时，都应该添加注释说明为什么这么做是安全的。这样做不仅可以使其他人更容易读懂，而且防止别人随意更改代码。</p>
+<h2 id="第28条-消列表优于数组"><a href="#第28条-消列表优于数组" class="headerlink" title="第28条 消列表优于数组"></a>第28条 消列表优于数组</h2><p>首先，数组是协变的（covariant）<br> 这段代码是合法的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fails at runtime!</span></span><br><span class="line">Object[] objectArray = <span class="keyword">new</span> Long[<span class="number">1</span>];</span><br><span class="line">objectArray[<span class="number">0</span>] = <span class="string">"I don't fit in"</span>; <span class="comment">// Throws ArrayStoreException</span></span><br></pre></td></tr></table></figure></p>
+<p>但这个不是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Won't compile!</span></span><br><span class="line">List&lt;Object&gt; ol = <span class="keyword">new</span> ArrayList&lt;Long&gt;(); <span class="comment">// Incompatible types</span></span><br><span class="line">ol.add(<span class="string">"I don't fit in"</span>);</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr((34~41) /">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1543,236 +1717,6 @@
           
             <hr>
 <h1 id="第六章-枚举和注释"><a href="#第六章-枚举和注释" class="headerlink" title="第六章 枚举和注释"></a>第六章 枚举和注释</h1>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr(15~25)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/04/Effective-Java-3dr(15~25)/" itemprop="url">
-                  Effective Java 3dr(15~25)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-04 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-04T16:37:30+08:00">2018-11-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第四章-类与接口"><a href="#第四章-类与接口" class="headerlink" title="第四章 类与接口"></a>第四章 类与接口</h1><h2 id="第15条-最小化类和类成员的可访问性"><a href="#第15条-最小化类和类成员的可访问性" class="headerlink" title="第15条 最小化类和类成员的可访问性"></a>第15条 最小化类和类成员的可访问性</h2><ol>
-<li><p>类的实例字段最好不要设置成public的，同样的建议也适用于static字段，而且这些static字段应该包含原始值或对不可变对象的引用（Item17），如果包含了可变对象那就有了像非final字段一样的缺点：虽然不能修改这个final引用，但是却可以修改引用的对象,这具有灾难性的后果。</p>
-</li>
-<li><p>需要注意的是：<strong>一个长度不为零的数组总是可变（mutable）的</strong>。所以一个类有一个public static final array 字段或者geter方法（accessor）返回一个这样的字段都是不正确的。</p>
-</li>
-<li>概括起来就是：在合理的范围内你应该尽可能减少程序的可访问等级。当仔细的设计完最小化公开的API之后，你应该放置任何零散的类、接口或者成员变成API的一部分。公共类除了pubic static final的常量（constant）属性外，不应该有任何其他的公共属性，而且要保证public static final的属性是不可变的。</li>
-</ol>
-<h2 id="第16条-使用存取器方法（setter-or-getter）代替public属性"><a href="#第16条-使用存取器方法（setter-or-getter）代替public属性" class="headerlink" title="第16条 使用存取器方法（setter or getter）代替public属性"></a>第16条 使用存取器方法（setter or getter）代替public属性</h2><p>如果一个类可以在它的包外部被访问到，就应该提供访问器方法来保持类可被修改的灵活性。</p>
-<p>总结起来就是，<strong>public的类不能暴漏可变对象给外部</strong>。即使是不可变对象也同样具有一定危害。</p>
-<p>私有的内部静态类通常用来表示宿主类的一个组件。例如Map对象中的表示Keys和Values的关联关系的组件。Map中的每一对key-value的关联关系都会有一个Entry的对象来表示。即使每一个entry都是和map相关的，但是entry中的方法（getKey, getValue, 和 setValue）都不需要调用map类。因此使用私有静态类来表示entry是最好的。如果你忘记将其设置成静态类，它也能工作，但是会造成每个entry都会隐式的包含map的引用，这将造成很大的空间和时间的浪费。</p>
-<p>第17条 使可变性最小化</p>
-<ol>
-<li>使类变得不可变的5条原则：<ol>
-<li>不提供修改类对象的方法。</li>
-<li>类不能被继承。</li>
-<li>将所有属性设置成final</li>
-<li>将所有属性设置成private</li>
-<li>确保任何可变对象都只能被自己访问。</li>
-</ol>
-</li>
-<li>不可变对象与生俱来就是线程安全的，所以不需要synchronization。</li>
-<li>不可变对象免费提供失败原子性（Item76）。</li>
-<li>不可变对象的主要缺点是：对于不同的值它都需要一个全新的对象。如果你执行很多步骤，每一步都产生一个新对象，并仅仅在最后才释放所有对象的话，这将会产生很严重的性能问题。有两种方法应对这个问题。第一是将公用的多步操作封装起来，就不用每一步都生成一个新的对象了。如果没办法预测可能需要什么操作时，你最好提供一个public的可变伙伴类，例如String类，它的可变伙伴类是StringBuilder（它的已废弃的前身是StringBuffer）。</li>
-<li>不能变成不可变的类，那就应该尽量限制它的可变形。结合item15说的，你应该自然的把变量设置成private final的，除非有原因需要设置成其他的。</li>
-<li>除非有充足的理由，都<strong>不要创建除了构造器和静态方法之外的公共初始化方法。</strong></li>
-</ol>
-<h2 id="第18条-重组合，轻继承"><a href="#第18条-重组合，轻继承" class="headerlink" title="第18条 重组合，轻继承"></a>第18条 重组合，轻继承</h2><ol>
-<li>在一个包里使用继承是安全的，这里子类和父类都由同一个程序员控制。在特定的设计和文档说明下使用也是安全的（Item19）。但是<strong>跨越包继承就是危险的</strong>了。这里说的继承指的是实现继承（一个类extends另外一个类），不包括接口的继承（一个类实现一个接口或一个接口继承另一个接口）。<strong>继承破坏了封装性</strong>。</li>
-<li>写转发类是乏味的，而且你不得不为每一个接口写一次转发类。只有当一个类的类型真正属于另一个类的时候才适合使用继承。如果你不能确定，那就不应该使用继承。</li>
-<li>使用组合和转发来代替继承。</li>
-</ol>
-<h2 id="第19条-为继承设计文档，否则就禁止继承"><a href="#第19条-为继承设计文档，否则就禁止继承" class="headerlink" title="第19条 为继承设计文档，否则就禁止继承"></a>第19条 为继承设计文档，否则就禁止继承</h2><ol>
-<li>首先，必须为可重写的方法添加明确的文档。换句话说就是，类必须说明它自己使用的那些可被重写的方法。</li>
-<li>一个好的API文档应该仅仅描述方法干了什么，而不应该描述它是如何实现的。一般调用了可被重写方法的描述在文档描述后面，被关键字Implementation Requirements指定，这个关键字由Javadoc的@implSpec生成,这里会描述方法内部的实现。</li>
-<li>构造方法不能直接或间接的调用可被重写的方法。因为一个父类的构造方法先于子类的构造方法被调用，子类重写的方法会在子类构造方法调用之前被调用，如果这个被重写的方法的一些初始化在子类的构造方法中就会产生错误。</li>
-<li>在设计继承的时候Cloneable 和 Serializable接口会带来特殊的困难。如果一个类实现了这样类似的接口，那就会给继承于它的类带来很大的麻烦。所以可以使用特殊的动作来允许子类实现这些接口，而不是强制它们实现这些接口，这写细节讲述在Item 13 和 Item 86.</li>
-<li>很多程序员已经习惯于继承具体的类来实现一些功能，例如通知、同步、限制功能等等。如果一些类实现了包含本质的一些接口，例如Set、List或 Map，就可以通过使用包装类（Item18）的方式提供比继承更好的添加功能的方法。</li>
-</ol>
-<h2 id="第20条-接口优先于继承"><a href="#第20条-接口优先于继承" class="headerlink" title="第20条 接口优先于继承"></a>第20条 接口优先于继承</h2><ol>
-<li>接口是定义mixins类型的理想。选择例如，Comparable允许一个类使用自己的类对象和其他的遵守comparable接口的对象进行排序，像这样的接口被称为一个mixin类型，因为它允许可选的功能被“mixed in”到一个主要的功能上。</li>
-<li>可以结合使用接口和抽象类的优点，使用接口实现抽象的骨架实现类（Skeletal），骨架实现类可以为抽象类提供实现，而不受抽象类做为类型使用时的约束。骨架类其实是个抽象类，它实现了某个接口，但是可以选择地实现它的方法，并不需要全部实现，因为接口本质上也是抽象类。 使用骨架类其实是继承了一个抽象类，又实现了一个上层接口。</li>
-<li>骨架实现是为继承而设计的。接口是允许多种实现的定义类型最好的方法。如果你导出一个重要的接口，你应该为它提供一个骨架实现。</li>
-<li>补充：java8开始，允许接口有default方法和static方法，我们完全可以把原来骨架实现的抽象类里面的方法放到接口中，用default方法来实现。</li>
-</ol>
-<h2 id="第21条-设计接口要向后兼容"><a href="#第21条-设计接口要向后兼容" class="headerlink" title="第21条 设计接口要向后兼容"></a>第21条 设计接口要向后兼容</h2><p>应该尽量避免为现有的接口添加默认方法，除非这是必要的。然而，在创建接口时添加默认方法的实现时很有用的，可以减轻接口实现的负担（Item20）</p>
-<h2 id="第22条-仅仅使用接口来定义类型"><a href="#第22条-仅仅使用接口来定义类型" class="headerlink" title="第22条 仅仅使用接口来定义类型"></a>第22条 仅仅使用接口来定义类型</h2><ol>
-<li>有一种<strong>失败的接口是常量接口</strong>。这样的接口没有包含任何方法，仅仅包含一些static final的常量。</li>
-<li>注意在上面的数字中使用的下划线（_），从Java7开始是合法的使用，添加下划线不会影响数字的值，而且能使数字的可读性更强。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> AVOGADROS_NUMBER =</span><br><span class="line">                <span class="number">6.022_140_857e23</span>;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>通常使用工具类调用常量时要求用类名.常量名例如PhysicalConstants.AVOGADROS_NUMBER.但是如果你大量的使用常量时，可以通过导入工具类来直接使用常量：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.effectivejava.science.PhysicalConstants.*; </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">atoms</span><span class="params">(<span class="keyword">double</span> mols)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> AVOGADROS_NUMBER * mols;</span><br><span class="line"> &#125; ... <span class="comment">// Many more uses of PhysicalConstants justify static import </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>接口应该仅被用于定义类型，而不应该用于仅仅导出常量。</p>
-<h2 id="第23条-优先使用类层级结构，减少使用tag标记类"><a href="#第23条-优先使用类层级结构，减少使用tag标记类" class="headerlink" title="第23条 优先使用类层级结构，减少使用tag标记类"></a>第23条 优先使用类层级结构，减少使用tag标记类</h2><p>tag类总是不太恰当的，如果你打算写一个类用tag来区分不同行为，考虑将其替换成类层级关系。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">area</span><span class="params">()</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> radius;</span><br><span class="line">       Circle(<span class="keyword">double</span> radius) &#123; <span class="keyword">this</span>.radius = radius; &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> Math.PI * (radius * radius); &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> length;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> width;</span><br><span class="line">       Rectangle(<span class="keyword">double</span> length, <span class="keyword">double</span> width) &#123;</span><br><span class="line">           <span class="keyword">this</span>.length = length;</span><br><span class="line">           <span class="keyword">this</span>.width = width;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> length * width; &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
-<p>这个类层次修复了刚才提到的所有tag类的缺点。</p>
-<h2 id="第24条-内部类优先设置成静态的"><a href="#第24条-内部类优先设置成静态的" class="headerlink" title="第24条 内部类优先设置成静态的"></a>第24条 内部类优先设置成静态的</h2><ol>
-<li>嵌套类指的是定义在其他类中的类。当类仅仅只对另一个类服务时（而不对其他类服务）才应该被设计成嵌套类。如果一个类对多个类服务，那么它就应该被设计成顶层类。</li>
-<li>如果你声明了一个成员类不需要访问宿主类的对象，那么应该将其声明称static类型的。如果你忘记添加static标志，那么这个类就会隐式的被宿主类对象引用。正如前面说的，这个引用会消耗时间和空间。更严重的是，可能造成宿主对象在达到垃圾回收条件时不能被正常的回收（Item7），这会造成内存泄漏的风险，而且这很难被检查出来，因为这个引用是不可见的。</li>
-<li>在lambdas被添加到Java之前（Chapter6），匿名类是创建小函数对象和执行间断逻辑的首选方案，但是现在lambdas是首选方案（Item42）</li>
-</ol>
-<h2 id="第25条-保持一个源文件只包含一个顶层类"><a href="#第25条-保持一个源文件只包含一个顶层类" class="headerlink" title="第25条 保持一个源文件只包含一个顶层类"></a>第25条 保持一个源文件只包含一个顶层类</h2><p>虽然Java编译器允许你在一个源文件中定义多个顶层类，但是你这么做也没有任何好处，反而会有一些明显的坏处。<strong>主要的坏处是：可能会造成一个类有多种实现。</strong>最终使用哪一种实现依赖于源文件被添加到编译器的先后顺序。</p>
-
           
         
       
@@ -2029,7 +1973,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr((26~33)/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3dr(15~25)/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小华">
@@ -2048,8 +1992,8 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/11/04/Effective-Java-3dr((26~33)/" itemprop="url">
-                  Effective Java 3dr(26~33)
+                <a class="post-title-link" href="/2018/11/04/Effective-Java-3dr(15~25)/" itemprop="url">
+                  Effective Java 3dr(15~25)
                 </a>
               
             
@@ -2092,7 +2036,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-11-08 23:40:30" itemprop="dateModified" datetime="2018-11-08T23:40:30+08:00">2018-11-08</time>
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
               
             
           </span>
@@ -2146,10 +2090,66 @@
         
           
             <hr>
-<h1 id="第五章-范型"><a href="#第五章-范型" class="headerlink" title="第五章 范型"></a>第五章 范型</h1><h2 id="第26条-不要使用原始类型"><a href="#第26条-不要使用原始类型" class="headerlink" title="第26条 不要使用原始类型"></a>第26条 不要使用原始类型</h2><p>快速回顾一下：<br>Set<object>代表可以存放任何对象类型的set；<br>Set&lt;?&gt;表示可以存放任何未知对象类型的set；<br>Set是原始类型，根据范型系统输出。<br>前两个是安全的，最后一个不是。</object></p>
-<h2 id="第27条-消除-unchecked（未检查）-警告"><a href="#第27条-消除-unchecked（未检查）-警告" class="headerlink" title="第27条 消除 unchecked（未检查） 警告"></a>第27条 消除 unchecked（未检查） 警告</h2><p>当你遇到你不能消除的警告时，如果你能保证被警告的代码类型是什么，就可以使用（也只能使用这种方式）@SuppressWarnings(“unchecked”）注解来消除警告。SuppressWarnings注解可以用在声明任何对象时，例如声明一个变量、方法、结构体或类等。但是永远要保证尽可能小范围的使用SuppressWarnings注解。<br>每次当你使用@SuppressWarnings(“unchecked”)注解时，都应该添加注释说明为什么这么做是安全的。这样做不仅可以使其他人更容易读懂，而且防止别人随意更改代码。</p>
-<h2 id="第28条-消列表优于数组"><a href="#第28条-消列表优于数组" class="headerlink" title="第28条 消列表优于数组"></a>第28条 消列表优于数组</h2><p>首先，数组是协变的（covariant）<br> 这段代码是合法的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fails at runtime!</span></span><br><span class="line">Object[] objectArray = <span class="keyword">new</span> Long[<span class="number">1</span>];</span><br><span class="line">objectArray[<span class="number">0</span>] = <span class="string">"I don't fit in"</span>; <span class="comment">// Throws ArrayStoreException</span></span><br></pre></td></tr></table></figure></p>
-<p>但这个不是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Won't compile!</span></span><br><span class="line">List&lt;Object&gt; ol = <span class="keyword">new</span> ArrayList&lt;Long&gt;(); <span class="comment">// Incompatible types</span></span><br><span class="line">ol.add(<span class="string">"I don't fit in"</span>);</span><br></pre></td></tr></table></figure></p>
+<h1 id="第四章-类与接口"><a href="#第四章-类与接口" class="headerlink" title="第四章 类与接口"></a>第四章 类与接口</h1><h2 id="第15条-最小化类和类成员的可访问性"><a href="#第15条-最小化类和类成员的可访问性" class="headerlink" title="第15条 最小化类和类成员的可访问性"></a>第15条 最小化类和类成员的可访问性</h2><ol>
+<li><p>类的实例字段最好不要设置成public的，同样的建议也适用于static字段，而且这些static字段应该包含原始值或对不可变对象的引用（Item17），如果包含了可变对象那就有了像非final字段一样的缺点：虽然不能修改这个final引用，但是却可以修改引用的对象,这具有灾难性的后果。</p>
+</li>
+<li><p>需要注意的是：<strong>一个长度不为零的数组总是可变（mutable）的</strong>。所以一个类有一个public static final array 字段或者geter方法（accessor）返回一个这样的字段都是不正确的。</p>
+</li>
+<li>概括起来就是：在合理的范围内你应该尽可能减少程序的可访问等级。当仔细的设计完最小化公开的API之后，你应该放置任何零散的类、接口或者成员变成API的一部分。公共类除了pubic static final的常量（constant）属性外，不应该有任何其他的公共属性，而且要保证public static final的属性是不可变的。</li>
+</ol>
+<h2 id="第16条-使用存取器方法（setter-or-getter）代替public属性"><a href="#第16条-使用存取器方法（setter-or-getter）代替public属性" class="headerlink" title="第16条 使用存取器方法（setter or getter）代替public属性"></a>第16条 使用存取器方法（setter or getter）代替public属性</h2><p>如果一个类可以在它的包外部被访问到，就应该提供访问器方法来保持类可被修改的灵活性。</p>
+<p>总结起来就是，<strong>public的类不能暴漏可变对象给外部</strong>。即使是不可变对象也同样具有一定危害。</p>
+<p>私有的内部静态类通常用来表示宿主类的一个组件。例如Map对象中的表示Keys和Values的关联关系的组件。Map中的每一对key-value的关联关系都会有一个Entry的对象来表示。即使每一个entry都是和map相关的，但是entry中的方法（getKey, getValue, 和 setValue）都不需要调用map类。因此使用私有静态类来表示entry是最好的。如果你忘记将其设置成静态类，它也能工作，但是会造成每个entry都会隐式的包含map的引用，这将造成很大的空间和时间的浪费。</p>
+<p>第17条 使可变性最小化</p>
+<ol>
+<li>使类变得不可变的5条原则：<ol>
+<li>不提供修改类对象的方法。</li>
+<li>类不能被继承。</li>
+<li>将所有属性设置成final</li>
+<li>将所有属性设置成private</li>
+<li>确保任何可变对象都只能被自己访问。</li>
+</ol>
+</li>
+<li>不可变对象与生俱来就是线程安全的，所以不需要synchronization。</li>
+<li>不可变对象免费提供失败原子性（Item76）。</li>
+<li>不可变对象的主要缺点是：对于不同的值它都需要一个全新的对象。如果你执行很多步骤，每一步都产生一个新对象，并仅仅在最后才释放所有对象的话，这将会产生很严重的性能问题。有两种方法应对这个问题。第一是将公用的多步操作封装起来，就不用每一步都生成一个新的对象了。如果没办法预测可能需要什么操作时，你最好提供一个public的可变伙伴类，例如String类，它的可变伙伴类是StringBuilder（它的已废弃的前身是StringBuffer）。</li>
+<li>不能变成不可变的类，那就应该尽量限制它的可变形。结合item15说的，你应该自然的把变量设置成private final的，除非有原因需要设置成其他的。</li>
+<li>除非有充足的理由，都<strong>不要创建除了构造器和静态方法之外的公共初始化方法。</strong></li>
+</ol>
+<h2 id="第18条-重组合，轻继承"><a href="#第18条-重组合，轻继承" class="headerlink" title="第18条 重组合，轻继承"></a>第18条 重组合，轻继承</h2><ol>
+<li>在一个包里使用继承是安全的，这里子类和父类都由同一个程序员控制。在特定的设计和文档说明下使用也是安全的（Item19）。但是<strong>跨越包继承就是危险的</strong>了。这里说的继承指的是实现继承（一个类extends另外一个类），不包括接口的继承（一个类实现一个接口或一个接口继承另一个接口）。<strong>继承破坏了封装性</strong>。</li>
+<li>写转发类是乏味的，而且你不得不为每一个接口写一次转发类。只有当一个类的类型真正属于另一个类的时候才适合使用继承。如果你不能确定，那就不应该使用继承。</li>
+<li>使用组合和转发来代替继承。</li>
+</ol>
+<h2 id="第19条-为继承设计文档，否则就禁止继承"><a href="#第19条-为继承设计文档，否则就禁止继承" class="headerlink" title="第19条 为继承设计文档，否则就禁止继承"></a>第19条 为继承设计文档，否则就禁止继承</h2><ol>
+<li>首先，必须为可重写的方法添加明确的文档。换句话说就是，类必须说明它自己使用的那些可被重写的方法。</li>
+<li>一个好的API文档应该仅仅描述方法干了什么，而不应该描述它是如何实现的。一般调用了可被重写方法的描述在文档描述后面，被关键字Implementation Requirements指定，这个关键字由Javadoc的@implSpec生成,这里会描述方法内部的实现。</li>
+<li>构造方法不能直接或间接的调用可被重写的方法。因为一个父类的构造方法先于子类的构造方法被调用，子类重写的方法会在子类构造方法调用之前被调用，如果这个被重写的方法的一些初始化在子类的构造方法中就会产生错误。</li>
+<li>在设计继承的时候Cloneable 和 Serializable接口会带来特殊的困难。如果一个类实现了这样类似的接口，那就会给继承于它的类带来很大的麻烦。所以可以使用特殊的动作来允许子类实现这些接口，而不是强制它们实现这些接口，这写细节讲述在Item 13 和 Item 86.</li>
+<li>很多程序员已经习惯于继承具体的类来实现一些功能，例如通知、同步、限制功能等等。如果一些类实现了包含本质的一些接口，例如Set、List或 Map，就可以通过使用包装类（Item18）的方式提供比继承更好的添加功能的方法。</li>
+</ol>
+<h2 id="第20条-接口优先于继承"><a href="#第20条-接口优先于继承" class="headerlink" title="第20条 接口优先于继承"></a>第20条 接口优先于继承</h2><ol>
+<li>接口是定义mixins类型的理想。选择例如，Comparable允许一个类使用自己的类对象和其他的遵守comparable接口的对象进行排序，像这样的接口被称为一个mixin类型，因为它允许可选的功能被“mixed in”到一个主要的功能上。</li>
+<li>可以结合使用接口和抽象类的优点，使用接口实现抽象的骨架实现类（Skeletal），骨架实现类可以为抽象类提供实现，而不受抽象类做为类型使用时的约束。骨架类其实是个抽象类，它实现了某个接口，但是可以选择地实现它的方法，并不需要全部实现，因为接口本质上也是抽象类。 使用骨架类其实是继承了一个抽象类，又实现了一个上层接口。</li>
+<li>骨架实现是为继承而设计的。接口是允许多种实现的定义类型最好的方法。如果你导出一个重要的接口，你应该为它提供一个骨架实现。</li>
+<li>补充：java8开始，允许接口有default方法和static方法，我们完全可以把原来骨架实现的抽象类里面的方法放到接口中，用default方法来实现。</li>
+</ol>
+<h2 id="第21条-设计接口要向后兼容"><a href="#第21条-设计接口要向后兼容" class="headerlink" title="第21条 设计接口要向后兼容"></a>第21条 设计接口要向后兼容</h2><p>应该尽量避免为现有的接口添加默认方法，除非这是必要的。然而，在创建接口时添加默认方法的实现时很有用的，可以减轻接口实现的负担（Item20）</p>
+<h2 id="第22条-仅仅使用接口来定义类型"><a href="#第22条-仅仅使用接口来定义类型" class="headerlink" title="第22条 仅仅使用接口来定义类型"></a>第22条 仅仅使用接口来定义类型</h2><ol>
+<li>有一种<strong>失败的接口是常量接口</strong>。这样的接口没有包含任何方法，仅仅包含一些static final的常量。</li>
+<li>注意在上面的数字中使用的下划线（_），从Java7开始是合法的使用，添加下划线不会影响数字的值，而且能使数字的可读性更强。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> AVOGADROS_NUMBER =</span><br><span class="line">                <span class="number">6.022_140_857e23</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>通常使用工具类调用常量时要求用类名.常量名例如PhysicalConstants.AVOGADROS_NUMBER.但是如果你大量的使用常量时，可以通过导入工具类来直接使用常量：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.effectivejava.science.PhysicalConstants.*; </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">atoms</span><span class="params">(<span class="keyword">double</span> mols)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> AVOGADROS_NUMBER * mols;</span><br><span class="line"> &#125; ... <span class="comment">// Many more uses of PhysicalConstants justify static import </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接口应该仅被用于定义类型，而不应该用于仅仅导出常量。</p>
+<h2 id="第23条-优先使用类层级结构，减少使用tag标记类"><a href="#第23条-优先使用类层级结构，减少使用tag标记类" class="headerlink" title="第23条 优先使用类层级结构，减少使用tag标记类"></a>第23条 优先使用类层级结构，减少使用tag标记类</h2><p>tag类总是不太恰当的，如果你打算写一个类用tag来区分不同行为，考虑将其替换成类层级关系。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">area</span><span class="params">()</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> radius;</span><br><span class="line">       Circle(<span class="keyword">double</span> radius) &#123; <span class="keyword">this</span>.radius = radius; &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> Math.PI * (radius * radius); &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> length;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> width;</span><br><span class="line">       Rectangle(<span class="keyword">double</span> length, <span class="keyword">double</span> width) &#123;</span><br><span class="line">           <span class="keyword">this</span>.length = length;</span><br><span class="line">           <span class="keyword">this</span>.width = width;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> length * width; &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个类层次修复了刚才提到的所有tag类的缺点。</p>
+<h2 id="第24条-内部类优先设置成静态的"><a href="#第24条-内部类优先设置成静态的" class="headerlink" title="第24条 内部类优先设置成静态的"></a>第24条 内部类优先设置成静态的</h2><ol>
+<li>嵌套类指的是定义在其他类中的类。当类仅仅只对另一个类服务时（而不对其他类服务）才应该被设计成嵌套类。如果一个类对多个类服务，那么它就应该被设计成顶层类。</li>
+<li>如果你声明了一个成员类不需要访问宿主类的对象，那么应该将其声明称static类型的。如果你忘记添加static标志，那么这个类就会隐式的被宿主类对象引用。正如前面说的，这个引用会消耗时间和空间。更严重的是，可能造成宿主对象在达到垃圾回收条件时不能被正常的回收（Item7），这会造成内存泄漏的风险，而且这很难被检查出来，因为这个引用是不可见的。</li>
+<li>在lambdas被添加到Java之前（Chapter6），匿名类是创建小函数对象和执行间断逻辑的首选方案，但是现在lambdas是首选方案（Item42）</li>
+</ol>
+<h2 id="第25条-保持一个源文件只包含一个顶层类"><a href="#第25条-保持一个源文件只包含一个顶层类" class="headerlink" title="第25条 保持一个源文件只包含一个顶层类"></a>第25条 保持一个源文件只包含一个顶层类</h2><p>虽然Java编译器允许你在一个源文件中定义多个顶层类，但是你这么做也没有任何好处，反而会有一些明显的坏处。<strong>主要的坏处是：可能会造成一个类有多种实现。</strong>最终使用哪一种实现依赖于源文件被添加到编译器的先后顺序。</p>
 
           
         
