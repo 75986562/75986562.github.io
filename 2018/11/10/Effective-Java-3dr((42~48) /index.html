@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="第7章 Lambda表达式和流">
-<meta name="keywords" content="Java">
+  <meta name="description" content="第七章 Lambda与流第42条 lambda表达式优于匿名类在某些情况下，编译器将无法确定类型，必须指定它们。 类型推断的规则很复杂。很少有程序员详细了解这些规则，但没关系。 除非它们的存在使你的程序更清晰，否则省略所有lambda参数的类型。 关于类型推断需要注意一点，因为编译器获得了大部分允许它从泛型进行类型推断的类型信息。如果你没有提供这些信息，编译器将无法进行类型推断，你必须在lamb">
+<meta name="keywords" content="Java Lambda">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Effective Java 3dr 第7章 Lambda表达式和流(34~41)">
+<meta property="og:title" content="Effective Java 3dr 第7章 Lambda表达式和流(41~48)">
 <meta property="og:url" content="http://yoursite.com/2018/11/10/Effective-Java-3dr((42~48) /index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="第7章 Lambda表达式和流">
+<meta property="og:description" content="第七章 Lambda与流第42条 lambda表达式优于匿名类在某些情况下，编译器将无法确定类型，必须指定它们。 类型推断的规则很复杂。很少有程序员详细了解这些规则，但没关系。 除非它们的存在使你的程序更清晰，否则省略所有lambda参数的类型。 关于类型推断需要注意一点，因为编译器获得了大部分允许它从泛型进行类型推断的类型信息。如果你没有提供这些信息，编译器将无法进行类型推断，你必须在lamb">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-11-18T15:58:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Effective Java 3dr 第7章 Lambda表达式和流(34~41)">
-<meta name="twitter:description" content="第7章 Lambda表达式和流">
+<meta name="twitter:title" content="Effective Java 3dr 第7章 Lambda表达式和流(41~48)">
+<meta name="twitter:description" content="第七章 Lambda与流第42条 lambda表达式优于匿名类在某些情况下，编译器将无法确定类型，必须指定它们。 类型推断的规则很复杂。很少有程序员详细了解这些规则，但没关系。 除非它们的存在使你的程序更清晰，否则省略所有lambda参数的类型。 关于类型推断需要注意一点，因为编译器获得了大部分允许它从泛型进行类型推断的类型信息。如果你没有提供这些信息，编译器将无法进行类型推断，你必须在lamb">
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Effective Java 3dr 第7章 Lambda表达式和流(34~41) | 萌面超人</title>
+  <title>Effective Java 3dr 第7章 Lambda表达式和流(41~48) | 萌面超人</title>
   
 
 
@@ -332,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Effective Java 3dr 第7章 Lambda表达式和流(34~41)
+          <h1 class="post-title" itemprop="name headline">Effective Java 3dr 第7章 Lambda表达式和流(41~48)
               
             
           </h1>
@@ -426,7 +426,157 @@
 
       
         <hr>
-<h1 id="第7章-Lambda表达式和流"><a href="#第7章-Lambda表达式和流" class="headerlink" title="第7章 Lambda表达式和流"></a>第7章 Lambda表达式和流</h1>
+<h1 id="第七章-Lambda与流"><a href="#第七章-Lambda与流" class="headerlink" title="第七章 Lambda与流"></a>第七章 Lambda与流</h1><h2 id="第42条-lambda表达式优于匿名类"><a href="#第42条-lambda表达式优于匿名类" class="headerlink" title="第42条 lambda表达式优于匿名类"></a>第42条 lambda表达式优于匿名类</h2><p>在某些情况下，编译器将无法确定类型，必须指定它们。 类型推断的规则很复杂。很少有程序员详细了解这些规则，但没关系。 除非它们的存在使你的程序更清晰，否则省略所有lambda参数的类型。</p>
+<p>关于类型推断需要注意一点，因为编译器获得了大部分允许它从泛型进行类型推断的类型信息。如果你没有提供这些信息，编译器将无法进行类型推断，你必须在lambdas中手动指定类型。</p>
+<p>与方法和类不同，lambda没有名称和文档;<strong>如果计算不是自解释的，或者超过几行，则不要将其放入lambda表达式中</strong>。一行代码对于lambda说是理想的，三行代码是合理的最大值。</p>
+<p>Lambda仅限于函数式接口。如果你想创建一个抽象类的实例，你可以使用匿名类来实现，但不能使用lambda。 </p>
+<p>应该很少(如果有的话)序列化一个lambda(或一个匿名类实例)。</p>
+<p>综上所述，从Java8开始，lambda是迄今为止表示小函数对象的最佳方式。<strong>除非必须创建非函数式接口类型的实例，否则不要使用匿名类作为函数对象</strong>。 </p>
+<h2 id="第43条方法引用优于lambda表达式"><a href="#第43条方法引用优于lambda表达式" class="headerlink" title="第43条方法引用优于lambda表达式"></a>第43条方法引用优于lambda表达式</h2><p>使用方法引用的代码段既不比使用lambda的代码片段更短也不清晰，所以更喜欢后者。 </p>
+<p>多方法引用是指静态方法，但有四种方法没有。 其中两个是特定（bound）和任意（unbound）对象方法引用。 在特定对象引用中，接收对象在方法引用中指定。 特定对象引用在本质上与静态引用类似：函数对象与引用的方法具有相同的参数。 在任意对象引用中，接收对象在应用函数对象时通过方法的声明参数之前的附加参数指定。 任意对象引用通常用作流管道（pipelines）中的映射和过滤方法（条目 45）。 最后，对于类和数组，有两种构造方法引用。 构造方法引用用作工厂对象。 下表总结了所有五种方法引用：</p>
+<table>
+<thead>
+<tr>
+<th>方法引用类型</th>
+<th>举例</th>
+<th>等同的Lambda</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Static</td>
+<td>Integer::parseInt</td>
+<td>str -&gt; Integer.parseInt(str)</td>
+</tr>
+<tr>
+<td>Bound</td>
+<td>Instant.now()::isAfter</td>
+<td>Instant then = Instant.now(); t -&gt; then.isAfter(t)</td>
+</tr>
+<tr>
+<td>Unbound</td>
+<td>String::toLowerCase</td>
+<td>str -&gt; str.toLowerCase()</td>
+</tr>
+<tr>
+<td>Class Constructor</td>
+<td>TreeMap&lt;K,V&gt;::new</td>
+<td>() -&gt; new TreeMap&lt;K,V&gt;</td>
+</tr>
+<tr>
+<td>Array Constructor</td>
+<td>int[]::new</td>
+<td>len -&gt; new int[len]</td>
+</tr>
+</tbody>
+</table>
+<p>总之，方法引用通常为lambda提供一个更简洁的选择。 <strong>如果方法引用看起来更简短更清晰，请使用它们；否则，还是坚持lambda。</strong></p>
+<h2 id="第44条-优先使用标准的函数式接口"><a href="#第44条-优先使用标准的函数式接口" class="headerlink" title="第44条 优先使用标准的函数式接口"></a>第44条 优先使用标准的函数式接口</h2><p>在java.util.Function中有43个接口,如果记住了六个基本接口，就可以在需要它们时派生出其余的接口。</p>
+<p>基本接口操作于对象引用类型。<code>Operator</code>接口表示方法的结果和参数类型相同。<code>Predicate</code>接口表示其方法接受一个参数并返回一个布尔值。<code>Function</code>接口表示方法其参数和返回类型不同。<code>Supplier</code>接口表示一个不接受参数和返回值(或“供应”)的方法。最后，<code>Consume</code>r表示该方法接受一个参数而不返回任何东西，本质上就是使用它的参数。六种基本函数式接口概述如下：</p>
+<table>
+<thead>
+<tr>
+<th>接口</th>
+<th>方法</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>UnaryOperator<t></t></td>
+<td>T apply(T t)</td>
+<td>String::toLowerCase</td>
+</tr>
+<tr>
+<td>BinaryOperator<t></t></td>
+<td>T apply(T t1, T t2)</td>
+<td>BigInteger::add</td>
+</tr>
+<tr>
+<td>Predicate<t></t></td>
+<td>boolean test(T t)</td>
+<td>Collection::isEmpty</td>
+</tr>
+<tr>
+<td>Function&lt;T,R&gt;</td>
+<td>R apply(T t)</td>
+<td>Arrays::asList</td>
+</tr>
+<tr>
+<td>Supplier<t></t></td>
+<td>T get()</td>
+<td>Instant::now</td>
+</tr>
+<tr>
+<td>Consumer<t></t></td>
+<td>void accept(T t)</td>
+<td>System.out::println</td>
+</tr>
+</tbody>
+</table>
+<p>在处理基本类型int，long和double的操作上，六个基本接口中还有三个变体。<strong>它们的名字是通过在基本接口前加一个基本类型而得到的</strong>。因此，例如，一个接受int的Predicate是一个IntPredicate，而一个接受两个long值并返回一个long的二元运算符是一个LongBinaryOperator。除Function接口变体通过返回类型进行了参数化，其他变体类型都没有参数化。例如，LongFunction&lt;int[]&gt;使用long类型作为参数并返回了int []类型。</p>
+<p>Function接口还有九个额外的变体，当结果类型为基本类型时使用。源和结果类型总是不同，因为从类型到它自身的函数是UnaryOperator。 <strong>如果源类型和结果类型都是基本类型，则使用带有SrcToResult的前缀Function</strong>，例如LongToIntFunction(六个变体)。如果源是一个基本类型，返回结果是一个对象引用，那么带有<src>ToObj的前缀Function，例如DoubleToObjFunction (三种变体)。</src></p>
+<p><strong>不要试图使用基本的函数式接口来装箱基本类型的包装类而不是基本类型的函数式接口</strong>。虽然它起作用，但它违反了第61条中的建议：“优先使用基本类型而不是基本类型的包装类”。使用装箱基本类型的包装类进行批量操作的性能后果可能是致命的。(内存过载)</p>
+<p>总之，现在Java已经有了lambda表达式，因此必须考虑lambda表达式来设计你的API。 在输入上接受函数式接口类型并在输出中返回它们。 一般来说，最好使用java.util.function.Function中提供的标准接口，但请注意，在相对罕见的情况下，最好编写自己的函数式接口。</p>
+<h2 id="第45条-明智审慎地使用Stream"><a href="#第45条-明智审慎地使用Stream" class="headerlink" title="第45条 明智审慎地使用Stream"></a>第45条 明智审慎地使用Stream</h2><p>管道延迟（lazily）计算求值：计算直到终结操作被调用后才开始，而为了完成终结操作而不需要的数据元素永远不会被计算出来。 </p>
+<p>Stream API流式的（fluent）：：它设计允许所有组成管道的调用被链接到一个表达式中。</p>
+<p>默认情况下，<strong>流管道按顺序(sequentially)运行</strong>。 使管道并行执行就像在管道中的任何流上调用并行方法一样简单，但很少这样做（第48个条目）</p>
+<p>Stream API具有足够的通用性，<strong>实际上任何计算都可以使用Stream执行</strong>。如果使用得当，流可以使程序更短更清晰；如果使用不当，它们会使程序难以阅读和维护。</p>
+<p><strong>在没有显式类型的情况下，仔细命名lambda参数对于流管道的可读性至关重要</strong>。<strong>使用辅助方法对于流管道中的可读性比在迭代代码中更为重要</strong>，因为管道缺少显式类型信息和命名临时变量。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"Hello world!"</span>.chars().forEach(System.out::print);</span><br></pre></td></tr></table></figure>
+<p>你可能希望它打印Hello world!，但如果运行它，发现它打印721011081081113211911111410810033。这是因为“Hello world!”.chars()返回的流的元素不是char值，而是int值，因此调用了print的int重载。无可否认，一个名为chars的方法返回一个int值流是令人困惑的。可以通过强制调用正确的重载来修复该程序:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">"Hello world!"</span>.chars().forEach(x -&gt; System.out.print((<span class="keyword">char</span>) x));</span><br></pre></td></tr></table></figure></p>
+<p>但理想情况下，<strong>应该避免使用流来处理char值</strong>。</p>
+<p>流管道使用<strong>函数对象</strong>(通常为lambdas或方法引用)表示重复计算，而迭代代码使用<strong>代码块</strong>表示重复计算</p>
+<p>从代码块中可以做一些从函数对象中不能做的事情:</p>
+<ol>
+<li>从代码块中，可以读取或修改范围内的任何局部变量; 从lambda中，只能读取最终或有效的最终变量[JLS 4.12.4]，并且无法修改任何局部变量。</li>
+<li>从代码块中，可以从封闭方法返回，中断或继续封闭循环，或抛出声明此方法的任何已检查异常; 从一个lambda你不能做这些事情。</li>
+</ol>
+<p>流可以很容易地做一些事情：</p>
+<ol>
+<li>统一转换元素序列</li>
+<li>过滤元素序列</li>
+<li>使用单个操作组合元素序列(例如添加、连接或计算最小值)</li>
+<li>将元素序列累积到一个集合中，可能通过一些公共属性将它们分组</li>
+<li>在元素序列中搜索满足某些条件的元素</li>
+</ol>
+<p>让我们编写一个程序来打印前20个梅森素数(Mersenne primes)。 梅森素数是一个2p − 1形式的数字。如果p是素数，相应的梅森数可能是素数; 如果是这样的话，那就是梅森素数。 作为我们管道中的初始流，我们需要所有素数。 这里有一个返回该（无限）流的方法。 我们假设使用静态导入来轻松访问BigInteger的静态成员：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> Stream&lt;BigInteger&gt; <span class="title">primes</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">return</span> Stream.iterate(TWO, BigInteger::nextProbablePrime);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>方法的名称（primes）是一个复数名词，描述了流的元素。<strong>强烈建议所有返回流的方法使用(primes)命名</strong>，因为它增强了流管道的可读性。</p>
+<p>该方法使用静态工厂Stream.iterate，它接受两个参数：流中的第一个元素，以及从前一个元素生成流中的下一个元素的函数。 这是打印前20个梅森素数的程序：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    primes().map(p -&gt; TWO.pow(p.intValueExact()).subtract(ONE))</span><br><span class="line">        .filter(mersenne -&gt; mersenne.isProbablePrime(<span class="number">50</span>))</span><br><span class="line">        .limit(<span class="number">20</span>)</span><br><span class="line">        .forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个程序是上面的梅森描述的直接编码：它从素数开始，计算相应的梅森数，过滤掉除素数之外的所有数字（幻数50控制概率素性测试the magic number 50 controls the probabilistic primality test），将得到的流限制为20个元素， 并打印出来。</p>
+<p>总之，有些任务最好使用流来完成，有些任务最好使用迭代来完成。将这两种方法结合起来，可以最好地完成许多任务。对于选择使用哪种方法进行任务，没有硬性规定，但是有一些有用的启发式方法。在许多情况下，使用哪种方法将是清楚的；在某些情况下，则不会很清楚。如果不确定一个任务是通过流还是迭代更好地完成，那么尝试这两种方法，看看哪一种效果更好。</p>
+<h2 id="第46条-优先考虑流中无副作用的函数"><a href="#第46条-优先考虑流中无副作用的函数" class="headerlink" title="第46条 优先考虑流中无副作用的函数"></a>第46条 优先考虑流中无副作用的函数</h2><p>为了获得流提供的可表达性、速度和某些情况下的并行性，你必须采用范式和API。纯函数的结果仅取决于其输入：它不依赖于任何可变状态，也不更新任何状态。为了实现这一点，你传递给流操作的任何函数对象（中间操作和终结操作）都应该没有副作用。</p>
+<p>Java程序员知道如何使用for-each循环，而forEach终结操作是类似的。 但forEach操作是终端操作中最不强大的操作之一，也是最不友好的流操作。 它是明确的迭代，因此不适合并行化。 <strong>forEach操作应仅用于报告流计算的结果，而不是用于执行计算</strong>。有时，将forEach用于其他目的是有意义的，例如将流计算的结果添加到预先存在的集合中。<br>将流的元素收集到真正的集合中的收集器非常简单。有三个这样的收集器:toList()、toSet()和toCollection(collectionFactory)。它们分别返回集合、列表和程序员指定的集合类型。有了这些知识，我们就可以编写一个流管道从我们的频率表中提取出现频率前10个单词的列表。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Pipeline to get a top-ten list of words from a frequency table</span></span><br><span class="line">List&lt;String&gt; topTen = freq.keySet().stream()</span><br><span class="line">    .sorted(comparing(freq::get).reversed())</span><br><span class="line">    .limit(<span class="number">10</span>)</span><br><span class="line">    .collect(toList());</span><br></pre></td></tr></table></figure>
+<p><strong>静态导入收集器的所有成员是一种惯例和明智的做法，因为它使流管道更易于阅读。</strong>  </p>
+<h3 id="toMap"><a href="#toMap" class="headerlink" title="toMap"></a>toMap</h3><ol>
+<li>toMap的两个参数形式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;Artist, Album&gt; topHits = albums.collect(</span><br><span class="line">   toMap(Album::artist, a-&gt;a, maxBy(comparing(Album::sales))));</span><br><span class="line">```     </span><br><span class="line"></span><br><span class="line"><span class="number">2</span>. toMap的三个参数形式</span><br><span class="line">```java</span><br><span class="line"><span class="comment">// Collector to impose last-write-wins policy</span></span><br><span class="line">toMap(keyMapper, valueMapper, (oldVal, newVal) -&gt;newVal)</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<ol start="3">
+<li>toMap的四个参数形式<br>它是一个map工厂，用于指定特定的map实现，例如EnumMap或TreeMap。</li>
+</ol>
+<h3 id="grouping-By"><a href="#grouping-By" class="headerlink" title="grouping By"></a>grouping By</h3><ol>
+<li>该方法返回收集器以生成基于分类器函数(classifier function)将元素分组到类别中的map。 分类器函数接受一个元素并返回它所属的类别。 此类别来用作元素的map的键。 groupingBy方法的最简单版本仅采用分类器并返回一个map，其值是每个类别中所有元素的列表。</li>
+</ol>
+<pre><code class="java">Map&lt;String, Long&gt; freq = words
+    .collect(groupingBy(String::toLowerCase, counting()));
+</code></pre>
+<ol start="2">
+<li>groupingBy的第三个版本允许指定除downstream收集器之外的map工厂。请注意，这种方法违反了标准的可伸缩参数列表模式.</li>
+</ol>
+<p>最后的Collectors中方法是join，它仅对CharSequence实例（如字符串）的流进行操作。 在其无参数形式中，它返回一个简单地连接元素的收集器。 它的一个参数形式采用名为delimiter的单个CharSequence参数，并返回一个连接流元素的收集器，在相邻元素之间插入分隔符。 如果传入逗号作为分隔符，则收集器将返回逗号分隔值字符串（但请注意，如果流中的任何元素包含逗号，则字符串将不明确）。 除了分隔符之外，三个参数形式还带有前缀和后缀。 生成的收集器会生成类似于打印集合时获得的字符串，例如[came, saw, conquered]。</p>
+<p>总之，编程流管道的本质是无副作用的函数对象。 这适用于传递给流和相关对象的所有许多函数对象。<strong>终结操作orEach仅应用于报告流执行的计算结果，而不是用于执行计算。</strong> 为了正确使用流，必须了解收集器。。 最重要的收集器工厂是<strong>toList，toSet，toMap，groupingBy和join</strong>。</p>
+<p>==附流的常用函数（待完善）==</p>
+<h2 id="第47条-优先使用Collection而不是Stream来作为方法的返回类型"><a href="#第47条-优先使用Collection而不是Stream来作为方法的返回类型" class="headerlink" title="第47条 优先使用Collection而不是Stream来作为方法的返回类型"></a>第47条 优先使用Collection而不是Stream来作为方法的返回类型</h2><p>Collection接口是Iterable的子类型，并且具有stream方法，因此它提供迭代和流访问。 因此，Collection或适当的子类型通常是公共序列返回方法的最佳返回类型。 </p>
+<p>Stream.concat方法用于将空列表添加到返回的流中。 还有，flatMap方法（条目 45）用于生成由所有前缀的所有后缀组成的单个流。</p>
+<p>如果返回集合是可行的，请执行此操作。 如果已经拥有集合中的元素，或者序列中的元素数量足够小，可以创建一个新的元素，那么返回一个标准集合，比如ArrayList。 否则，请考虑实现自定义集合</p>
+<h2 id="第48条-谨慎使用流并行"><a href="#第48条-谨慎使用流并行" class="headerlink" title="第48条 谨慎使用流并行"></a>第48条 谨慎使用流并行</h2><p><strong>如果源来自Stream.iterate方法，或者使用中间操作limit方法，并行化管道也不太可能提高其性能</strong>。</p>
+<p>通常，并行性带来的性能收益在<strong>ArrayList、HashMap、HashSet和ConcurrentHashMap实例、数组、int类型范围和long类型</strong>的范围的流上最好。<br>这些数据结构的共同之处在于，它们都可以精确而廉价地分割成任意大小的子程序，这使得在并行线程之间划分工作变得很容易。所有这些数据结构的共同点的另一个重要因素是它们在顺序处理时提供了从良好到<strong>极好的引用位置</strong>。</p>
+<p>使用映射器（mappers），过滤器（filters）和其他程序员提供的不符合其规范的功能对象的管道并行化可能会导致安全故障。例如，传递给Stream的reduce方法操作的累加器（accumulator）和组合器（combiner）函数必须是关联的，非干扰的和无状态的。</p>
+<p>重要的是要记住并行化流是严格的性能优化。 <strong>与任何优化一样，必须在更改之前和之后测试性能，以确保它值得做</strong>（第67项）通常，程序中的所有并行流管道都在公共fork-join池中运行。 单个行为不当的管道可能会损害系统中不相关部分的其他行为。</p>
+<p>总之，甚至不要尝试并行化流管道，除非你有充分的理由相信它将保持计算的正确性并提高其速度。</p>
+
       
     </div>
 
@@ -446,7 +596,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Java/" rel="tag"># Java</a>
+            <a href="/tags/Java-Lambda/" rel="tag"># Java Lambda</a>
           
         </div>
       
@@ -459,8 +609,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/09/Effective-Java-3dr((34~41) /" rel="next" title="Effective Java 3dr 第6章 枚举和注解(34~41)">
-                <i class="fa fa-chevron-left"></i> Effective Java 3dr 第6章 枚举和注解(34~41)
+              <a href="/2018/11/10/Effective-Java-3dr((48~) /" rel="next" title="Effective Java 3dr 第8章 Methods(48~)">
+                <i class="fa fa-chevron-left"></i> Effective Java 3dr 第8章 Methods(48~)
               </a>
             
           </div>
@@ -541,7 +691,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">12</span>
+                    <span class="site-state-item-count">13</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -581,7 +731,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">5</span>
+                      
+                    
+                    <span class="site-state-item-count">6</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
@@ -617,7 +769,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第7章-Lambda表达式和流"><span class="nav-number">1.</span> <span class="nav-text">第7章 Lambda表达式和流</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第七章-Lambda与流"><span class="nav-number">1.</span> <span class="nav-text">第七章 Lambda与流</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第42条-lambda表达式优于匿名类"><span class="nav-number">1.1.</span> <span class="nav-text">第42条 lambda表达式优于匿名类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第43条方法引用优于lambda表达式"><span class="nav-number">1.2.</span> <span class="nav-text">第43条方法引用优于lambda表达式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第44条-优先使用标准的函数式接口"><span class="nav-number">1.3.</span> <span class="nav-text">第44条 优先使用标准的函数式接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第45条-明智审慎地使用Stream"><span class="nav-number">1.4.</span> <span class="nav-text">第45条 明智审慎地使用Stream</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第46条-优先考虑流中无副作用的函数"><span class="nav-number">1.5.</span> <span class="nav-text">第46条 优先考虑流中无副作用的函数</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#toMap"><span class="nav-number">1.5.1.</span> <span class="nav-text">toMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#grouping-By"><span class="nav-number">1.5.2.</span> <span class="nav-text">grouping By</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第47条-优先使用Collection而不是Stream来作为方法的返回类型"><span class="nav-number">1.6.</span> <span class="nav-text">第47条 优先使用Collection而不是Stream来作为方法的返回类型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第48条-谨慎使用流并行"><span class="nav-number">1.7.</span> <span class="nav-text">第48条 谨慎使用流并行</span></a></li></ol></li></ol></div>
             
 
           </div>
