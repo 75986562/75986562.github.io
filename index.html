@@ -506,6 +506,267 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/10/Effective-Java-3dr((48~56) /">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/10/Effective-Java-3dr((48~56) /" itemprop="url">
+                  Effective Java 3rd 第8章 Methods(48~56)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-10 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-10T16:37:30+08:00">2018-11-10</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-18 23:58:30" itemprop="dateModified" datetime="2018-11-18T23:58:30+08:00">2018-11-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第8章-方法"><a href="#第8章-方法" class="headerlink" title="第8章 方法"></a>第8章 方法</h1><h2 id="第49条-检查参数有效性"><a href="#第49条-检查参数有效性" class="headerlink" title="第49条 检查参数有效性"></a>第49条 检查参数有效性</h2><p>总而言之，每次编写方法或构造方法时，都应该考虑对其参数存在哪些限制。 应该记在这些限制，并在方法体的开头使用显式检查来强制执行这些限制。 养成这样做的习惯很重要。在第一次有效性检查失败时，它所需要的少量工作将会得到对应的回报。</p>
+<h2 id="第50条-必要时进行保护性拷贝"><a href="#第50条-必要时进行保护性拷贝" class="headerlink" title="第50条 必要时进行保护性拷贝"></a>第50条 必要时进行保护性拷贝</h2><p>保护性拷贝是在检查参数的有效性（见笫49条）之前进行的，并且有效性检查是针对拷贝之后的对象，而不是针对原始的对象。</p>
+<h2 id="第51条-谨慎设计方法签名"><a href="#第51条-谨慎设计方法签名" class="headerlink" title="第51条 谨慎设计方法签名"></a>第51条 谨慎设计方法签名</h2><ol>
+<li>谨慎地选择方法的名称</li>
+<li>不要过干追求提供便利的方法</li>
+<li>避免过长的参数列表，目标是四个参数，或者更少。<br> 缩短参数列表的方法有：  <ol>
+<li>是把方法分解成多个方法。</li>
+<li>创建辅助类</li>
+<li>采用Builder模式（请见第2 条）</li>
+</ol>
+</li>
+</ol>
+<h2 id="第52条-慎用重载"><a href="#第52条-慎用重载" class="headerlink" title="第52条 慎用重载"></a>第52条 慎用重载</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Broken! - What does this p卤ram print?</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Col</span> <span class="title">l</span> <span class="title">ectionClassifier</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(Set&lt;?&gt; s)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="string">"Set"</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(List&lt;?&gt; <span class="number">1</span>st)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"List"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">publ ic <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Unknown Collection"</span>;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Collection&lt;?&gt;[] collections = &#123;</span><br><span class="line">            <span class="keyword">new</span> HashSet&lt;String&gt;(),</span><br><span class="line">            <span class="keyword">new</span> ArrayList&lt;BigInteger&gt;(),</span><br><span class="line">            <span class="keyword">new</span> HashMap&lt;String, String&gt;().values()</span><br><span class="line">        &#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (Collection&lt;?&gt; c : collections)</span><br><span class="line">        System.out.println(classify(c));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>参数的编译时类型都是相同的：Collection&lt;?&gt;。每次迭代的运行时类型都是不同的，但这并不影响对重载方法的选择。因为该参数的编译时类型为Collection&lt;?&gt;，所以，唯一合适的重载方法是第三个： classify(Collection&lt;?&gt;), 在循环的每次迭代中，都会调用这个重载方法。</p>
+<p>这个程序的行为有悖常理，因为对于重载方法的选择是静态的，而对于被履盖的方法的选择则是动态的。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Wine</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"wine"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparklingWine</span> <span class="keyword">extends</span> <span class="title">Wine</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span> <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"sparkling wine"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Champagne</span> <span class="keyword">extends</span> <span class="title">SparklingWine</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span> <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"champagne"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Overriding</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Wine&gt; wineList = List.of(<span class="keyword">new</span> Wine(), <span class="keyword">new</span> SparklingWine(), <span class="keyword">new</span> Champagne());</span><br><span class="line">        <span class="keyword">for</span> (Wine wine : wineList)</span><br><span class="line">            System.out.println(wine.name());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>正如你所预期的那样，这个程序打印出”wine, sparkling wine和champagne”，尽管在循环的每次迭代中，实例的编译时类型都为Wine。当调用被覆盖的方法时，对象的编译时类型不会影响到哪个方法将被执行； “最为具体的(most specific)”那个覆盖版本总是会得到执行。这与重载的情形相比，对象的运行时类型并不影响“哪个重载版本将被执行”；选择工作是在编译时进行的，完全基于参数的编译时类型。</p>
+<p>安全而保守的菜略是，永远不要导出两个具有相同未数数目的重载方法。如果方法使用可变参数( varargs ),保守的策略是根本不要重载它，除第53条中所述的情形之外。如果对于每一对重载方法，至少有一个对应的参数在两个重载方法中具有“根本不同(radically different)” 的类型。在这种情况下，一组给定的实际参数应用千哪个重载方法上就完全由参数的运行时类型来决定。</p>
+<h2 id="第53条-慎用可变参数"><a href="#第53条-慎用可变参数" class="headerlink" title="第53条 慎用可变参数"></a>第53条 慎用可变参数</h2><p>简而言之，在定义参数数目不定的方法时，可变参数方法是一种很方便的方式，但是它们不应该被过度滥用。</p>
+<h2 id="第54条-返回零长度的数组或集合，而不是null"><a href="#第54条-返回零长度的数组或集合，而不是null" class="headerlink" title="第54条 返回零长度的数组或集合，而不是null"></a>第54条 返回零长度的数组或集合，而不是null</h2><p>简而言之，返回类型为数组或集合的方法没理由返回null , 而不是返回一个零长度的数组或者集合。这种习惯做法（指返回null)很有可能是从C程序设计语言中沿袭过来的，在C语言中，数组长度是与实际的数组分开返回的。在C语言中，如果返回的数组长度为零，再分配一个数组就没有任何好处。</p>
+<h2 id="第55条-明智而审慎地返回optionals类型"><a href="#第55条-明智而审慎地返回optionals类型" class="headerlink" title="第55条 明智而审慎地返回optionals类型"></a>第55条 明智而审慎地返回optionals类型</h2><p>抛出异常花销比较大<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Returns maximum value in collection as an Optional&lt;E&gt;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;E extends Comparable&lt;E&gt;&gt;</span><br><span class="line"><span class="function">Optional&lt;E&gt; <span class="title">max</span><span class="params">(Collection&lt;E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (c.isEmpty())</span><br><span class="line">        <span class="keyword">return</span> Optional.empty();</span><br><span class="line">        </span><br><span class="line">    E result = <span class="keyword">null</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (E e : c)</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span> || e.compareTo(result) &gt; <span class="number">0</span>)</span><br><span class="line">            result = Objects.requireNonNull(e);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Optional.of(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="第56条-遵守普遍接受的命名规则"><a href="#第56条-遵守普遍接受的命名规则" class="headerlink" title="第56条 遵守普遍接受的命名规则"></a>第56条 遵守普遍接受的命名规则</h2><ol>
+<li>包的名称应该是层次状的，用句号分隔每个部分。每个部分都包括小写字母和数字（很少使用数字）。包名称的其余部分应该包括一个或者多个描述该包的组成部分。这些组成部分应该比较简短，通常不超过8个字符。鼓励使用有意义的缩写形式。例如，使用<code>util</code>而不是utilities，只取首字母的缩写形式也是可以接受的，例如<code>awt</code>。</li>
+<li>类和接口的名称，包括枚举和注解类型的名称，都应该包括一个或者多个单词，每个单词的首字母大写,应该尽扯避免用缩写,使用缩写强烈建议采用仅有首字母大写的形式。</li>
+<li>字面惯例的例子</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>标识符类型</th>
+<th>例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>包</td>
+<td>com.google.inject, org.joda. time.format</td>
+</tr>
+<tr>
+<td>类或者接口</td>
+<td>Timer, FutureTask, LinkedHashMap, H1tpServlet</td>
+</tr>
+<tr>
+<td>常量域</td>
+<td>MIN_ VALUE, NEGATIVE_INF!NITY</td>
+</tr>
+<tr>
+<td>方法或者域</td>
+<td>remove, ensureCapacity, getCrc</td>
+</tr>
+<tr>
+<td>局部变量杂</td>
+<td>i, xref, houseNumber</td>
+</tr>
+<tr>
+<td>类型参数</td>
+<td>T, E, K, V, X, Tl, T2</td>
+</tr>
+</tbody>
+</table>
+<ol start="4">
+<li><p>对于返回boolean值的方法，其名称往往以单词”is” 开头。</p>
+</li>
+<li><p>如果方法所在的类是个Bean[JavaBeans],就要强制使用以”get” 或者 “set” 开头的形式。</p>
+</li>
+<li>有些方法的名称值得专门提及。转换对象类型的方法、返回不同类型的独立对象的方法，通常被称为toType, 例如toString和toArray 。</li>
+</ol>
+<h3 id="附-阿里巴巴命名规则"><a href="#附-阿里巴巴命名规则" class="headerlink" title="附 阿里巴巴命名规则"></a>附 阿里巴巴命名规则</h3><ol>
+<li>【强制】代码中的命名均不能以下划线或美元符号开始，也不能以下划线或美元符号结束。<br>反例： <em>name / __name / $Object / name</em> / name$ / Object$</li>
+<li>【强制】代码中的命名严禁使用拼音与英文混合的方式，更不允许直接使用中文的方式。<br>说明：正确的英文拼写和语法可以让阅读者易于理解，避免歧义。注意，即使纯拼音命名方式<br>也要避免采用。<br>正例： alibaba /  taobao /  youku /  hangzhou 等国际通用的名称，可视同英文。<br>反例： DaZhePromotion [ 打折 ] /  getPingfenByName() [ 评分 ] /  int 某变量 = 3</li>
+<li>【强制】类名使用 UpperCamelCase 风格，必须遵从驼峰形式，但以下情形例外： DO /  BO  /<br>DTO /  VO /  AO<br>正例： MarcoPolo /  UserDO /  XmlService /  TcpUdpDeal /  TaPromotion<br>反例： macroPolo /  UserDo /  XMLService /  TCPUDPDeal /  TAPromotion</li>
+<li>【强制】方法名、参数名、成员变量、局部变量都统一使用 lowerCamelCase 风格，必须遵从<br>驼峰形式。<br>正例：  localValue /  getHttpMessage() /  inputUserId</li>
+<li>【强制】常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长。<br>正例： MAX _ STOCK _ COUNT<br>反例： MAX _ COUNT</li>
+<li>【强制】抽象类命名使用 Abstract 或 Base 开头 ； 异常类命名使用 Exception 结尾 ； 测试类<br>命名以它要测试的类的名称开始，以 Test 结尾。</li>
+<li>【强制】中括号是数组类型的一部分，数组定义如下： String[] args;<br>反例：使用 String args[] 的方式来定义。</li>
+<li>【强制】 POJO 类中布尔类型的变量，都不要加 is ，否则部分框架解析会引起序列化错误。<br>反例：定义为基本数据类型 Boolean isDeleted； 的属性，它的方法也是 isDeleted() ， RPC<br>阿里巴巴 Java 开发手册<br>—— 禁止用于商业用途，违者必究—— 2 /35<br>框架在反向解析的时候，“以为”对应的属性名称是 deleted ，导致属性获取不到，进而抛出异<br>常。</li>
+<li>【强制】包名统一使用小写，点分隔符之间有且仅有一个自然语义的英语单词。包名统一使用<br>单数形式，但是类名如果有复数含义，类名可以使用复数形式。<br>正例： 应用工具类包名为 com . alibaba . open . util 、类名为 MessageUtils（ 此规则参考<br>spring 的框架结构 ）</li>
+<li>【强制】杜绝完全不规范的缩写，避免望文不知义。<br>反例： AbstractClass “缩写”命名成 AbsClass；condition “缩写”命名成  condi ，此类随<br>意缩写严重降低了代码的可阅读性。</li>
+<li>【推荐】为了达到代码自解释的目标，任何自定义编程元素在命名时，使用尽量完整的单词<br>组合来表达其意。<br>正例：从远程仓库拉取代码的类命名为 PullCodeFromRemoteRepository。<br>反例：变量 int a; 的随意命名方式。</li>
+<li>【推荐】如果模块、接口、类、方法使用了设计模式，在命名时体现出具体模式。<br>说明：将设计模式体现在名字中，有利于阅读者快速理解架构设计理念。<br>正例： public class OrderFactory;<br>public class LoginProxy;<br>public class ResourceObserver;</li>
+<li>【推荐】接口类中的方法和属性不要加任何修饰符号 （public 也不要加 ） ，保持代码的简洁<br>性，并加上有效的 Javadoc 注释。尽量不要在接口里定义变量，如果一定要定义变量，肯定是<br>与接口方法相关，并且是整个应用的基础常量。</li>
+</ol>
+<p>正例：接口方法签名： void f();<br>接口基础常量表示： String COMPANY = “ alibaba “ ;<br>反例：接口方法定义： public abstract void f();<br>说明： JDK 8 中接口允许有默认实现，那么这个 default 方法，是对所有实现类都有价值的默<br>认实现。</p>
+<p>点评：学习了</p>
+<ol start="14">
+<li><p>接口和实现类的命名有两套规则：<br>） 【强制】对于 Service 和 DAO 类，基于 SOA 的理念，暴露出来的服务一定是接口，内部<br>的实现类用 Impl 的后缀与接口区别。<br>正例： CacheServiceImpl 实现 CacheService 接口。<br>）  【推荐】 如果是形容能力的接口名称，取对应的形容词做接口名 （ 通常是– able 的形式 ） 。<br>正例： AbstractTranslator 实现  Translatable 。</p>
+</li>
+<li><p>【参考】枚举类名建议带上 Enum 后缀，枚举成员名称需要全大写，单词间用下划线隔开。<br>说明：枚举其实就是特殊的常量类，且构造方法被默认强制是私有。<br>正例：枚举名字为 ProcessStatusEnum 的 成员名称： SUCCESS /  UNKOWN _ REASON 。</p>
+</li>
+<li>【参考】各层命名规约：<br>A) Service / DAO 层方法命名规约<br>） 获取单个对象的方法用 get 做前缀。<br>） 获取多个对象的方法用 list 做前缀。<br>） 获取统计值的方法用 count 做前缀。<br>） 插入的方法用 save/insert 做前缀。<br>） 删除的方法用 remove/delete 做前缀。<br>） 修改的方法用 update 做前缀。<br>B) 领域模型命名规约<br>） 数据对象： xxxDO ， xxx 即为数据表名。<br>） 数据传输对象： xxxDTO ， xxx 为业务领域相关的名称。<br>） 展示对象： xxxVO ， xxx 一般为网页名称。<br>） POJO 是 DO / DTO / BO / VO 的统称，禁止命名成 xxxPOJO 。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/10/Effective-Java-3dr((42~48) /">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -526,7 +787,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/2018/11/10/Effective-Java-3dr((42~48) /" itemprop="url">
-                  Effective Java 3dr 第7章 Lambda表达式和流(41~48)
+                  Effective Java 3rd 第7章 Lambda表达式和流(41~48)
                 </a>
               
             
@@ -826,176 +1087,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/10/Effective-Java-3dr((48~) /">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/10/Effective-Java-3dr((48~) /" itemprop="url">
-                  Effective Java 3dr 第8章 Methods(48~)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-10 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-10T16:37:30+08:00">2018-11-10</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-11-18 23:58:30" itemprop="dateModified" datetime="2018-11-18T23:58:30+08:00">2018-11-18</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第八章-Methods"><a href="#第八章-Methods" class="headerlink" title="第八章 Methods"></a>第八章 Methods</h1>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/09/Effective-Java-3dr((34~41) /">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1016,7 +1107,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/2018/11/09/Effective-Java-3dr((34~41) /" itemprop="url">
-                  Effective Java 3dr 第6章 枚举和注解(34~41)
+                  Effective Java 3rd 第6章 枚举和注解(34~41)
                 </a>
               
             
@@ -1455,7 +1546,7 @@
                 
               
 
-              <time title="创建时间：2018-11-08 21:22:17 / 修改时间：21:22:54" itemprop="dateCreated datePublished" datetime="2018-11-08T21:22:17+08:00">2018-11-08</time>
+              <time title="创建时间：2018-11-08 21:22:17 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2018-11-08T21:22:17+08:00">2018-11-08</time>
             
 
             
@@ -1465,6 +1556,24 @@
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -1806,7 +1915,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/2018/11/06/Effective-Java-3dr((26~33)/" itemprop="url">
-                  Effective Java 3dr(26~33)
+                  Effective Java 3rd 第5章 范型(26~33)
                 </a>
               
             
@@ -1903,7 +2012,7 @@
         
           
             <hr>
-<h1 id="第五章-范型"><a href="#第五章-范型" class="headerlink" title="第五章 范型"></a>第五章 范型</h1><h2 id="第26条-不要使用原始类型"><a href="#第26条-不要使用原始类型" class="headerlink" title="第26条 不要使用原始类型"></a>第26条 不要使用原始类型</h2><p>快速回顾一下：<br>Set<object>代表可以存放任何对象类型的set；<br>Set&lt;?&gt;表示可以存放任何未知对象类型的set；<br>Set是原始类型，根据范型系统输出。<br>前两个是安全的，最后一个不是。</object></p>
+<h1 id="第5章-范型"><a href="#第5章-范型" class="headerlink" title="第5章 范型"></a>第5章 范型</h1><h2 id="第26条-不要使用原始类型"><a href="#第26条-不要使用原始类型" class="headerlink" title="第26条 不要使用原始类型"></a>第26条 不要使用原始类型</h2><p>快速回顾一下：<br>Set<object>代表可以存放任何对象类型的set；<br>Set&lt;?&gt;表示可以存放任何未知对象类型的set；<br>Set是原始类型，根据范型系统输出。<br>前两个是安全的，最后一个不是。</object></p>
 <h2 id="第27条-消除-unchecked（未检查）-警告"><a href="#第27条-消除-unchecked（未检查）-警告" class="headerlink" title="第27条 消除 unchecked（未检查） 警告"></a>第27条 消除 unchecked（未检查） 警告</h2><p>当你遇到你不能消除的警告时，如果你能保证被警告的代码类型是什么，就可以使用（也只能使用这种方式）@SuppressWarnings(“unchecked”）注解来消除警告。SuppressWarnings注解可以用在声明任何对象时，例如声明一个变量、方法、结构体或类等。但是永远要保证尽可能小范围的使用SuppressWarnings注解。<br>每次当你使用@SuppressWarnings(“unchecked”)注解时，都应该添加注释说明为什么这么做是安全的。这样做不仅可以使其他人更容易读懂，而且防止别人随意更改代码。</p>
 <h2 id="第28条-消列表优于数组"><a href="#第28条-消列表优于数组" class="headerlink" title="第28条 消列表优于数组"></a>第28条 消列表优于数组</h2><p>首先，数组是协变的（covariant）<br> 这段代码是合法的：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Fails at runtime!</span></span><br><span class="line">Object[] objectArray = <span class="keyword">new</span> Long[<span class="number">1</span>];</span><br><span class="line">objectArray[<span class="number">0</span>] = <span class="string">"I don't fit in"</span>; <span class="comment">// Throws ArrayStoreException</span></span><br></pre></td></tr></table></figure></p>
 <p>但这个不是：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Won't compile!</span></span><br><span class="line">List&lt;Object&gt; ol = <span class="keyword">new</span> ArrayList&lt;Long&gt;(); <span class="comment">// Incompatible types</span></span><br><span class="line">ol.add(<span class="string">"I don't fit in"</span>);</span><br></pre></td></tr></table></figure></p>
@@ -2032,7 +2141,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/2018/11/05/Effective-Java-3dr(15~25)/" itemprop="url">
-                  Effective Java 3dr 第4章 类与接口(15~25)
+                  Effective Java 3rd 第4章 类与接口(15~25)
                 </a>
               
             
@@ -2129,7 +2238,7 @@
         
           
             <hr>
-<h1 id="第四章-类与接口"><a href="#第四章-类与接口" class="headerlink" title="第四章 类与接口"></a>第四章 类与接口</h1><h2 id="第15条-最小化类和类成员的可访问性"><a href="#第15条-最小化类和类成员的可访问性" class="headerlink" title="第15条 最小化类和类成员的可访问性"></a>第15条 最小化类和类成员的可访问性</h2><ol>
+<h1 id="第4章-类与接口"><a href="#第4章-类与接口" class="headerlink" title="第4章 类与接口"></a>第4章 类与接口</h1><h2 id="第15条-最小化类和类成员的可访问性"><a href="#第15条-最小化类和类成员的可访问性" class="headerlink" title="第15条 最小化类和类成员的可访问性"></a>第15条 最小化类和类成员的可访问性</h2><ol>
 <li><p>类的实例字段最好不要设置成public的，同样的建议也适用于static字段，而且这些static字段应该包含原始值或对不可变对象的引用（Item17），如果包含了可变对象那就有了像非final字段一样的缺点：虽然不能修改这个final引用，但是却可以修改引用的对象,这具有灾难性的后果。</p>
 </li>
 <li><p>需要注意的是：<strong>一个长度不为零的数组总是可变（mutable）的</strong>。所以一个类有一个public static final array 字段或者geter方法（accessor）返回一个这样的字段都是不正确的。</p>
@@ -2288,16 +2397,46 @@
                 
               
 
-              <time title="创建时间：2018-11-04 22:14:36 / 修改时间：22:17:13" itemprop="dateCreated datePublished" datetime="2018-11-04T22:14:36+08:00">2018-11-04</time>
+              <time title="创建时间：2018-11-04 22:14:36" itemprop="dateCreated datePublished" datetime="2018-11-04T22:14:36+08:00">2018-11-04</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
               
             
           </span>
 
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -2447,7 +2586,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">2</span>
+                      
+                    
+                    <span class="site-state-item-count">3</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
