@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="第10章 异常第69条 只针对异常的情况才使用异常总而言之，异常(exception)是为了在异常情况下使用而设计的。不要将它们用干普通的控制流，也不要编写迫使它们这么做的API。 第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常Java程序设计语言提供了三种可抛出结构(throwable) : 受检的异常( checked exception ) 、运行时异常( run-time">
+<meta name="keywords" content="Effective Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Effective Java 3rd 第10章 异常(70~78)">
+<meta property="og:url" content="http://yoursite.com/2018/11/16/Effective-Java-3rd第10章(70~78)/index.html">
+<meta property="og:site_name" content="萌面超人">
+<meta property="og:description" content="第10章 异常第69条 只针对异常的情况才使用异常总而言之，异常(exception)是为了在异常情况下使用而设计的。不要将它们用干普通的控制流，也不要编写迫使它们这么做的API。 第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常Java程序设计语言提供了三种可抛出结构(throwable) : 受检的异常( checked exception ) 、运行时异常( run-time">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-11-08T13:20:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Effective Java 3rd 第10章 异常(70~78)">
+<meta name="twitter:description" content="第10章 异常第69条 只针对异常的情况才使用异常总而言之，异常(exception)是为了在异常情况下使用而设计的。不要将它们用干普通的控制流，也不要编写迫使它们这么做的API。 第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常Java程序设计语言提供了三种可抛出结构(throwable) : 受检的异常( checked exception ) 、运行时异常( run-time">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/11/16/Effective-Java-3rd第10章(70~78)/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Effective Java 3rd 第10章 异常(70~78) | 萌面超人</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">萌面超人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+    <a href="/schedule/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+    <a href="/404/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>公益 404</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/16/Effective-Java-3rd第10章(70~78)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Effective Java 3rd 第10章 异常(70~78)
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-16 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-16T16:37:30+08:00">2018-11-16</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<h1 id="第10章-异常"><a href="#第10章-异常" class="headerlink" title="第10章 异常"></a>第10章 异常</h1><h2 id="第69条-只针对异常的情况才使用异常"><a href="#第69条-只针对异常的情况才使用异常" class="headerlink" title="第69条 只针对异常的情况才使用异常"></a>第69条 只针对异常的情况才使用异常</h2><p>总而言之，异常(exception)是为了在异常情况下使用而设计的。不要将它们用干普通的控制流，也不要编写迫使它们这么做的API。</p>
+<h2 id="第70条-对可恢复的情况使用受检异常，对编程错误使用运行时异常"><a href="#第70条-对可恢复的情况使用受检异常，对编程错误使用运行时异常" class="headerlink" title="第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常"></a>第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常</h2><p>Java程序设计语言提供了三种可抛出结构(throwable) : 受检的异常( checked exception ) 、<br>运行时异常( run-time exception ) 和错误( error ) 。</p>
+<p>在决定使用受枪的异常或是未受检的异常时，主要的原则是：<strong>如果期望调用者能够适当地恢复，对于这种情况就应该使用受检的异常</strong>。</p>
+<h2 id="第71条-避免不必要地使用检查过的异常"><a href="#第71条-避免不必要地使用检查过的异常" class="headerlink" title="第71条 避免不必要地使用检查过的异常"></a>第71条 避免不必要地使用检查过的异常</h2><p>在实践中， catch块几乎总是具有断言(assertion)失败的特征。异常受梒的本质并没有为程序员提供任何好处，它反而需要付出努力，还使程序更为复杂。</p>
+<p>被一个方法单独抛出的受检异常，会给程序员带来非常高的额外负担。</p>
+<p>“把受检的异常变成未受梒的异常”的一种方法是，把这个抛出异常的方法分成两个方法，其中第一个方法返回一个boolean,表明是否应该抛出异常。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Invocat,on with checked exception</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    obj.action(args);</span><br><span class="line">&#125; <span class="keyword">catch</span>(TheCheckedException e) &#123;</span><br><span class="line"><span class="comment">// Handle exceptional condition</span></span><br></pre></td></tr></table></figure></p>
+<p>重构为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Invocation with state-testing 毗thod and unchecked exception</span></span><br><span class="line">    <span class="keyword">if</span> (obj. actionPermitted(args)) &#123;</span><br><span class="line">        obj.action(args);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">    <span class="comment">// Handle exceptional condition</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h2 id="第72条-优先使用标准异常"><a href="#第72条-优先使用标准异常" class="headerlink" title="第72条 优先使用标准异常"></a>第72条 优先使用标准异常</h2><p>Java平台类库提供了一组基本的未受梒的异常，它们满足了绝大多数API的异常抛出需要。</p>
+<p>重用现有的异常有多方面的好处：</p>
+<ol>
+<li>最主要的好处是，它使你的API更加易于学习和使用，因为它与程序员已经熟悉的习惯用法是一致的。</li>
+<li>第二个好处是，对干用到这些API的程序而言，<br>它们的可读性会更好，因为它们不会出现很多程序员不熟悉的异常。</li>
+<li>最后（也是最不重要的）一点是，异常类越少，意味若内存印迹(footprint)就越小，装载这些类的时间开销也越少。</li>
+</ol>
+<p>不要直接重用Exception、RuntimeException、Throwable或Error。</p>
+<p>常重用的异常有：</p>
+<ol>
+<li><em>llegalArgumentException</em><br>当调用者传递的参数值不合适的时候，往往就会抛出这个异常。例如，假设一个参数代表了“某个动作的重复次数”，如果程序员给这个参数传递了一个负数，就会抛出这个异常。</li>
+<li><em>IllegalStateException</em><br>如果因为接收对象的状态而使调用非法，通常就会抛出这个异常。例如，如果在某个对象被正确地初始化之前，调用者就企图使用这个对象，就会抛出这个异常。</li>
+<li><em>ConcurrentModificationException</em><br>如果一个对象被设计为专用千单线程或者与外部同步机制配合使用，一旦发现它正在（或已经）袚并发地修改，就应该抛出这个异常。</li>
+<li><em>UnsupportedOperationException</em><br>如果对象不支持所请求的操作，就会抛出这个异常。</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>异常</th>
+<th>使用场合</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IllegalArgumcntException</td>
+<td>非null的参数值不正确</td>
+</tr>
+<tr>
+<td>IllegalStateException</td>
+<td>对于方法调用而言、对象状态不合适</td>
+</tr>
+<tr>
+<td>NullPointerException</td>
+<td>在禁止使用null的情况下参数值为null</td>
+</tr>
+<tr>
+<td>IndexOutOfBoundsException</td>
+<td>数组下标参数值越界</td>
+</tr>
+<tr>
+<td>ConcurrentModificationException</td>
+<td>在禁止井发修改的情况下，检测到对象的并发修改</td>
+</tr>
+<tr>
+<td>UnsupportedOperationException</td>
+<td>对象不支持用户请求的方法</td>
+</tr>
+</tbody>
+</table>
+<h2 id="第73条-抛出与抽象相对应的异常"><a href="#第73条-抛出与抽象相对应的异常" class="headerlink" title="第73条 抛出与抽象相对应的异常"></a>第73条 抛出与抽象相对应的异常</h2><p>如果方法抛出的异常与它所执行的任务没有明显的联系，这种情形将会使人不知所措。为了避免这个问题，史高层的实现应该捕荻低层的异常，同时抛出可以按照高层抽象进行斛释的异常。这种做法被称为异常转译(exception translation )，例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Exception Translation</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    II Use lower-level abstraction to <span class="keyword">do</span> our bidding</span><br><span class="line">    . . .</span><br><span class="line">&#125; <span class="keyword">catch</span>(LowerLevelException e) &#123;</span><br><span class="line">    <span class="keyword">throw</span> <span class="keyword">new</span> HigherlevelException( . . .);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>高层异常的构造器将原因传到支持链(chaining-aware)的超级构造器，因此它最终将被传给Throwable的其中一个运行异常链的构造器，例如Throwable (Throwable):<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Exception with chaining-aware constructor</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">HigherLevelException</span> <span class="keyword">extends</span> <span class="title">Exception</span> </span>&#123;</span><br><span class="line">    HigherlevelException(Throwable cause) &#123;</span><br><span class="line">        <span class="keyword">super</span>(cause);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>总之，如果无法防止或处理来自较低层的异常，则使用异常转换，除非较低层方法碰巧保证其所有异常都适用于较高级别。异常链提供了两方面的优点:它允许您抛出适当的高级异常，同时捕获失败分析的底层原因(项目75)。</p>
+<h2 id="第74条-每个方法抛出的异常都要有文档"><a href="#第74条-每个方法抛出的异常都要有文档" class="headerlink" title="第74条 每个方法抛出的异常都要有文档"></a>第74条 每个方法抛出的异常都要有文档</h2><p><strong>始终要单独地卢明受检的异常，并且利用Javadoc 的<code>@throws</code>标记，准确地记录下抛出每个异常的条件</strong>。<br>如果一个类中的许多方法出于同样的原因而抛出同一个异常，在该类的文档注释中对这个异常建立文档，而不是为每个方法单独建立文档.</p>
+<p>总而言之，要为你编写的每个方法所能抛出的每个异常建立文档。对干未受检和受检的异常，以及对千抽象的和具体的方法也都一样。</p>
+<h2 id="第75条-在细节消息中包含能捕获失败的信息"><a href="#第75条-在细节消息中包含能捕获失败的信息" class="headerlink" title="第75条 在细节消息中包含能捕获失败的信息"></a>第75条 在细节消息中包含能捕获失败的信息</h2><ol>
+<li>要捕获失败，异常的详细消息应该包含导致异常的所有参数和字段的值。</li>
+<li>不要在详细消息中包含密码、加密密钥等。</li>
+</ol>
+<h2 id="第76条-努力使失败保持原子性"><a href="#第76条-努力使失败保持原子性" class="headerlink" title="第76条 努力使失败保持原子性"></a>第76条 努力使失败保持原子性</h2><p>一般而言，失败的方法调用应该使对象保持在被调用之前的状态。</p>
+<ol>
+<li>对于在可变对象上执行操作的方法，获得失败原子性最常见的办法是，在执行操作之前检查参数的有效性（见第49条）</li>
+<li>一种类似的获得失败原子性的办法是，调整计算处理过程的顺序，使得任何可能会失败的计算部分都在对象状态被修改之前发生。</li>
+<li>第三种获得失败原子性的办法远远没有那么常用，做法是编写一段恢复代码( recovery code),由它来拦截操作过程中发生的失败， 以及使对象回滚到操作开始之前的状态上</li>
+<li>最后一种获得失败原子性的办法是，在对象的一份临时拷贝上执行操作，当操作完成之后再用临时拷贝中的结果代替对象的内容。如果数据保存在临时的数据结构中，计算过程会更<br>加迅速，使用这种办法就是件很自然的事。</li>
+</ol>
+<p>一般而言，作为方法规范的一部分，产生的任何异常都应该让对象保持在该方法调用之前的状态。如果违反这条规则， API文档就应该清楚地指明对象将会处千什么样的状态。</p>
+<h2 id="第77条-不要忽略异常"><a href="#第77条-不要忽略异常" class="headerlink" title="第77条 不要忽略异常"></a>第77条 不要忽略异常</h2><p>要忽略一个异常非常容易，只需将方法调用通过try语句包围起来，并包含一个<br>空的catch块：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Empty catch block ignores exception - Highly suspect!</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">&#125; <span class="keyword">catch</span> (SomeException e) &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>空的catch块会使异常达不到应有的目的</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Effective-Java/" rel="tag"># Effective Java</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/14/Effective-Java-3rd第9章(57~69) /" rel="next" title="Effective Java 3rd 第9章 一般编程(48~56)">
+                <i class="fa fa-chevron-left"></i> Effective Java 3rd 第9章 一般编程(48~56)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/11/17/Effective-Java-3rd第11章(79~84)/" rel="prev" title="Effective Java 3rd 第11章 并发(79~84)">
+                Effective Java 3rd 第11章 并发(79~84) <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小华</p>
+              <p class="site-description motion-element" itemprop="description">个人学习博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">3</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第10章-异常"><span class="nav-number">1.</span> <span class="nav-text">第10章 异常</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第69条-只针对异常的情况才使用异常"><span class="nav-number">1.1.</span> <span class="nav-text">第69条 只针对异常的情况才使用异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第70条-对可恢复的情况使用受检异常，对编程错误使用运行时异常"><span class="nav-number">1.2.</span> <span class="nav-text">第70条 对可恢复的情况使用受检异常，对编程错误使用运行时异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第71条-避免不必要地使用检查过的异常"><span class="nav-number">1.3.</span> <span class="nav-text">第71条 避免不必要地使用检查过的异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第72条-优先使用标准异常"><span class="nav-number">1.4.</span> <span class="nav-text">第72条 优先使用标准异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第73条-抛出与抽象相对应的异常"><span class="nav-number">1.5.</span> <span class="nav-text">第73条 抛出与抽象相对应的异常</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第74条-每个方法抛出的异常都要有文档"><span class="nav-number">1.6.</span> <span class="nav-text">第74条 每个方法抛出的异常都要有文档</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第75条-在细节消息中包含能捕获失败的信息"><span class="nav-number">1.7.</span> <span class="nav-text">第75条 在细节消息中包含能捕获失败的信息</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第76条-努力使失败保持原子性"><span class="nav-number">1.8.</span> <span class="nav-text">第76条 努力使失败保持原子性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第77条-不要忽略异常"><span class="nav-number">1.9.</span> <span class="nav-text">第77条 不要忽略异常</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小华</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
