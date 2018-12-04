@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="第11章 并发">
+  <meta name="description" content="第11章 并发第78条 同步访问共享的可变数据为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。 不要使用Thread.stop，因为它本质上是不安全的。 当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可">
 <meta name="keywords" content="Effective Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Java 3rd 第11章 并发(79~84)">
 <meta property="og:url" content="http://yoursite.com/2018/11/17/Effective-Java-3rd第11章(79~84)/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="第11章 并发">
+<meta property="og:description" content="第11章 并发第78条 同步访问共享的可变数据为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。 不要使用Thread.stop，因为它本质上是不安全的。 当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-11-08T13:20:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Java 3rd 第11章 并发(79~84)">
-<meta name="twitter:description" content="第11章 并发">
+<meta name="twitter:description" content="第11章 并发第78条 同步访问共享的可变数据为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。 不要使用Thread.stop，因为它本质上是不安全的。 当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可">
 
 
 
@@ -426,7 +426,56 @@
 
       
         <hr>
-<h1 id="第11章-并发"><a href="#第11章-并发" class="headerlink" title="第11章 并发"></a>第11章 并发</h1>
+<h1 id="第11章-并发"><a href="#第11章-并发" class="headerlink" title="第11章 并发"></a>第11章 并发</h1><h2 id="第78条-同步访问共享的可变数据"><a href="#第78条-同步访问共享的可变数据" class="headerlink" title="第78条 同步访问共享的可变数据"></a>第78条 同步访问共享的可变数据</h2><p>为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。</p>
+<p>不要使用Thread.stop，因为它本质上是不安全的。</p>
+<p>当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可能需要一些技巧。</p>
+<h2 id="第79条-避免过度同步"><a href="#第79条-避免过度同步" class="headerlink" title="第79条 避免过度同步"></a>第79条 避免过度同步</h2><p>依据情况的不同，过度同步可能会导致性能降低、死锁，甚至不确定的行为。</p>
+<p>我们正企图在遍历列表的过程中，将一个元素从列表中删除，这是非法的。</p>
+<p>将外来方法的调用移出同步的代码块来解决（异常和死锁)问题通常并不太困难。可以通过将外来方法的调用移出同步的代码块.事实上，要将外来方法的调用移出同步的代码块，还有一种更好的方法。自从Java 1.5发行版本以来，Java类库就提供了一个并发集合(concurrent collection), 见第81条。CopyOn WriteArrayList这是专门为此定制的。这是Array List的一种变体。<strong>通过重新拷贝整个底层数组，在这里实现所有的写操作</strong>。由干内部数组永远不改动，因此迭代不需要锁定，速度也非常快。如果大量使用，CopyOoWriteArrayList的性能将大受影响，但是对千观察者列表来说却是很好的，因为它们几乎不改动，并且经常被遍历。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;SetObserver&lt;E»observers=</span><br><span class="line"><span class="keyword">new</span> CopyOnWri teArrayL i st&lt;SetObserver&lt;E»();</span><br></pre></td></tr></table></figure></p>
+<p>通常，你应该在同步区域内做尽可能少的工作，如果你必须要执行某个很耗时的动作，则应该设法把这个动作移到同步区域的外面，而不违背第78条中的指导方针。</p>
+<p>如果你在内部同步了类，就可以使用不同的方法来实现高井发性，例如分拆锁(lock splitting)、分离锁(lock striping)和非阻塞(nonblocking)并发控制。如果方法修改了静态域，那么你也必须同步对这个域的访问，即使它往往只用千单个线程。</p>
+<p>简而言之，为了避免死锁和数据破坏，千万不要从同步区域内部调用外来方法。更为一般地讲，要尽址限制同步区域内部的工作县。当你在设计一个可变类的时候，要考虑一下它们是否应该自己完成同步操作。在现在这个多核的时代，这比永远不要过度同步来得更重要。只有当你有足够的理由一定要在内部同步类的时候，才应该这么做，同时还应该将这个决定消楚地写到文档中（见第82条）。</p>
+<h2 id="第80条-优先选择执行器、任务和流，而不是线程"><a href="#第80条-优先选择执行器、任务和流，而不是线程" class="headerlink" title="第80条 优先选择执行器、任务和流，而不是线程"></a>第80条 优先选择执行器、任务和流，而不是线程</h2><p>对于小型程序或负载较轻的服务器，执行器。newCachedThreadPool通常是一个不错的选择，因为它不需要配置，而且通常“做正确的事情”。</p>
+<p>Executor框架被扩展为支持fork-join任务，这些任务由一种称为fork-join池的特殊类型的Executor服务运行。由fork joinask实例表示的fork-join任务可以被分割成更小的子任务，而组成ForkJoinPool的线程不仅可以处理这些任务，还可以相互“窃取”任务，以确保所有线程都处于繁忙状态，从而导致更高的CPU利用率、更高的吞吐量和更低的延迟。编写和调优fork-join任务非常棘手。并行流(Item 48)是在fork连接池之上编写的，假设它们适合当前的任务，则允许您轻松地利用它们的性能优势。</p>
+<h2 id="第81条-并发工具优先于wait和notify"><a href="#第81条-并发工具优先于wait和notify" class="headerlink" title="第81条 并发工具优先于wait和notify"></a>第81条 并发工具优先于wait和notify</h2><p>并发集合为标准的集合接口（如List、Queue和Map)提供了高性能的并发实现。为了提供高并发性，这些实现在内部自己管理同步（见第67条）。因此，并发集合中不可能排除并发活动；将它锁定没有什么作用，只会使程序的速度变慢。</p>
+<p>非不得已，否则应该优先使用ConcurrentHashMap而不是使用Collections.synchronizedMap 或者Hash table。<strong>只要用并发Map替换老式的同步Map,就可以极大地提升井发应用程序的性能</strong>。更一般地，应该优先使用并发梊合，而不是使用外部同步的集合。</p>
+<p>有些集合接口已经通过阻寒操作( blocking operation ) 进行了扩展，它们会一直等待（或者阻寒）到可以成功执行为止。例如，BlockingQueue扩展了Queue接口，并添加了包括take在内的几个方法，它从队列中删除并返回了头元素，如果队列为空，就等待。</p>
+<p><strong>同步器</strong>是一些使线程能够等待另一个线程的对象，允许它们协调动作。最常用的同步器是CountDownLatch和Semaphore。较不常用的是CyclicBarrier和Exchanger 。</p>
+<p><strong>倒计数锁存器</strong>(Countdown Latch)是一次性障碍，允许一个或者多个线程等待一个或者多个其他线程来做某些事情。CountDownLatch的唯一构造器带有一个int类型的参数，这个int参数是指允许所有在等待的线程袚处理之前，必须在锁存器上调用countDown方法的次数。</p>
+<p>对于间歇式的定时，始终应该优先使用System.nanoTime,而不是使用System.currentTimeMills。System.nanoTime更加准确也更加精确，它不受系统的实时时钟的调整所影响。</p>
+<p>下面是使用wait方法的标准模式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The st andard i di0t11 for using the wait 11ethod</span></span><br><span class="line"><span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="keyword">while</span> (&lt;condition does not hold&gt;)</span><br><span class="line">        obj .wait(); <span class="comment">//- (Releases lock, and reacquires on wakeup)</span></span><br><span class="line">    ... <span class="comment">//Perform action appropriate to condition</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>始终应该使用wait循环模式来调用wait方法；永远不要在徙环之外调用wait方法</strong>。把wait调用<br>放在一个循环中，以避免在公有可访问对象上的意外或恶意的通知。</p>
+<p>简而言之，直接使用wait和notify就像用”并发汇编语言”进行编程一样，而java.util.concurrent则提供了更吓级的语官。没有双由在新代码中使用wait和notify,即使有，也是极少的。如果你在维护使用wait和notify的代码，务必确保始终是利用标准的模式从while循环内部调用wait。一般情况下，你应该优先使用notify All,而不是使用notify。如果使用notify,诏一定要小心，以确保程序的活性(liveness) 。</p>
+<h2 id="第82条-线程安全性文档化"><a href="#第82条-线程安全性文档化" class="headerlink" title="第82条 线程安全性文档化"></a>第82条 线程安全性文档化</h2><p>Javadoc并没有在它的输出中包含synchronized修饰符。因为在一个方法声明中出现synchronized修饰符，这是个实现细节，并不是导出的API的一部分。</p>
+<p>一个类为了可被多个线程安全地使用，必须在文档中清楚地说明它所支持的线程安全性级别。</p>
+<p>下面的列表概括了线程安全性的儿种级别。这份列表并没有涵盖所有的可能，而只是些常见的情形：</p>
+<ol>
+<li><strong>不可变的</strong><br> 这个类的实例是不变的。所以，不需要外部的同步。这样的例子包括String,Long和Biglnteger</li>
+<li><strong>无条件的线程安全</strong><br> 这个类的实例是可变的，但是这个类有若足够的内部同步，所以，它的实例可以被并发使用，无儒任何外部同步。其例子包括Random和ConcurrentHashMap 。</li>
+<li><strong>有条件的线程安全</strong><br> 除了有些方法为进行安全的并发使用而带要外部同步之外，这种线程安全级别与无条件的线程安全相同。这样的例子包括Collections.sy nchronized包装返回的集合，它们的迭代器(iterator ) 要求外部同步。</li>
+<li><strong>非线程安全</strong><br> 这个类的实例是可变的。为了并发地使用它们，客户必须利用自己选择的外部同步包围每个方法调用（或者调用序列）。这样的例子包括通用的集合实现，例如ArrayList和HashMap 。</li>
+<li><strong>线程对立的</strong><br> 即使每个方法调用都被外部同步所包围，这个类对于并发使用也是不安全的。线程敌意通常是由于在没有同步的情况下修改静态数据而引起的。没有人故意写第82项:文档线程安全331线程敌对类;此类类通常是由于没有考虑并发性而导致的。当一个类或方法被发现是线程不友好的，它通常是固定的或不赞成的。第78项中的generateSerialNumber方法在没有内部同步的情况下是线程不友好的，如第322页所述。</li>
+</ol>
+<p>这些分类（除了线程对立的之外）粗略对应于《Java Concurrency in Practice 》一书中的<br>线程安全注觥(thread safety annotation) , 分别为<code>Immutable</code>、<code>ThreadSafe</code>和<code>NotThreadsafe</code>。上述分类中无条件和有条件的线程安全类别都涵盖在<code>ThreadSafe</code>注解中了。</p>
+<p>私有对象锁：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Private l ock object i dio11 - thwarts denial-of-service attack</span></span><br><span class="line"><span class="keyword">private</span> ·<span class="keyword">final</span> Object lock= <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">synchroni <span class="title">zed</span><span class="params">(lock)</span> </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>私有锁对象模式只能用在无条件的线程安全类上。有条件的线程安全类不能使用这种模式。私有锁对象模式特别适用于那些专门为继承而设计的类（见第17 条）。</p>
+<p>简而言之，每个类都应该利用字斟句酌的说明或者线程安全注解，渚楚地在文档中说明它的线程安全属性。synchronized修饰符与这个文档毫无关系。有条件的线程安全类必须在文档中指明“哪个方法调用序列需要外部同步，以及在执行这些序列的时候要获得哪把锁”。如果你编写的是无条件的线程安全类，就应该考虑使用私有锁对象来代替同步的方法。这样可以防止客户端程序和子类的不同步干扰，让你能够在后续的版本中灵活地对并发控制采用更加复杂的方法。</p>
+<h2 id="第83条-慎用延迟初始化"><a href="#第83条-慎用延迟初始化" class="headerlink" title="第83条 慎用延迟初始化"></a>第83条 慎用延迟初始化</h2><p>虽然延迟初始化主要是一种优化，但它也可以用来打破类和实例初始化中的有害循环。延迟初始化就像一把双刃剑。它降低了初始化类或者创建实例的开销，却增加了访问被延迟初始化的域的开销。</p>
+<p>当有多个线程时，延迟初始化是需要技巧的。如果两个或者多个线程共享一个延迟初始化的域，采用某种形式的同步是很重要的，否则就可能造成严重的Bug(见第66条）。本条目中讨论的所有初始化方法都是线程安全的。</p>
+<p>在大多数情况下，正常的初始化要优先于延迟初始化。下面是正常初始化的实例域的一个典型声明。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Normal initialization of an instance field</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br></pre></td></tr></table></figure></p>
+<p>如果利用延迟优化来破坏初始化的彼环，就要使用同步访问方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization of instance field - synchronized accessor</span></span><br><span class="line"><span class="keyword">private</span> FieldType field;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (field == <span class="keyword">null</span>)</span><br><span class="line">        field = computeFieldValue();</span><br><span class="line">    <span class="keyword">return</span> field;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果出于性能的考虑而需要对静态域使用延迟初始化，就使用lazy initialization holder class模式。保了类要到被用到的时候才会被初始化.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization holder class idiom for static fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> FieldHolder.field; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>当getFiel~方法第一次被调用时，它第一次读取FieldHolder.field,导致FieldHolder类得到初始化。</p>
+<p>如果出于性能的考虑而需要对实例域使用延迟初始化，就使用双重检查模式。如今，双重检查模式是延迟初始化一个实例域的方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Double-check idiom for lazy initialization of instance fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123; <span class="comment">// First check (no locking)</span></span><br><span class="line">            <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">                result= field;</span><br><span class="line">                <span class="keyword">if</span> (field == <span class="keyword">null</span>) <span class="comment">// Second check (with locking)</span></span><br><span class="line">                    field = result = computeFieldValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>有时候，你可能需要延迟初始化一个可以接受重复初始化的实例域，它就是单重检查模式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Single-check idiom - can cause repeated initialization!</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>)</span><br><span class="line">            field = result = computeFieldValue();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>简而言之，大多数的域应该正常地进行初始化，而不是延迟初始化。如果为了达到性能目标，或者为了破坏有害的初始化循环，而必须延迟初始化一个域，就可以使用相应的延迟初始化方法。对千实例域，就使用双重检查模式, 对于静态域，则使用lazy initialization holder class idiom。对于可以接受重复初始化的实例域，也可以考虑使用单重检查模式 。</p>
+<h2 id="第84条-不要依赖线程调度程序"><a href="#第84条-不要依赖线程调度程序" class="headerlink" title="第84条 不要依赖线程调度程序"></a>第84条 不要依赖线程调度程序</h2><p>任何依赖于<strong>线程调度器</strong>来达到正确性或者性能要求的程序，很有可能都是不可移植的。要编写健壮的、响应良好的、可移植的多线程应用程序，最好的办法是确保可运行线程的平均数址不明显多于处理器的数址。</p>
+<p>线程任务应适当地小并彼此独立，但又不能太小，否则分配开销也会影响性能。</p>
+<p>线程不应该一直处于忙－等( busy-wait ) 的状态，即反复地检查一个共享对象，以等待<br>某些事情发生。</p>
+<p>如果某一个程序不能工作，是因为某些线程无法像其他线程那样获得足够的CPU时间，那么，不要企图通过调用Thread.yield来“修正”该程序，Thread.yield没有可测试的语义，同一个yield调用在一个JVM实现上能提高性能，而在另一个JVM实现上却有可能会更差。</p>
+<p>有一种相关的方法是调整线程优先级(thread priority),同样有类似的警告。线程优先级是Java平台上最不可移植的特征了。</p>
+<p>简而言之，不要让应用程序的正确性依赖于线程调度器。否则，结果得到的应用程序将既不健壮，也不具有可移植性。作为推论，不要依赖Thread.yield或者线程优先级。这些设施仅仅对调度器作些暗示。线程优先级可以用来提高一个已经能够正常工作的程序的服务质县，但永远不应该用来“修正”一个原本并不能工作的程序。</p>
+
       
     </div>
 
@@ -469,7 +518,7 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/11/19/Effective-Java-3rd第12章(85~90) /" rel="prev" title="Effective Java 3rd 第12章 序列化(85~90)">
+              <a href="/2018/11/19/Effective-Java-3rd第12章(85~90)/" rel="prev" title="Effective Java 3rd 第12章 序列化(85~90)">
                 Effective Java 3rd 第12章 序列化(85~90) <i class="fa fa-chevron-right"></i>
               </a>
             
@@ -621,7 +670,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第11章-并发"><span class="nav-number">1.</span> <span class="nav-text">第11章 并发</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第11章-并发"><span class="nav-number">1.</span> <span class="nav-text">第11章 并发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#第78条-同步访问共享的可变数据"><span class="nav-number">1.1.</span> <span class="nav-text">第78条 同步访问共享的可变数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第79条-避免过度同步"><span class="nav-number">1.2.</span> <span class="nav-text">第79条 避免过度同步</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第80条-优先选择执行器、任务和流，而不是线程"><span class="nav-number">1.3.</span> <span class="nav-text">第80条 优先选择执行器、任务和流，而不是线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第81条-并发工具优先于wait和notify"><span class="nav-number">1.4.</span> <span class="nav-text">第81条 并发工具优先于wait和notify</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第82条-线程安全性文档化"><span class="nav-number">1.5.</span> <span class="nav-text">第82条 线程安全性文档化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第83条-慎用延迟初始化"><span class="nav-number">1.6.</span> <span class="nav-text">第83条 慎用延迟初始化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第84条-不要依赖线程调度程序"><span class="nav-number">1.7.</span> <span class="nav-text">第84条 不要依赖线程调度程序</span></a></li></ol></li></ol></div>
             
 
           </div>
