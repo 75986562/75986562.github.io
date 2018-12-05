@@ -108,18 +108,18 @@
 
 
 
-  <meta name="description" content="第12章 序列化">
+  <meta name="description" content="第12章 序列化第85条 尽量不要使用Serializable序列化的一个基本问题是它的攻击面太大而无法保护，在对字节流进行反序列化的过程中，该方法可以执行来自这些类型的任何代码。不可信流的反序列化可能导致远程代码执行(RCE)、拒绝服务(DoS)和一系列其他利用。这些方法称为gadget。多个小工具可以协同使用，形成一个小工具链。有时会发现一个小工具链，它足够强大，允许攻击者在底层硬件上执行任">
 <meta name="keywords" content="Effective Java">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Effective Java 3rd 第12章 序列化(85~90)">
 <meta property="og:url" content="http://yoursite.com/2018/11/19/Effective-Java-3rd第12章(85~90)/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="第12章 序列化">
+<meta property="og:description" content="第12章 序列化第85条 尽量不要使用Serializable序列化的一个基本问题是它的攻击面太大而无法保护，在对字节流进行反序列化的过程中，该方法可以执行来自这些类型的任何代码。不可信流的反序列化可能导致远程代码执行(RCE)、拒绝服务(DoS)和一系列其他利用。这些方法称为gadget。多个小工具可以协同使用，形成一个小工具链。有时会发现一个小工具链，它足够强大，允许攻击者在底层硬件上执行任">
 <meta property="og:locale" content="zh-CN">
 <meta property="og:updated_time" content="2018-11-28T13:20:30.000Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Effective Java 3rd 第12章 序列化(85~90)">
-<meta name="twitter:description" content="第12章 序列化">
+<meta name="twitter:description" content="第12章 序列化第85条 尽量不要使用Serializable序列化的一个基本问题是它的攻击面太大而无法保护，在对字节流进行反序列化的过程中，该方法可以执行来自这些类型的任何代码。不可信流的反序列化可能导致远程代码执行(RCE)、拒绝服务(DoS)和一系列其他利用。这些方法称为gadget。多个小工具可以协同使用，形成一个小工具链。有时会发现一个小工具链，它足够强大，允许攻击者在底层硬件上执行任">
 
 
 
@@ -426,7 +426,74 @@
 
       
         <hr>
-<h1 id="第12章-序列化"><a href="#第12章-序列化" class="headerlink" title="第12章 序列化"></a>第12章 序列化</h1>
+<h2 id="第12章-序列化"><a href="#第12章-序列化" class="headerlink" title="第12章 序列化"></a>第12章 序列化</h2><h2 id="第85条-尽量不要使用Serializable"><a href="#第85条-尽量不要使用Serializable" class="headerlink" title="第85条 尽量不要使用Serializable"></a>第85条 尽量不要使用Serializable</h2><p>序列化的一个基本问题是它的攻击面太大而无法保护，在对字节流进行反序列化的过程中，该方法可以执行来自这些类型的任何代码。不可信流的反序列化可能导致远程代码执行(RCE)、拒绝服务(DoS)和一系列其他利用。这些方法称为gadget。多个小工具可以协同使用，形成一个小工具链。有时会发现一个小工具链，它足够强大，允许攻击者在底层硬件上执行任意本机代码，只给攻击者提交精心设计的字节流进行反序列化的机会。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Deserialization bomb - deserializing this stream takes forever</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">byte</span>[] bomb() &#123;</span><br><span class="line">    Set&lt;Object&gt; root = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    Set&lt;Object&gt; s1 = root;</span><br><span class="line">    Set&lt;Object&gt; s2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">        Set&lt;Object&gt; t1 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        Set&lt;Object&gt; t2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        t1.add(<span class="string">"foo"</span>); <span class="comment">// Make t1 unequal to t2</span></span><br><span class="line">        s1.add(t1); s1.add(t2);</span><br><span class="line">        s2.add(t1); s2.add(t2);</span><br><span class="line">        s1 = t1;</span><br><span class="line">        s2 = t2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> serialize(root); <span class="comment">// Method omitted for brevity</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对象图由201个HashSet实例组成，每个实例包含3个或更少的对象引用。整个流的长度为5744字节，但是在反序列化之前sun就已经耗尽了。问题是反序列化哈希集实例需要计算其元素的哈希码。root哈希集的2个元素本身就是包含2个哈希集元素的哈希集，每个哈希集元素包含2个哈希集元素，依此类推，深度为100层。因此，反序列化集合会导致hashCode方法被调用超过2100次。除了反序列化要花费很长时间之外，反序列化器没有任何出错的迹象。生成的对象很少，堆栈深度是有限的。</p>
+<p>避免序列化被利用的最佳方法是永远不要反序列化任何东西。没有理由在您编写的任何新系统中使用Java序列化。</p>
+<p>有许多其他的跨平台序列化方法，最常用的是以下两个：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>Json</th>
+<th>protobuf</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本质</td>
+<td>基于文本的</td>
+<td>基于二进制的</td>
+</tr>
+<tr>
+<td>优点</td>
+<td>可读性好</td>
+<td>高效</td>
+</tr>
+<tr>
+<td>用途</td>
+<td>完全是一种数据表示</td>
+<td>提供模式(类型)来记录和强制适当的使用</td>
+</tr>
+<tr>
+<td>备注</td>
+<td>对于基于文本的表示非常有效</td>
+<td>提供了一种可供选择的文本表示，以便在需要人类可读性的地方使用(pbtxt)</td>
+</tr>
+</tbody>
+</table>
+<p>总之，序列化是危险的，应该避免。如果您从头开始设计系统，那么可以使用跨平台的结构化数据表示，例如JSON或protobuf。不要反序列化不可信的数据。如果必须这样做，请使用对象反序列化筛选，但要注意，它不能保证阻止所有攻击。避免编写可序列化的类。如果你必须这样做，一定要非常小心。</p>
+<h2 id="第86条-非常谨慎地实现可序列化"><a href="#第86条-非常谨慎地实现可序列化" class="headerlink" title="第86条 非常谨慎地实现可序列化"></a>第86条 非常谨慎地实现可序列化</h2><p>虽然使一个类可被序列化的直接开销非常低，甚至可以忽略不计，但是为了序列化而付出的长期开销往往是实实在在的。实现Serializable 接口而付出的最大代价是，一旦一个类被发布，就大大降低了“改变这个类的实现”的灵活性。如果你接受了默认的序列化形式，这个类中私有的和包级私有的实例域将都变成导出的API的一部分，这不符合“最低限度地访问域”的实践准则（见第15条），从而它就失去了作为信息隐藏工具的有效性。</p>
+<ol>
+<li><strong>序列化会使类的演变受到限制</strong>，这种限制的一个例子与流的唯一标识符(stream unique identifier)有关，通常它也被称为序列版本UID (serial version UID )</li>
+<li><strong>实现Serializable的第二个代价是，它增加了出现Bug和安全漏洞的可能性(第85条)</strong>。无论你是接受了默认的行为，还是覆盖了默认的行为，反序列化机制(deserialization)都是一个“隐藏的构造器”，具备与其他构造器相同的特点。因为反序列化机制中没有显式的构造器，所以你很容易忘记要确保：反序列化过程必须也要保证所有“由真正的构造器建立起来的约束关系”，井且不允许攻击者访问正在构造过程中的对象的内部信息。依靠默认的反序列化机制，很容易使对象的约束关系遭到破坏，以及遭受到非法访问（见第88条）。</li>
+<li><strong>实现Serializable的第三个成本是，它增加了与发布类的新版本相关联的测试负担</strong>。当一个可序列化的类被修订的时候，要检查是否可以在新版本中序列化一个实例，然后在旧版本中反序列化。</li>
+<li><strong>为继承而设计的类(项目19)很少实现可序列化，接口也很少扩展它</strong>。</li>
+<li><strong>内部类(项目24)不应该实现可序列化</strong>。它们使用编译器生成的合成字段存储对封闭实例的引用，并存储来自封闭范围的局部变量值。这些字段如何与类定义对应是未指定的，匿名类和本地类的名称也是未指定的。因此，内部类的默认序列化形式是未定义的。然而，静态成员类可以实现序列化。</li>
+</ol>
+<p>如果一个类将要加入到某个框架中，井且该框架依赖于序列化来实现对象传输或者持久化，对干这个类来说，实现SeriaJizable接口就非常有必要。</p>
+<p>总而言之，实现Serializable的易用性是似是而非的。除非类只在受保护的环境中使用，在这种环境中版本永远不必互操作，服务器永远不会暴露于不受信任的数据，否则实现Serializable是一个需要非常小心的严肃承诺。如果类允许继承，则需要格外小心。</p>
+<h2 id="第87条-考虑使用自定义的序列化形式"><a href="#第87条-考虑使用自定义的序列化形式" class="headerlink" title="第87条 考虑使用自定义的序列化形式"></a>第87条 考虑使用自定义的序列化形式</h2><p>如果没有先认真考虑默认的序列化形式是否合达，则不要贸然接受。</p>
+<p>如果一个对象的物理表示法等同于它的逻辑内容，可能就适合于使用默认的序列化形式。使用默认序列化形式会有以下4个缺点：</p>
+<ol>
+<li>它使这个类的导出API永远地束缚在该类的内部表示法上。</li>
+<li>它会消耗过多的空间</li>
+<li>它会消耗过多的时间。</li>
+<li>它会引起栈溢出。</li>
+</ol>
+<p>论你是否使用默认的序列化形式，当defaultWriteObject方法被调用的时候，每一个未被标记为transient的实例域都会被序列化。因此，每一个可以被标记为transient的实例域都应该做上这样的标记。在决定将一个域做成非transient 的乏前，请一定要确信它的值将是该对象逻辑状态的一部分。当一个实例被反序列化的时候，这些域将被初始化为它们的默认值(default value)：对于对象引用域，默认值为null,对于数值基本域，默认值为o,对于boolean域，默认值为false</p>
+<p>总而言之，当你决定要将一个类做成可序列化的时候（见第86条），讲仔细考虑应该采用什么样的序列化形式。只有当默认的序列化形式能够合理地描述对象的逻辑状态时，才能使用默认的序列化形式；否则就要设计一个自定义的序列化形式，通过它合理地描述对象的状态。你应该分配足够多的时间来设计类的序列化形式，就好像分配足够多的时间来设计它的导出方法一样（见第51条）。正如你无法在将来的版本中去掉导出方法一样，你也不能去掉序列化形式中的域；它们必须被永久地保留下去，以确保序列化兼容性。选择错误的序列化形式对干一个类的复杂性和性能都会有永久的负面影响。</p>
+<h2 id="第88条-保护性地编写readObjct方法"><a href="#第88条-保护性地编写readObjct方法" class="headerlink" title="第88条 保护性地编写readObjct方法"></a>第88条 保护性地编写readObjct方法</h2><p>构造器必须检查其参数的有效性（见第38条），并且在必要的时候对参数进行保护性拷贝（见第39条）。</p>
+<p>总而言之，每当你编写readObject方法的时候，都要这样想：你正在编写一个公有的构造器，无论给它传递什么样的字节流，它都必须产生一个有效的实例。不要假设这个字节流一定代表着一个真正被序列化过的实例。虽然在本条目的例子中，类使用了默认的序列化形式，但是，所有讨论到的有可能发生的问题也同样适用千使用自定义序列化形式的类。下面以摘要的形式给出一些指导方针，有助千编写出更加健壮的readObject方法：</p>
+<ul>
+<li>对于对象引用埮必须保持为私有的类，要保护性地拷贝这些域中的每个对象。不可变类的可变组件就属千这一类别。</li>
+<li>对干任何约束条件，如果检查失败，则抛出一个InvalidObjectException异常。这些检查动作应该跟在所有的保护性拷贝之后。</li>
+<li>如果整个对象图在被反序列化之后必须进行验证，就应该使用Objectlnput Validation接口[JavaSE6, Serialization]。</li>
+<li>无论是直接方式还是间接方式，都不要调用类中任何可被覆盖的方法。</li>
+</ul>
+<h2 id="第89条-若想控制实例，使用Enum比readResolve"><a href="#第89条-若想控制实例，使用Enum比readResolve" class="headerlink" title="第89条 若想控制实例，使用Enum比readResolve"></a>第89条 若想控制实例，使用Enum比readResolve</h2><p>总而言之，你应该尽可能地使用枚举类型来实施实例控制的约束条件。如果做不到，同时又需要一个既可序列化又是实例受控(instance-co?trolled)的类，就必须提供一个readResolver方法，并确保该类的所有实例域都为基本类型，或者是transient的。</p>
+<h2 id="第90条-考虑用序列化代理代替序列化实例"><a href="#第90条-考虑用序列化代理代替序列化实例" class="headerlink" title="第90条 考虑用序列化代理代替序列化实例"></a>第90条 考虑用序列化代理代替序列化实例</h2><p>总而言之，每当你发现自己必须在一个不能被客户端扩展的类上编写readObject或者writeObject方法的时候，就应该考虑使用序列化代理模式。要想稳健地将带有重要约束条件的对象序列化时，这种模式可能是最容易的方法。</p>
+
       
     </div>
 
@@ -617,7 +684,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第12章-序列化"><span class="nav-number">1.</span> <span class="nav-text">第12章 序列化</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#第12章-序列化"><span class="nav-number">1.</span> <span class="nav-text">第12章 序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第85条-尽量不要使用Serializable"><span class="nav-number">2.</span> <span class="nav-text">第85条 尽量不要使用Serializable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第86条-非常谨慎地实现可序列化"><span class="nav-number">3.</span> <span class="nav-text">第86条 非常谨慎地实现可序列化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第87条-考虑使用自定义的序列化形式"><span class="nav-number">4.</span> <span class="nav-text">第87条 考虑使用自定义的序列化形式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第88条-保护性地编写readObjct方法"><span class="nav-number">5.</span> <span class="nav-text">第88条 保护性地编写readObjct方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第89条-若想控制实例，使用Enum比readResolve"><span class="nav-number">6.</span> <span class="nav-text">第89条 若想控制实例，使用Enum比readResolve</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#第90条-考虑用序列化代理代替序列化实例"><span class="nav-number">7.</span> <span class="nav-text">第90条 考虑用序列化代理代替序列化实例</span></a></li></ol></div>
             
 
           </div>
