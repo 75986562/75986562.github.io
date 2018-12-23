@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="第09阶：多线程学习地址2018百战程序员JAVA全系列终结版第09阶：多线程 run()和start()的区别 start：　　用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。       run：　　run()方法只是类的一个普通方法而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条，还是要">
+<meta name="keywords" content="多线程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018第09阶：多线程">
+<meta property="og:url" content="http://yoursite.com/2018/12/08/第09阶：多线程/index.html">
+<meta property="og:site_name" content="萌面超人">
+<meta property="og:description" content="第09阶：多线程学习地址2018百战程序员JAVA全系列终结版第09阶：多线程 run()和start()的区别 start：　　用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。       run：　　run()方法只是类的一个普通方法而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条，还是要">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2018-12-23T13:20:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2018第09阶：多线程">
+<meta name="twitter:description" content="第09阶：多线程学习地址2018百战程序员JAVA全系列终结版第09阶：多线程 run()和start()的区别 start：　　用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。       run：　　run()方法只是类的一个普通方法而已，如果直接调用Run方法，程序中依然只有主线程这一个线程，其程序执行路径还是只有一条，还是要">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/12/08/第09阶：多线程/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>2018第09阶：多线程 | 萌面超人</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">萌面超人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+    <a href="/schedule/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+    <a href="/404/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>公益 404</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/08/第09阶：多线程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">2018第09阶：多线程
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-08 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-08T16:37:30+08:00">2018-12-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-23 21:20:30" itemprop="dateModified" datetime="2018-12-23T21:20:30+08:00">2018-12-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Java/" itemprop="url" rel="index"><span itemprop="name">Java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<h1 id="第09阶：多线程"><a href="#第09阶：多线程" class="headerlink" title="第09阶：多线程"></a>第09阶：多线程</h1><h2 id="学习地址"><a href="#学习地址" class="headerlink" title="学习地址"></a>学习地址</h2><p><a href="https://www.bilibili.com/video/av31434494/?p=3" target="_blank" rel="noopener">2018百战程序员JAVA全系列终结版第09阶：多线程</a></p>
+<h2 id="run-和start-的区别"><a href="#run-和start-的区别" class="headerlink" title="run()和start()的区别"></a>run()和start()的区别</h2><ol>
+<li>start：<br>　　用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。      </li>
+<li>run：<br>　　run()方法只是类的一个普通方法而已，如果直接调用Run方法，<strong>程序中依然只有主线程这一个线程，其程序执行路径还是只有一条</strong>，还是要顺序执行，还是要等待run方法体执行完毕后才可继续执行下面的代码，这样就没有达到写线程的目的。</li>
+</ol>
+<h2 id="匿名类"><a href="#匿名类" class="headerlink" title="匿名类"></a>匿名类</h2><p>如果一个对象只是用一次，可以使用匿名。</p>
+<p>例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建实现类对象</span></span><br><span class="line">StartRun st = <span class="keyword">new</span> StartRun();</span><br><span class="line"><span class="comment">//创建代理类</span></span><br><span class="line">Thread t = <span class="keyword">new</span> Thread(sr);</span><br><span class="line"><span class="comment">//启动</span></span><br><span class="line">t.start();</span><br></pre></td></tr></table></figure></p>
+<p>可以简化为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> StartRun()).start();</span><br></pre></td></tr></table></figure></p>
+<h2 id="Thread类、Runnable接和Callable接口"><a href="#Thread类、Runnable接和Callable接口" class="headerlink" title="Thread类、Runnable接和Callable接口"></a>Thread类、Runnable接和Callable接口</h2><p>推荐使用Runnable接口，好处是：</p>
+<ol>
+<li>接口可以实现多个，突破单继承。</li>
+<li><p>便于共享资源。因为一个线程只能启动一次，通过Thread实现线程时，线程和线程所要执行的任务是捆绑在一起的。而一个任务可以启动多个线程，通过Runnable方式实现的线程，实际是开辟一个线程，将任务传递进去，由此线程执行。</p>
+</li>
+<li><p>Callable接口<br>Callable接口用于juc并发编程</p>
+</li>
+</ol>
+<ul>
+<li>Callable规定的方法是call()，而Runnable规定的方法是run()。</li>
+<li>Callable的任务执行后可返回值，而Runnable的任务是不能返回值的。</li>
+<li>call()方法可抛出异常，而run()方法是不能抛出异常的。</li>
+<li>运行Callable任务可拿到一个Future对象。</li>
+</ul>
+<p>Future<br>    Callable任务返回Future对象。即：Callable和Future一个产生结果，一个拿到结果。Future 表示异步计算的结果。</p>
+<p><a href="https://www.cnblogs.com/felixzh/p/6044371.html" target="_blank" rel="noopener">Callable接口、Runable接口、Future接口</a></p>
+<h2 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h2><p>Lambda推导必须存在类型</p>
+<h2 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h2><p>守护线程只为用户线程服务，JVM不用等待守护线程结束才结束。而JVM默认会等用户线程结束才会结束。</p>
+<h2 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h2><p>同步方法与同步块的区别：</p>
+<p>1.同步方法<br>同步方法锁定的是this对象，不是方法。<br>即有synchronized关键字修饰的方法。由于java的每个对象都有一个内置锁，当用此关键字修饰方法时，内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态。代码如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2.同步代码块<br>即有synchronized关键字修饰的语句块。 被该关键字修饰的语句块会自动被加上内置锁，从而实现同步。代码如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span>(object)&#123; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注：同步是一种高开销的操作，因此应该尽量减少同步的内容。通常没有必要同步整个方法，使用synchronized代码块同步关键代码即可。 </p>
+<h2 id="选区加锁对象"><a href="#选区加锁对象" class="headerlink" title="选区加锁对象"></a>选区加锁对象</h2><p>加锁的时候应该加在大对象上，防止调用对象不是同一个。</p>
+<h2 id="Quartz使用"><a href="#Quartz使用" class="headerlink" title="Quartz使用"></a>Quartz使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 创建Scheduler工厂</span></span><br><span class="line">SchedulerFactory sf = <span class="keyword">new</span> SchedulerFactory();</span><br><span class="line"><span class="comment">//2. 从工厂中获取调度器</span></span><br><span class="line">Scheduler sched = sf.getScheduler();</span><br><span class="line"><span class="comment">//3. 创建JobDetail</span></span><br><span class="line">JobDetail job = newJob(HelloJob.class).withIdentify(<span class="string">"job1"</span>,<span class="string">"group1"</span>).build();</span><br><span class="line"><span class="comment">//时间</span></span><br><span class="line">Date runTime = evenSecondDateAfterNow();</span><br><span class="line"><span class="comment">//4. 触发条件</span></span><br><span class="line">Trigger trigger = newTrigger().withIdentify(<span class="string">"trigger1"</span>,<span class="string">"group1"</span>).start(runTime).build();</span><br><span class="line"><span class="comment">//5. 注册任务</span></span><br><span class="line">sched.schedulerJob(job,trigger);</span><br><span class="line"><span class="comment">//6. 启动</span></span><br><span class="line">sched.start</span><br></pre></td></tr></table></figure>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>只保证数据同步，当数据修改时立即通知其他持有者更新数据。比synchronized开销小，但不保证操作的原子性。已经很少使用了。</p>
+<h2 id="使用double-checking和volatile进行单例设计"><a href="#使用double-checking和volatile进行单例设计" class="headerlink" title="使用double-checking和volatile进行单例设计"></a>使用double-checking和volatile进行单例设计</h2><p>单例模式：套路，在多线程环境下，对外存在一个对象。<br>在懒汉式基础上修改。</p>
+<ol>
+<li>构造器私有化，防止外部创建</li>
+<li>提供私有的静态属性</li>
+<li>提供公共的静态方法<br>静态方法示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DoubleCheckedLocking <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//再次检测，减少不必要的同步。</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">null</span> !== instance)&#123;<span class="keyword">return</span> instance&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">synchronized</span>(DoubleCheckedLocking.class)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == instance)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> DoubleCheckedLocking();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line"></span><br><span class="line">&#125;instance</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="ThreadLoacl"><a href="#ThreadLoacl" class="headerlink" title="ThreadLoacl"></a>ThreadLoacl</h2><p>ThreadLoacl：分析上下文、环境、起点。    </p>
+<ol>
+<li>构造器：哪里调用就属于哪里，找线程体。</li>
+<li>run方法：线程本身的。<br>InheritableThreadLoacl：继承上下文，环境的数据，拷贝一份给线程，起点</li>
+</ol>
+<h2 id="可重入锁"><a href="#可重入锁" class="headerlink" title="可重入锁"></a>可重入锁</h2><p>原理：锁添加计数器，当加锁对象被访问时，判断是否锁定且为当前持有锁对象，否则wait();，是则计数器加1，当计数器为0时说明对象释放锁。</p>
+<h2 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h2><h3 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h3><p>独占锁，会导致其他线程挂起。</p>
+<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>没有锁，失败重试，直到成功。<br>乐观锁实现方式：Compare and Swap 比较并交换。<br>需要读写的内存位置（V）、进行比较的预期原值（A）和拟写入的新值(B)。如果内存位置V的值与预期原值A相匹配，那么处理器会自动将该位置值更新为新值B。否则处理器不做任何操作。CAS有效地说明了“我认为位置V应该包含值A；如果包含该值，则将B放到这个位置；否则，不要更改该位置，只告诉我这个位置现在的值即可。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/多线程/" rel="tag"># 多线程</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/11/19/Effective-Java-3rd第12章(85~90)/" rel="next" title="Effective Java 3rd 第12章 序列化(85~90)">
+                <i class="fa fa-chevron-left"></i> Effective Java 3rd 第12章 序列化(85~90)
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/14/第62阶：jvm虚拟机优化/" rel="prev" title="jvm虚拟机优化">
+                jvm虚拟机优化 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小华</p>
+              <p class="site-description motion-element" itemprop="description">个人学习博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">21</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">10</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第09阶：多线程"><span class="nav-number">1.</span> <span class="nav-text">第09阶：多线程</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#学习地址"><span class="nav-number">1.1.</span> <span class="nav-text">学习地址</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#run-和start-的区别"><span class="nav-number">1.2.</span> <span class="nav-text">run()和start()的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#匿名类"><span class="nav-number">1.3.</span> <span class="nav-text">匿名类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Thread类、Runnable接和Callable接口"><span class="nav-number">1.4.</span> <span class="nav-text">Thread类、Runnable接和Callable接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda"><span class="nav-number">1.5.</span> <span class="nav-text">Lambda</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#守护线程"><span class="nav-number">1.6.</span> <span class="nav-text">守护线程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#synchronized"><span class="nav-number">1.7.</span> <span class="nav-text">synchronized</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#选区加锁对象"><span class="nav-number">1.8.</span> <span class="nav-text">选区加锁对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Quartz使用"><span class="nav-number">1.9.</span> <span class="nav-text">Quartz使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#volatile"><span class="nav-number">1.10.</span> <span class="nav-text">volatile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用double-checking和volatile进行单例设计"><span class="nav-number">1.11.</span> <span class="nav-text">使用double-checking和volatile进行单例设计</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadLoacl"><span class="nav-number">1.12.</span> <span class="nav-text">ThreadLoacl</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#可重入锁"><span class="nav-number">1.13.</span> <span class="nav-text">可重入锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CAS"><span class="nav-number">1.14.</span> <span class="nav-text">CAS</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#悲观锁"><span class="nav-number">1.14.1.</span> <span class="nav-text">悲观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#乐观锁"><span class="nav-number">1.14.2.</span> <span class="nav-text">乐观锁</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小华</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
