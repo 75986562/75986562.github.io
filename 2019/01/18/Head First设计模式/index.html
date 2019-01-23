@@ -108,25 +108,25 @@
 
 
 
-  <meta name="description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
-<meta name="keywords" content="Linux">
+  <meta name="description" content="Head First 设计模式1-4设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式  OO模式观察者模式此种模式中，一个目标物件管理所有相依于它的观察者物件，并且在它本身的状态改变">
+<meta name="keywords" content="Head First设计模式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux查看内存是否充足">
-<meta property="og:url" content="http://yoursite.com/2018/11/08/Linux查看内存是否充足/index.html">
+<meta property="og:title" content="Head First设计模式1-5">
+<meta property="og:url" content="http://yoursite.com/2019/01/18/Head First设计模式/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
+<meta property="og:description" content="Head First 设计模式1-4设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式  OO模式观察者模式此种模式中，一个目标物件管理所有相依于它的观察者物件，并且在它本身的状态改变">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2018-11-08T13:20:30.000Z">
+<meta property="og:updated_time" content="2019-01-23T13:20:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Linux查看内存是否充足">
-<meta name="twitter:description" content="Linux查看内存是否充足一、内存优化检查主要工具  free top vmstat  二、和内存相关的几个指标  平均负载 i/o  三、如何判断linux服务器是否需要添加内存  关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，备注：si是swap Page-ins ,so是swap Page-out 用to">
+<meta name="twitter:title" content="Head First设计模式1-5">
+<meta name="twitter:description" content="Head First 设计模式1-4设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式  OO模式观察者模式此种模式中，一个目标物件管理所有相依于它的观察者物件，并且在它本身的状态改变">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
+  <link rel="canonical" href="http://yoursite.com/2019/01/18/Head First设计模式/">
 
 
 
@@ -136,7 +136,7 @@
   };
 </script>
 
-  <title>Linux查看内存是否充足 | 萌面超人</title>
+  <title>Head First设计模式1-5 | 萌面超人</title>
   
 
 
@@ -315,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Head First设计模式/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小华">
@@ -332,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Linux查看内存是否充足
+          <h1 class="post-title" itemprop="name headline">Head First设计模式1-5
               
             
           </h1>
@@ -357,12 +357,24 @@
                 
               
 
-              <time title="创建时间：2018-11-08 21:22:17 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2018-11-08T21:22:17+08:00">2018-11-08</time>
+              <time title="创建时间：2019-01-18 16:37:30" itemprop="dateCreated datePublished" datetime="2019-01-18T16:37:30+08:00">2019-01-18</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-23 21:20:30" itemprop="dateModified" datetime="2019-01-23T21:20:30+08:00">2019-01-23</time>
               
             
           </span>
@@ -379,7 +391,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
 
                 
                 
@@ -413,22 +425,66 @@
       
 
       
-        <h1 id="Linux查看内存是否充足"><a href="#Linux查看内存是否充足" class="headerlink" title="Linux查看内存是否充足"></a>Linux查看内存是否充足</h1><p><strong>一、内存优化检查主要工具</strong></p>
-<ol>
-<li>free</li>
-<li>top</li>
-<li>vmstat</li>
+        <hr>
+<h1 id="Head-First-设计模式1-4"><a href="#Head-First-设计模式1-4" class="headerlink" title="Head First 设计模式1-4"></a>Head First 设计模式1-4</h1><h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><ol>
+<li>封装变化。 </li>
+<li>面向接口编程而非实现。</li>
+<li>优先使用组合而非继承。 </li>
+<li>为了交互对象之间的松耦合设计而努力。</li>
+<li>类应该对扩展开放，对修改关闭。</li>
+<li>依赖倒置原则，要依赖抽象，不要依赖具体类。</li>
 </ol>
-<p><strong>二、和内存相关的几个指标</strong></p>
-<ol>
-<li>平均负载</li>
-<li>i/o</li>
+<h2 id="模式类型"><a href="#模式类型" class="headerlink" title="模式类型"></a>模式类型</h2><h3 id="类型归集"><a href="#类型归集" class="headerlink" title="类型归集"></a>类型归集</h3><ol>
+<li>OO模式</li>
+<li>观察者模式</li>
+<li>装饰者模式</li>
+<li>工厂模式</li>
+<li>抽象工厂模式</li>
 </ol>
-<p><strong>三、如何判断linux服务器是否需要添加内存</strong></p>
-<p> 关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，<br>备注：si是swap Page-ins ,so是swap Page-out</p>
-<p>用top和free查看到的结果有时候两台服务器的的内存空闲量都差不多，但是服务器的负载却会有着很大的差距，只能通过vmstat的si/so检测，发现是否需要添加内存。</p>
-<p>总结：linux内存没有一个工具的能够准确确定内存的使用量，只能使用vmstat的 si和so参数来判断。</p>
-<p>[root@localhost ~]# vmstat<br>procs | memory | swap| io | system | cpu |<br>—|—|—|—|—|—<br>r  b |swpd   free   buff  cache|si   so |bi    bo  |in   cs |us sy id wa st<br>1  0 |13872 1340816  76 309800 | 0    0 | 4     3  | 3    4 |0 0 99  0  0</p>
+<h3 id="OO模式"><a href="#OO模式" class="headerlink" title="OO模式"></a>OO模式</h3><h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>此种模式中，一个目标物件管理所有相依于它的观察者物件，并且在它本身的状态改变时主动发出通知。</p>
+<h4 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h4><p>策略模式定义了算法族，分别封装起来让他们之间可以相互替换，此模式让算法的变化独立于使用算法的客户。</p>
+<h4 id="setChange-函数"><a href="#setChange-函数" class="headerlink" title="setChange()函数"></a>setChange()函数</h4><p>setChanged()方法可以让你在更新观察者时，有更多的弹性，你可以更<br>适当地通知观察者。让你可以在函数需要的时候再通知，而不是一有变化就通知。</p>
+<h3 id="装饰者模式"><a href="#装饰者模式" class="headerlink" title="装饰者模式"></a>装饰者模式</h3><h4 id="定义"><a href="#定义" class="headerlink" title="定义"></a>定义</h4><p>装饰者模式动态地将责任附加到对象上。若要扩展功能，装饰者提供了比继承更有弹性的替代方案。</p>
+<p>通常装饰者模式是采用抽象类，但是在Java中可以使用接口。尽管如此，通常我们都努力<br>避免修改现有的代码，所以，如果抽象类运作得好好的，还是别去修改它。</p>
+<p>装饰者模式的一个“缺点”：利用装饰者模式，常常造成设计中有大量的小类，数量实在太多，可能会造成使用此API程序员的困扰。</p>
+<h3 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h3><h4 id="简单工厂模式"><a href="#简单工厂模式" class="headerlink" title="简单工厂模式"></a>简单工厂模式</h4><p>简单工厂模式实现了生成产品类的代码跟客户端代码分离，在工厂类中你可以添加所需的生成产品的逻辑代码，但是问题来了，优秀的java代码是符合“开放-封闭”原则的，也就是说对扩展开发，对修改关闭，如果你要加一个产品类C，你就要修改工厂类里面的生成产品的代码，在这里你就要增加if-else判断。对于这个问题，我们的工厂方法模式就可以解决这个问题。</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>隐藏具体实现</li>
+<li>解耦</li>
+<li>简单<br><strong>缺点</strong>：</li>
+<li>扩展麻烦，需要改动现有的代码</li>
+<li>孤注一掷，所有的逻辑都放在一个工厂里面，一旦这个类出现什么问题，那么就全GG </li>
+</ul>
+<h4 id="工厂模式-1"><a href="#工厂模式-1" class="headerlink" title="工厂模式"></a>工厂模式</h4><p>定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。</p>
+<p>产品和工厂分离，它把工厂也抽象出一个接口来；它让一个工厂只负责生产一种产品；</p>
+<p><strong>优点</strong>：</p>
+<ul>
+<li>隐藏具体实现</li>
+<li>解耦</li>
+<li>简单</li>
+<li>扩展方便。</li>
+<li><strong>缺点</strong>：</li>
+<li>增加系统的负担</li>
+<li>代码量剧增</li>
+<li>一个工厂只能生产一个产品</li>
+</ul>
+<h4 id="抽象工厂模式"><a href="#抽象工厂模式" class="headerlink" title="抽象工厂模式"></a>抽象工厂模式</h4><p><strong>优点</strong>：</p>
+<ul>
+<li>隐藏具体实现</li>
+<li>解耦</li>
+<li>简单</li>
+<li>扩展产品结构的时候，多个产品类，只需要写一个工厂类</li>
+</ul>
+<p><strong>缺点</strong>：</p>
+<ul>
+<li>扩展 <code>产品族</code> 很费劲 </li>
+</ul>
+<h4 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h4><p>确保一个类只有一个实例，并提供一个全局访问点。</p>
+<p><strong>关键点：构造函数是私有的</strong></p>
+<p>在计算机系统中，线程池、缓存、日志对象、对话框、打印机、显卡的驱动程序对象常被设计成单例的模式；</p>
+<h5 id="单件模式和全局变量比较"><a href="#单件模式和全局变量比较" class="headerlink" title="单件模式和全局变量比较"></a>单件模式和全局变量比较</h5><p>急切实例化VS,延迟实例化。</p>
+<p>全局变量可以提供全局访问，但是不能确保只有一个实例。全局变量也会变相鼓励开发人员，用许多全局变量指向许多小对象来造成命名空间的污染，单件不鼓励这样的现象，但单件任然可能被滥用。</p>
 
       
     </div>
@@ -449,7 +505,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Linux/" rel="tag"># Linux</a>
+            <a href="/tags/Head-First设计模式/" rel="tag"># Head First设计模式</a>
           
         </div>
       
@@ -462,8 +518,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/11/08/详解tomcat的连接数与线程池/" rel="next" title="详解tomcat的连接数与线程池">
-                <i class="fa fa-chevron-left"></i> 详解tomcat的连接数与线程池
+              <a href="/2019/01/06/线程池原理/" rel="next" title="线程池原理解析">
+                <i class="fa fa-chevron-left"></i> 线程池原理解析
               </a>
             
           </div>
@@ -471,10 +527,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/11/08/Lambda学习-1/" rel="prev" title="Lambda学习(1)">
-                Lambda学习(1) <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -648,7 +700,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Linux查看内存是否充足"><span class="nav-number">1.</span> <span class="nav-text">Linux查看内存是否充足</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Head-First-设计模式1-4"><span class="nav-number">1.</span> <span class="nav-text">Head First 设计模式1-4</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计原则"><span class="nav-number">1.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式类型"><span class="nav-number">1.2.</span> <span class="nav-text">模式类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型归集"><span class="nav-number">1.2.1.</span> <span class="nav-text">类型归集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#OO模式"><span class="nav-number">1.2.2.</span> <span class="nav-text">OO模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#观察者模式"><span class="nav-number">1.2.3.</span> <span class="nav-text">观察者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#策略模式"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">策略模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#setChange-函数"><span class="nav-number">1.2.3.2.</span> <span class="nav-text">setChange()函数</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#装饰者模式"><span class="nav-number">1.2.4.</span> <span class="nav-text">装饰者模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#定义"><span class="nav-number">1.2.4.1.</span> <span class="nav-text">定义</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工厂模式"><span class="nav-number">1.2.5.</span> <span class="nav-text">工厂模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#简单工厂模式"><span class="nav-number">1.2.5.1.</span> <span class="nav-text">简单工厂模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#工厂模式-1"><span class="nav-number">1.2.5.2.</span> <span class="nav-text">工厂模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#抽象工厂模式"><span class="nav-number">1.2.5.3.</span> <span class="nav-text">抽象工厂模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#单例模式"><span class="nav-number">1.2.5.4.</span> <span class="nav-text">单例模式</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#单件模式和全局变量比较"><span class="nav-number">1.2.5.4.1.</span> <span class="nav-text">单件模式和全局变量比较</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div>
             
 
           </div>
