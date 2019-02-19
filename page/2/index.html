@@ -314,6 +314,225 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/06/Effective-Java-3rd第11章(79~84)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/06/Effective-Java-3rd第11章(79~84)/" itemprop="url">
+                  Effective Java 3rd 第11章 并发(79~84)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-06 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-06T16:37:30+08:00">2018-12-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-06 21:49:53" itemprop="dateModified" datetime="2019-01-06T21:49:53+08:00">2019-01-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第11章-并发"><a href="#第11章-并发" class="headerlink" title="第11章 并发"></a>第11章 并发</h1><h2 id="第78条-同步访问共享的可变数据"><a href="#第78条-同步访问共享的可变数据" class="headerlink" title="第78条 同步访问共享的可变数据"></a>第78条 同步访问共享的可变数据</h2><p>为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。</p>
+<p>不要使用Thread.stop，因为它本质上是不安全的。</p>
+<p>当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可能需要一些技巧。</p>
+<h2 id="第79条-避免过度同步"><a href="#第79条-避免过度同步" class="headerlink" title="第79条 避免过度同步"></a>第79条 避免过度同步</h2><p>依据情况的不同，过度同步可能会导致性能降低、死锁，甚至不确定的行为。</p>
+<p>我们正企图在遍历列表的过程中，将一个元素从列表中删除，这是非法的。</p>
+<p>将外来方法的调用移出同步的代码块来解决（异常和死锁)问题通常并不太困难。可以通过将外来方法的调用移出同步的代码块.事实上，要将外来方法的调用移出同步的代码块，还有一种更好的方法。自从Java 1.5发行版本以来，Java类库就提供了一个并发集合(concurrent collection), 见第81条。CopyOn WriteArrayList这是专门为此定制的。这是Array List的一种变体。<strong>通过重新拷贝整个底层数组，在这里实现所有的写操作</strong>。由干内部数组永远不改动，因此迭代不需要锁定，速度也非常快。如果大量使用，CopyOoWriteArrayList的性能将大受影响，但是对千观察者列表来说却是很好的，因为它们几乎不改动，并且经常被遍历。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;SetObserver&lt;E»observers=</span><br><span class="line"><span class="keyword">new</span> CopyOnWri teArrayL i st&lt;SetObserver&lt;E»();</span><br></pre></td></tr></table></figure></p>
+<p>通常，你应该在同步区域内做尽可能少的工作，如果你必须要执行某个很耗时的动作，则应该设法把这个动作移到同步区域的外面，而不违背第78条中的指导方针。</p>
+<p>如果你在内部同步了类，就可以使用不同的方法来实现高井发性，例如分拆锁(lock splitting)、分离锁(lock striping)和非阻塞(nonblocking)并发控制。如果方法修改了静态域，那么你也必须同步对这个域的访问，即使它往往只用千单个线程。</p>
+<p>简而言之，为了避免死锁和数据破坏，千万不要从同步区域内部调用外来方法。更为一般地讲，要尽址限制同步区域内部的工作县。当你在设计一个可变类的时候，要考虑一下它们是否应该自己完成同步操作。在现在这个多核的时代，这比永远不要过度同步来得更重要。只有当你有足够的理由一定要在内部同步类的时候，才应该这么做，同时还应该将这个决定消楚地写到文档中（见第82条）。</p>
+<h2 id="第80条-优先选择执行器、任务和流，而不是线程"><a href="#第80条-优先选择执行器、任务和流，而不是线程" class="headerlink" title="第80条 优先选择执行器、任务和流，而不是线程"></a>第80条 优先选择执行器、任务和流，而不是线程</h2><p>对于小型程序或负载较轻的服务器，执行器。newCachedThreadPool通常是一个不错的选择，因为它不需要配置，而且通常“做正确的事情”。</p>
+<p>Executor框架被扩展为支持fork-join任务，这些任务由一种称为fork-join池的特殊类型的Executor服务运行。由fork joinask实例表示的fork-join任务可以被分割成更小的子任务，而组成ForkJoinPool的线程不仅可以处理这些任务，还可以相互“窃取”任务，以确保所有线程都处于繁忙状态，从而导致更高的CPU利用率、更高的吞吐量和更低的延迟。编写和调优fork-join任务非常棘手。并行流(Item 48)是在fork连接池之上编写的，假设它们适合当前的任务，则允许您轻松地利用它们的性能优势。</p>
+<h2 id="第81条-并发工具优先于wait和notify"><a href="#第81条-并发工具优先于wait和notify" class="headerlink" title="第81条 并发工具优先于wait和notify"></a>第81条 并发工具优先于wait和notify</h2><p>并发集合为标准的集合接口（如List、Queue和Map)提供了高性能的并发实现。为了提供高并发性，这些实现在内部自己管理同步（见第67条）。因此，并发集合中不可能排除并发活动；将它锁定没有什么作用，只会使程序的速度变慢。</p>
+<p>非不得已，否则应该优先使用ConcurrentHashMap而不是使用Collections.synchronizedMap 或者Hash table。<strong>只要用并发Map替换老式的同步Map,就可以极大地提升井发应用程序的性能</strong>。更一般地，应该优先使用并发梊合，而不是使用外部同步的集合。</p>
+<p>有些集合接口已经通过阻寒操作( blocking operation ) 进行了扩展，它们会一直等待（或者阻寒）到可以成功执行为止。例如，BlockingQueue扩展了Queue接口，并添加了包括take在内的几个方法，它从队列中删除并返回了头元素，如果队列为空，就等待。</p>
+<p><strong>同步器</strong>是一些使线程能够等待另一个线程的对象，允许它们协调动作。最常用的同步器是CountDownLatch和Semaphore。较不常用的是CyclicBarrier和Exchanger 。</p>
+<p><strong>倒计数锁存器</strong>(Countdown Latch)是一次性障碍，允许一个或者多个线程等待一个或者多个其他线程来做某些事情。CountDownLatch的唯一构造器带有一个int类型的参数，这个int参数是指允许所有在等待的线程袚处理之前，必须在锁存器上调用countDown方法的次数。</p>
+<p>对于间歇式的定时，始终应该优先使用System.nanoTime,而不是使用System.currentTimeMills。System.nanoTime更加准确也更加精确，它不受系统的实时时钟的调整所影响。</p>
+<p>下面是使用wait方法的标准模式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The st andard i di0t11 for using the wait 11ethod</span></span><br><span class="line"><span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="keyword">while</span> (&lt;condition does not hold&gt;)</span><br><span class="line">        obj .wait(); <span class="comment">//- (Releases lock, and reacquires on wakeup)</span></span><br><span class="line">    ... <span class="comment">//Perform action appropriate to condition</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>始终应该使用wait循环模式来调用wait方法；永远不要在徙环之外调用wait方法</strong>。把wait调用<br>放在一个循环中，以避免在公有可访问对象上的意外或恶意的通知。</p>
+<p>简而言之，直接使用wait和notify就像用”并发汇编语言”进行编程一样，而java.util.concurrent则提供了更吓级的语官。没有双由在新代码中使用wait和notify,即使有，也是极少的。如果你在维护使用wait和notify的代码，务必确保始终是利用标准的模式从while循环内部调用wait。一般情况下，你应该优先使用notify All,而不是使用notify。如果使用notify,诏一定要小心，以确保程序的活性(liveness) 。</p>
+<h2 id="第82条-线程安全性文档化"><a href="#第82条-线程安全性文档化" class="headerlink" title="第82条 线程安全性文档化"></a>第82条 线程安全性文档化</h2><p>Javadoc并没有在它的输出中包含synchronized修饰符。因为在一个方法声明中出现synchronized修饰符，这是个实现细节，并不是导出的API的一部分。</p>
+<p>一个类为了可被多个线程安全地使用，必须在文档中清楚地说明它所支持的线程安全性级别。</p>
+<p>下面的列表概括了线程安全性的儿种级别。这份列表并没有涵盖所有的可能，而只是些常见的情形：</p>
+<ol>
+<li><strong>不可变的</strong><br> 这个类的实例是不变的。所以，不需要外部的同步。这样的例子包括String,Long和Biglnteger</li>
+<li><strong>无条件的线程安全</strong><br> 这个类的实例是可变的，但是这个类有若足够的内部同步，所以，它的实例可以被并发使用，无儒任何外部同步。其例子包括Random和ConcurrentHashMap 。</li>
+<li><strong>有条件的线程安全</strong><br> 除了有些方法为进行安全的并发使用而带要外部同步之外，这种线程安全级别与无条件的线程安全相同。这样的例子包括Collections.sy nchronized包装返回的集合，它们的迭代器(iterator ) 要求外部同步。</li>
+<li><strong>非线程安全</strong><br> 这个类的实例是可变的。为了并发地使用它们，客户必须利用自己选择的外部同步包围每个方法调用（或者调用序列）。这样的例子包括通用的集合实现，例如ArrayList和HashMap 。</li>
+<li><strong>线程对立的</strong><br> 即使每个方法调用都被外部同步所包围，这个类对于并发使用也是不安全的。线程敌意通常是由于在没有同步的情况下修改静态数据而引起的。没有人故意写第82项:文档线程安全331线程敌对类;此类类通常是由于没有考虑并发性而导致的。当一个类或方法被发现是线程不友好的，它通常是固定的或不赞成的。第78项中的generateSerialNumber方法在没有内部同步的情况下是线程不友好的，如第322页所述。</li>
+</ol>
+<p>这些分类（除了线程对立的之外）粗略对应于《Java Concurrency in Practice 》一书中的<br>线程安全注觥(thread safety annotation) , 分别为<code>Immutable</code>、<code>ThreadSafe</code>和<code>NotThreadsafe</code>。上述分类中无条件和有条件的线程安全类别都涵盖在<code>ThreadSafe</code>注解中了。</p>
+<p>私有对象锁：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Private l ock object i dio11 - thwarts denial-of-service attack</span></span><br><span class="line"><span class="keyword">private</span> ·<span class="keyword">final</span> Object lock= <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">synchroni <span class="title">zed</span><span class="params">(lock)</span> </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>私有锁对象模式只能用在无条件的线程安全类上。有条件的线程安全类不能使用这种模式。私有锁对象模式特别适用于那些专门为继承而设计的类（见第17 条）。</p>
+<p>简而言之，每个类都应该利用字斟句酌的说明或者线程安全注解，渚楚地在文档中说明它的线程安全属性。synchronized修饰符与这个文档毫无关系。有条件的线程安全类必须在文档中指明“哪个方法调用序列需要外部同步，以及在执行这些序列的时候要获得哪把锁”。如果你编写的是无条件的线程安全类，就应该考虑使用私有锁对象来代替同步的方法。这样可以防止客户端程序和子类的不同步干扰，让你能够在后续的版本中灵活地对并发控制采用更加复杂的方法。</p>
+<h2 id="第83条-慎用延迟初始化"><a href="#第83条-慎用延迟初始化" class="headerlink" title="第83条 慎用延迟初始化"></a>第83条 慎用延迟初始化</h2><p>虽然延迟初始化主要是一种优化，但它也可以用来打破类和实例初始化中的有害循环。延迟初始化就像一把双刃剑。它降低了初始化类或者创建实例的开销，却增加了访问被延迟初始化的域的开销。</p>
+<p>当有多个线程时，延迟初始化是需要技巧的。如果两个或者多个线程共享一个延迟初始化的域，采用某种形式的同步是很重要的，否则就可能造成严重的Bug(见第66条）。本条目中讨论的所有初始化方法都是线程安全的。</p>
+<p>在大多数情况下，正常的初始化要优先于延迟初始化。下面是正常初始化的实例域的一个典型声明。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Normal initialization of an instance field</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br></pre></td></tr></table></figure></p>
+<p>如果利用延迟优化来破坏初始化的彼环，就要使用同步访问方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization of instance field - synchronized accessor</span></span><br><span class="line"><span class="keyword">private</span> FieldType field;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (field == <span class="keyword">null</span>)</span><br><span class="line">        field = computeFieldValue();</span><br><span class="line">    <span class="keyword">return</span> field;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>如果出于性能的考虑而需要对静态域使用延迟初始化，就使用lazy initialization holder class模式。保了类要到被用到的时候才会被初始化.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization holder class idiom for static fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> FieldHolder.field; &#125;</span><br></pre></td></tr></table></figure></p>
+<p>当getFiel~方法第一次被调用时，它第一次读取FieldHolder.field,导致FieldHolder类得到初始化。</p>
+<p>如果出于性能的考虑而需要对实例域使用延迟初始化，就使用双重检查模式。如今，双重检查模式是延迟初始化一个实例域的方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Double-check idiom for lazy initialization of instance fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123; <span class="comment">// First check (no locking)</span></span><br><span class="line">            <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">                result= field;</span><br><span class="line">                <span class="keyword">if</span> (field == <span class="keyword">null</span>) <span class="comment">// Second check (with locking)</span></span><br><span class="line">                    field = result = computeFieldValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>有时候，你可能需要延迟初始化一个可以接受重复初始化的实例域，它就是单重检查模式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Single-check idiom - can cause repeated initialization!</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>)</span><br><span class="line">            field = result = computeFieldValue();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>简而言之，大多数的域应该正常地进行初始化，而不是延迟初始化。如果为了达到性能目标，或者为了破坏有害的初始化循环，而必须延迟初始化一个域，就可以使用相应的延迟初始化方法。对千实例域，就使用双重检查模式, 对于静态域，则使用lazy initialization holder class idiom。对于可以接受重复初始化的实例域，也可以考虑使用单重检查模式 。</p>
+<h2 id="第84条-不要依赖线程调度程序"><a href="#第84条-不要依赖线程调度程序" class="headerlink" title="第84条 不要依赖线程调度程序"></a>第84条 不要依赖线程调度程序</h2><p>任何依赖于<strong>线程调度器</strong>来达到正确性或者性能要求的程序，很有可能都是不可移植的。要编写健壮的、响应良好的、可移植的多线程应用程序，最好的办法是确保可运行线程的平均数址不明显多于处理器的数址。</p>
+<p>线程任务应适当地小并彼此独立，但又不能太小，否则分配开销也会影响性能。</p>
+<p>线程不应该一直处于忙－等( busy-wait ) 的状态，即反复地检查一个共享对象，以等待<br>某些事情发生。</p>
+<p>如果某一个程序不能工作，是因为某些线程无法像其他线程那样获得足够的CPU时间，那么，不要企图通过调用Thread.yield来“修正”该程序，Thread.yield没有可测试的语义，同一个yield调用在一个JVM实现上能提高性能，而在另一个JVM实现上却有可能会更差。</p>
+<p>有一种相关的方法是调整线程优先级(thread priority),同样有类似的警告。线程优先级是Java平台上最不可移植的特征了。</p>
+<p>简而言之，不要让应用程序的正确性依赖于线程调度器。否则，结果得到的应用程序将既不健壮，也不具有可移植性。作为推论，不要依赖Thread.yield或者线程优先级。这些设施仅仅对调度器作些暗示。线程优先级可以用来提高一个已经能够正常工作的程序的服务质县，但永远不应该用来“修正”一个原本并不能工作的程序。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/05/Effective-Java-3rd第10章(70~78)/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1799,177 +2018,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Lambda和流学习索引/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/Lambda和流学习索引/" itemprop="url">
-                  Lambda和流
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 21:37:52" itemprop="dateCreated datePublished" datetime="2018-11-08T21:37:52+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 17:10:30" itemprop="dateModified" datetime="2019-01-06T17:10:30+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Lambda和流学习目录"><a href="#Lambda和流学习目录" class="headerlink" title="Lambda和流学习目录"></a>Lambda和流学习目录</h1><h2 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h2><h3 id="入门篇"><a href="#入门篇" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://www.cnblogs.com/coprince/p/8692972.html" target="_blank" rel="noopener">Java8 lambda表达式10个示例</a><br><a href="https://blog.csdn.net/qq_37659383/article/details/80210244" target="_blank" rel="noopener">java API中提供的常用的函数式接口</a></p>
-<h2 id="流操作"><a href="#流操作" class="headerlink" title="流操作"></a>流操作</h2><h3 id="入门篇-1"><a href="#入门篇-1" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://blog.csdn.net/u014519461/article/details/77940693" target="_blank" rel="noopener">Java8 常用的Stream流操作</a><br><a href="https://www.jianshu.com/p/98363a966847" target="_blank" rel="noopener">java8 Stream类常用方法总结</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Lambda学习-1/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2202,6 +2250,177 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Lambda和流学习索引/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/08/Lambda和流学习索引/" itemprop="url">
+                  Lambda和流
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-08 21:37:52" itemprop="dateCreated datePublished" datetime="2018-11-08T21:37:52+08:00">2018-11-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-06 17:10:30" itemprop="dateModified" datetime="2019-01-06T17:10:30+08:00">2019-01-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Lambda和流学习目录"><a href="#Lambda和流学习目录" class="headerlink" title="Lambda和流学习目录"></a>Lambda和流学习目录</h1><h2 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h2><h3 id="入门篇"><a href="#入门篇" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://www.cnblogs.com/coprince/p/8692972.html" target="_blank" rel="noopener">Java8 lambda表达式10个示例</a><br><a href="https://blog.csdn.net/qq_37659383/article/details/80210244" target="_blank" rel="noopener">java API中提供的常用的函数式接口</a></p>
+<h2 id="流操作"><a href="#流操作" class="headerlink" title="流操作"></a>流操作</h2><h3 id="入门篇-1"><a href="#入门篇-1" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://blog.csdn.net/u014519461/article/details/77940693" target="_blank" rel="noopener">Java8 常用的Stream流操作</a><br><a href="https://www.jianshu.com/p/98363a966847" target="_blank" rel="noopener">java8 Stream类常用方法总结</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2360,228 +2579,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/详解tomcat的连接数与线程池/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/详解tomcat的连接数与线程池/" itemprop="url">
-                  详解tomcat的连接数与线程池
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 20:51:30 / 修改时间：20:57:57" itemprop="dateCreated datePublished" datetime="2018-11-08T20:51:30+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>文章来源：<a href="https://www.cnblogs.com/kismetv/p/7806063.html" target="_blank" rel="noopener">https://www.cnblogs.com/kismetv/p/7806063.html</a></p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>在使用tomcat时，经常会遇到连接数、线程数之类的配置问题，要真正理解这些概念，必须先了解Tomcat的连接器（Connector）。</p>
-<p>在前面的文章 详解Tomcat配置文件server.xml中写到过：Connector的主要功能，是接收连接请求，创建Request和Response对象用于和请求端交换数据；然后分配线程让Engine（也就是Servlet容器）来处理这个请求，并把产生的Request和Response对象传给Engine。当Engine处理完请求后，也会通过Connector将响应返回给客户端。</p>
-<p>可以说，Servlet容器处理请求，是需要Connector进行调度和控制的，Connector是Tomcat处理请求的主干，因此Connector的配置和使用对Tomcat的性能有着重要的影响。这篇文章将从Connector入手，讨论一些与Connector有关的重要问题，包括NIO/BIO模式、线程池、连接数等。</p>
-<p>根据协议的不同，Connector可以分为HTTP Connector、AJP Connector等，本文只讨论HTTP Connector。</p>
-<h1 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h1><p>一、Nio、Bio、APR</p>
-<pre><code>1、Connector的protocol
-
-2、如何选择protocol
-
-3、BIO/NIO有何不同
-</code></pre><p>二、3个参数：acceptCount、maxConnections、maxThreads</p>
-<pre><code>1、acceptCount
-
-2、maxConnections
-
-3、maxThreads
-
-4、参数设置
-</code></pre><p>三、线程池Executor</p>
-<p>四、查看当前状态</p>
-<pre><code>1、连接数
-
-2、线程
-</code></pre><p>参考文献</p>
-<h1 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h1><h2 id="一、Nio、Bio、APR"><a href="#一、Nio、Bio、APR" class="headerlink" title="一、Nio、Bio、APR"></a>一、Nio、Bio、APR</h2><h3 id="1、Connector的protocol"><a href="#1、Connector的protocol" class="headerlink" title="1、Connector的protocol"></a>1、Connector的protocol</h3><p>Connector在处理HTTP请求时，会使用不同的protocol。不同的Tomcat版本支持的protocol不同，其中最典型的protocol包括BIO、NIO和APR（Tomcat7中支持这3种，Tomcat8增加了对NIO2的支持，而到了Tomcat8.5和Tomcat9.0，则去掉了对BIO的支持）。</p>
-<p>BIO是Blocking IO，顾名思义是阻塞的IO；NIO是Non-blocking IO，则是非阻塞的IO。而APR是Apache Portable Runtime，是Apache可移植运行库，利用本地库可以实现高可扩展性、高性能；Apr是在Tomcat上运行高并发应用的首选模式，但是需要安装apr、apr-utils、tomcat-native等包。</p>
-<h3 id="2、如何指定protocol"><a href="#2、如何指定protocol" class="headerlink" title="2、如何指定protocol"></a>2、如何指定protocol</h3><p>Connector使用哪种protocol，可以通过<connector>元素中的protocol属性进行指定，也可以使用默认值。</connector></p>
-<p>指定的protocol取值及对应的协议如下：</p>
-<p>HTTP/1.1：默认值，使用的协议与Tomcat版本有关<br>org.apache.coyote.http11.Http11Protocol：BIO<br>org.apache.coyote.http11.Http11NioProtocol：NIO<br>org.apache.coyote.http11.Http11Nio2Protocol：NIO2<br>org.apache.coyote.http11.Http11AprProtocol：APR<br>如果没有指定protocol，则使用默认值HTTP/1.1，其含义如下：在Tomcat7中，自动选取使用BIO或APR（如果找到APR需要的本地库，则使用APR，否则使用BIO）；在Tomcat8中，自动选取使用NIO或APR（如果找到APR需要的本地库，则使用APR，否则使用NIO）。</p>
-<h3 id="3、BIO-NIO有何不同"><a href="#3、BIO-NIO有何不同" class="headerlink" title="3、BIO/NIO有何不同"></a>3、BIO/NIO有何不同</h3><p>无论是BIO，还是NIO，Connector处理请求的大致流程是一样的：</p>
-<p><strong>在accept队列中接收连接（当客户端向服务器发送请求时，如果客户端与OS完成三次握手建立了连接，则OS将该连接放入accept队列）；在连接中获取请求的数据，生成request；调用servlet容器处理请求；返回response</strong>。为了便于后面的说明，首先明确一下连接与请求的关系：连接是TCP层面的（传输层），对应socket；请求是HTTP层面的（应用层），必须依赖于TCP的连接实现；一个TCP连接中可能传输多个HTTP请求。</p>
-<p>在BIO实现的Connector中，处理请求的主要实体是JIoEndpoint对象。JIoEndpoint维护了Acceptor和Worker：Acceptor接收socket，然后从Worker线程池中找出空闲的线程处理socket，如果worker线程池没有空闲线程，则Acceptor将阻塞。其中Worker是Tomcat自带的线程池，如果通过<executor>配置了其他线程池，原理与Worker类似。</executor></p>
-<p>在NIO实现的Connector中，处理请求的主要实体是NIoEndpoint对象。NIoEndpoint中除了包含Acceptor和Worker外，还是用了Poller，处理流程如下图所示（图片来源：<a href="http://gearever.iteye.com/blog/1844203）。" target="_blank" rel="noopener">http://gearever.iteye.com/blog/1844203）。</a><br><img src="https://images2017.cnblogs.com/blog/1174710/201711/1174710-20171108203711513-1728828893.png" alt="image"></p>
-<p>Acceptor接收socket后，不是直接使用Worker中的线程处理请求，而是先将请求发送给了Poller，而Poller是实现NIO的关键。Acceptor向Poller发送请求通过队列实现，使用了典型的生产者-消费者模式。在Poller中，维护了一个Selector对象；当Poller从队列中取出socket后，注册到该Selector中；然后通过遍历Selector，找出其中可读的socket，并使用Worker中的线程处理相应请求。与BIO类似，Worker也可以被自定义的线程池代替。</p>
-<p>通过上述过程可以看出，在NIoEndpoint处理请求的过程中，无论是Acceptor接收socket，还是线程处理请求，使用的仍然是阻塞方式；但在“读取socket并交给Worker中的线程”的这个过程中，使用非阻塞的NIO实现，这是NIO模式与BIO模式的最主要区别（其他区别对性能影响较小，暂时略去不提）。而这个区别，在并发量较大的情形下可以带来Tomcat效率的显著提升：</p>
-<p>目前大多数HTTP请求使用的是长连接（HTTP/1.1默认keep-alive为true），而长连接意味着，一个TCP的socket在当前请求结束后，如果没有新的请求到来，socket不会立马释放，而是等timeout后再释放。如果使用BIO，“读取socket并交给Worker中的线程”这个过程是阻塞的，也就意味着在socket等待下一个请求或等待释放的过程中，处理这个socket的工作线程会一直被占用，无法释放；因此Tomcat可以同时处理的socket数目不能超过最大线程数，性能受到了极大限制。而使用NIO，“读取socket并交给Worker中的线程”这个过程是非阻塞的，当socket在等待下一个请求或等待释放时，并不会占用工作线程，因此Tomcat可以同时处理的socket数目远大于最大线程数，并发性能大大提高。</p>
-<h2 id="二、3个参数：acceptCount、maxConnections、maxThreads"><a href="#二、3个参数：acceptCount、maxConnections、maxThreads" class="headerlink" title="二、3个参数：acceptCount、maxConnections、maxThreads"></a>二、3个参数：acceptCount、maxConnections、maxThreads</h2><p>再回顾一下Tomcat处理请求的过程：在accept队列中接收连接（当客户端向服务器发送请求时，如果客户端与OS完成三次握手建立了连接，则OS将该连接放入accept队列）；在连接中获取请求的数据，生成request；调用servlet容器处理请求；返回response。</p>
-<p>相对应的，Connector中的几个参数功能如下：</p>
-<h3 id="1、acceptCount"><a href="#1、acceptCount" class="headerlink" title="1、acceptCount"></a>1、acceptCount</h3><p>accept队列的长度；当accept队列中连接的个数达到acceptCount时，队列满，进来的请求一律被拒绝。默认值是100。</p>
-<h3 id="2、maxConnections"><a href="#2、maxConnections" class="headerlink" title="2、maxConnections"></a>2、maxConnections</h3><p>Tomcat在任意时刻接收和处理的最大连接数。当Tomcat接收的连接数达到maxConnections时，Acceptor线程不会读取accept队列中的连接；这时accept队列中的线程会一直阻塞着，直到Tomcat接收的连接数小于maxConnections。如果设置为-1，则连接数不受限制。</p>
-<p>默认值与连接器使用的协议有关：NIO的默认值是10000，APR/native的默认值是8192，而BIO的默认值为maxThreads（如果配置了Executor，则默认值是Executor的maxThreads）。</p>
-<p>在windows下，APR/native的maxConnections值会自动调整为设置值以下最大的1024的整数倍；如设置为2000，则最大值实际是1024。</p>
-<h3 id="3、maxThreads"><a href="#3、maxThreads" class="headerlink" title="3、maxThreads"></a>3、maxThreads</h3><p>请求处理线程的最大数量。默认值是200（Tomcat7和8都是的）。如果该Connector绑定了Executor，这个值会被忽略，因为该Connector将使用绑定的Executor，而不是内置的线程池来执行任务。</p>
-<p>maxThreads规定的是最大的线程数目，并不是实际running的CPU数量；实际上，maxThreads的大小比CPU核心数量要大得多。这是因为，处理请求的线程真正用于计算的时间可能很少，大多数时间可能在阻塞，如等待数据库返回数据、等待硬盘读写数据等。因此，在某一时刻，只有少数的线程真正的在使用物理CPU，大多数线程都在等待；因此线程数远大于物理核心数才是合理的。</p>
-<p>换句话说，Tomcat通过使用比CPU核心数量多得多的线程数，可以使CPU忙碌起来，大大提高CPU的利用率。</p>
-<h3 id="4、参数设置"><a href="#4、参数设置" class="headerlink" title="4、参数设置"></a>4、参数设置</h3><p>（1）maxThreads的设置既与应用的特点有关，也与服务器的CPU核心数量有关。通过前面介绍可以知道，maxThreads数量应该远大于CPU核心数量；而且CPU核心数越大，maxThreads应该越大；应用中CPU越不密集（IO越密集），maxThreads应该越大，以便能够充分利用CPU。当然，maxThreads的值并不是越大越好，如果maxThreads过大，那么CPU会花费大量的时间用于线程的切换，整体效率会降低。</p>
-<p>（2）maxConnections的设置与Tomcat的运行模式有关。如果tomcat使用的是BIO，那么maxConnections的值应该与maxThreads一致；如果tomcat使用的是NIO，那么类似于Tomcat的默认值，maxConnections值应该远大于maxThreads。</p>
-<p>（3）通过前面的介绍可以知道，虽然tomcat同时可以处理的连接数目是maxConnections，但服务器中可以同时接收的连接数为maxConnections+acceptCount 。acceptCount的设置，与应用在连接过高情况下希望做出什么反应有关系。如果设置过大，后面进入的请求等待时间会很长；如果设置过小，后面进入的请求立马返回connection refused。</p>
-<h2 id="三、线程池Executor"><a href="#三、线程池Executor" class="headerlink" title="三、线程池Executor"></a>三、线程池Executor</h2><p>Executor元素代表Tomcat中的线程池，可以由其他组件共享使用；要使用该线程池，组件需要通过executor属性指定该线程池。</p>
-<p>Executor是Service元素的内嵌元素。一般来说，使用线程池的是Connector组件；为了使Connector能使用线程池，Executor元素应该放在Connector前面。Executor与Connector的配置举例如下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;Executor name=<span class="string">"tomcatThreadPool"</span> namePrefix =<span class="string">"catalina-exec-"</span> maxThreads=<span class="string">"150"</span> minSpareThreads=<span class="string">"4"</span> /&gt;</span><br><span class="line">&lt;Connector executor=<span class="string">"tomcatThreadPool"</span> port=<span class="string">"8080"</span> protocol=<span class="string">"HTTP/1.1"</span> connectionTimeout=<span class="string">"20000"</span> redirectPort=<span class="string">"8443"</span> acceptCount=<span class="string">"1000"</span> /&gt;</span><br></pre></td></tr></table></figure>
-<p>Executor的主要属性包括：</p>
-<p>name：该线程池的标记<br>maxThreads：线程池中最大活跃线程数，默认值200（Tomcat7和8都是）<br>minSpareThreads：线程池中保持的最小线程数，最小值是25<br>maxIdleTime：线程空闲的最大时间，当空闲超过该值时关闭线程（除非线程数小于minSpareThreads），单位是ms，默认值60000（1分钟）<br>daemon：是否后台线程，默认值true<br>threadPriority：线程优先级，默认值5<br>namePrefix：线程名字的前缀，线程池中线程名字为：namePrefix+线程编号</p>
-<h2 id="四、查看当前状态"><a href="#四、查看当前状态" class="headerlink" title="四、查看当前状态"></a>四、查看当前状态</h2><p>上面介绍了Tomcat连接数、线程数的概念以及如何设置，下面说明如何查看服务器中的连接数和线程数。</p>
-<p>查看服务器的状态，大致分为两种方案：（1）使用现成的工具，（2）直接使用Linux的命令查看。</p>
-<p>现成的工具，如JDK自带的jconsole工具可以方便的查看线程信息（此外还可以查看CPU、内存、类、JVM基本信息等），Tomcat自带的manager，收费工具New Relic等。下图是jconsole查看线程信息的界面：<br><img src="https://images2017.cnblogs.com/blog/1174710/201711/1174710-20171108204908856-1788241471.png" alt="image"></p>
-<p>下面说一下如何通过Linux命令行，查看服务器中的连接数和线程数。</p>
-<p>1、连接数<br>假设Tomcat接收http请求的端口是8083，则可以使用如下语句查看连接情况：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">netstat –nat | grep 8083</span><br></pre></td></tr></table></figure>
-<p>结果如下所示：</p>
-<p><img src="https://images2017.cnblogs.com/blog/1174710/201711/1174710-20171108205043325-1785419465.png" alt="image"></p>
-<p>可以看出，有一个连接处于listen状态，监听请求；除此之外，还有4个已经建立的连接（ESTABLISHED）和2个等待关闭的连接（CLOSE_WAIT）。</p>
-<p>2、线程<br>ps命令可以查看进程状态，如执行如下命令：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps –e | grep java</span><br></pre></td></tr></table></figure>
-<p>结果如下图：</p>
-<p><img src="https://images2017.cnblogs.com/blog/1174710/201711/1174710-20171108205102403-750285056.png" alt="image"></p>
-<p>可以看到，只打印了一个进程的信息；27989是线程id，java是指执行的java命令。这是因为启动一个tomcat，内部所有的工作都在这一个进程里完成，包括主线程、垃圾回收线程、Acceptor线程、请求处理线程等等。</p>
-<p>通过如下命令，可以看到该进程内有多少个线程；其中，nlwp含义是number of light-weight process。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps –o nlwp 27989</span><br></pre></td></tr></table></figure></p>
-<p>可以看到，该进程内部有73个线程；但是73并没有排除处于idle状态的线程。要想获得真正在running的线程数量，可以通过以下语句完成：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -eLo pid ,stat | grep 27989 | grep running | wc -l</span><br></pre></td></tr></table></figure>
-<p>其中ps -eLo pid ,stat可以找出所有线程，并打印其所在的进程号和线程当前的状态；两个grep命令分别筛选进程号和线程状态；wc统计个数。其中，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps -eLo pid ,stat | grep 27989</span><br></pre></td></tr></table></figure></p>
-<p>输出的结果如下：</p>
-<p><img src="https://images2017.cnblogs.com/blog/1174710/201711/1174710-20171108205116559-949248660.png" alt="image"></p>
-<p> 图中只截图了部分结果；Sl表示大多数线程都处于空闲状态。</p>
-<h1 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h1><p>Tomcat 7.0官方文档</p>
-<p>Tomcat 8.0官方文档</p>
-<p>Tomcat 8.5官方文档</p>
-<p>Tomcat maxThreads maxConnections acceptCount参数说明</p>
-<p>tomcat架构分析(connector BIO 实现)</p>
-<p>tomcat架构分析 (connector NIO 实现)</p>
-<p>Why is the tomcat default thread pool size so large?</p>
-<p>Howto find Tomcat current thread count</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2629,7 +2626,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2656,7 +2653,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>

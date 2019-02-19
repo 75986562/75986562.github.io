@@ -314,6 +314,203 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/JAVA类加载和反射介绍/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/02/19/JAVA类加载和反射介绍/" itemprop="url">
+                  JAVA类加载和反射介绍
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-02-19 21:37:30" itemprop="dateCreated datePublished" datetime="2019-02-19T21:37:30+08:00">2019-02-19</time>
+            
+
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/JAVA/" itemprop="url" rel="index"><span itemprop="name">JAVA</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="JAVA类加载和反射介绍"><a href="#JAVA类加载和反射介绍" class="headerlink" title="JAVA类加载和反射介绍"></a>JAVA类加载和反射介绍</h1><h2 id="JAVA类加载和反射简介"><a href="#JAVA类加载和反射简介" class="headerlink" title="JAVA类加载和反射简介"></a>JAVA类加载和反射简介</h2><p>简单的来说，反射机制指的是程序在运行时能够获取自身的信息。在java中，只要给定类的名字，那么就可以通过反射机制来获得类的所有信息.</p>
+<p>那么反射是什么呢？当我们的程序在运行时，需要动态的加载一些类这些类可能之前用不到所以不用加载到jvm，而是在运行时根据需要才加载。</p>
+<h3 id="Java反射的作用"><a href="#Java反射的作用" class="headerlink" title="Java反射的作用"></a>Java反射的作用</h3><p>在Java运行时环境中，对于任意一个类，可以知道这个类有哪些属性和方法。对于任意一个对象，可以调用它的任意一个方法。这种动态获取类的信息以及动态调用对象的方法的功能来自于Java 语言的反射（Reflection）机制。</p>
+<blockquote>
+<p>Java的反射机制的实现要借助于4个类：class，Constructor，Field，Method;</p>
+</blockquote>
+<p>Java 反射机制主要提供了以下功能：  </p>
+<ol>
+<li>在运行时判断任意一个对象所属的类。</li>
+<li>在运行时构造任意一个类的对象。</li>
+<li>在运行时判断任意一个类所具有的成员变量和方法。</li>
+<li>在运行时调用任意一个对象的方法</li>
+</ol>
+<p>其中class代表的是类对象，Constructor－类的构造器对象，Field－类的属性对象，Method－类的方法对象，通过这四个对象我们可以粗略的看到一个类的各个组成部分。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-4face8109e0d52ef5894c41c69e4ec6b_hd.jpg" alt="反射详解图"></p>
+<p>当程序主动使用某个类时，若该类还没加载到内存中，系统会通过<strong>加载，链接，初始化</strong>3个操作对类进行初始化。<br>类字面常量”,class”创建Class对象的引用时，不会自动地初始化该Class对象，准备工作包含3个步骤:</p>
+<ol>
+<li><strong>加载</strong>:由类加载器执行，该步骤查找字节码,并从这些字节码中创建一个Class对象</li>
+<li><strong>链接</strong>:在链接阶段将验证类中的字节码，为静态域分配存储空间，并且如果必需的话，将解析这个类创建的对其他类的所有引用。</li>
+<li><strong>初始化</strong>:如果该类有超类，则对其初始化，执行静态初始化器和静态初始化块</li>
+</ol>
+<h3 id="类的初始化时机"><a href="#类的初始化时机" class="headerlink" title="类的初始化时机"></a>类的初始化时机</h3><ol>
+<li>创建类的实例</li>
+<li>访问类或接口的静态变量（static final常量除外，static final变量可以）</li>
+<li>调用类的静态方法</li>
+<li>反射（Class.forName(packageName.className)）</li>
+<li>初始化类的子类（子类初始化问题：满足主动调用，即访问子类中的静态变量、方法，否则仅父类初始化）</li>
+<li>java虚拟机启动时被标明为启动类的类</li>
+</ol>
+<p>注：加载顺序：启动类的static block最先加载<br>(<code>父类静态成员、静态代码块</code>—&gt;<code>子类静态成员、静态代码块</code>—&gt;<code>父类实例成员、代码块</code>——&gt;<code>父类构造函数</code>—&gt;<code>子类实例成员、代码块</code>—&gt;<code>子类构造函数</code>)</p>
+<p>我们需要明白在JAVA中任何class都要装载在虚拟机上才能运行，而forClass就是装载类用的，这是要和new不一样，要分清楚哦。<br><code>A a = (A)Class.forName(“package.A”).newInstance();</code>和 <code>A a = new A;</code>是等价的。<br>记住一个概念，静态代码是和class绑定的,class装载成功就表示执行了你的静态代码，而且以后不会再走这套静态代码了。<br>Class.forName(xxx.xx.xx)的作用是要求JVM查找并加载指定的类，也即是说JVM会执行该类的静态代码段。</p>
+<p>JAVA中获取Class对象有3种方式:</p>
+<ol>
+<li>Class.forName()</li>
+<li>Object.getClass()</li>
+<li>类字面常量 xx.class</li>
+<li><h3 id="反射常用函数"><a href="#反射常用函数" class="headerlink" title="反射常用函数"></a>反射常用函数</h3></li>
+</ol>
+<p><strong>得到构造器的方法</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">javaConstructor getConstructor(Class[] params) -- 获得使用特殊的参数类型的公共构造函数， </span><br><span class="line"></span><br><span class="line">Constructor[] getConstructors() -- 获得类的所有公共构造函数 </span><br><span class="line"> </span><br><span class="line">Constructor getDeclaredConstructor(Class[] params) -- 获得使用特定参数类型的构造函数(与接入级别无关) </span><br><span class="line"> </span><br><span class="line">Constructor[] getDeclaredConstructors() -- 获得类的所有构造函数(与接入级别无关)</span><br></pre></td></tr></table></figure></p>
+<p><strong>获得字段信息的方法</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Field <span class="title">getField</span><span class="params">(String name)</span> -- 获得命名的公共字段 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Field[] <span class="title">getFields</span><span class="params">()</span> -- 获得类的所有公共字段 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Field <span class="title">getDeclaredField</span><span class="params">(String name)</span> -- 获得类声明的命名的字段 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Field[] <span class="title">getDeclaredFields</span><span class="params">()</span> -- 获得类声明的所有字段</span></span><br></pre></td></tr></table></figure></p>
+<p><strong>获得方法信息的方法</strong><br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">Method <span class="title">getMethod</span><span class="params">(String name, Class[] params)</span> -- 使用特定的参数类型，获得命名的公共方法 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Method[] <span class="title">getMethods</span><span class="params">()</span> -- 获得类的所有公共方法 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Method <span class="title">getDeclaredMethod</span><span class="params">(String name, Class[] params)</span> -- 使用特写的参数类型，获得类声明的命名的方法 </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function">Method[] <span class="title">getDeclaredMethods</span><span class="params">()</span> -- 获得类声明的所有方法</span></span><br></pre></td></tr></table></figure></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="http://www.cnblogs.com/lijunamneg/archive/2013/03/25/2980991.html" target="_blank" rel="noopener">JAVA类加载和反射介绍</a></p>
+<p>[2] <a href="https://www.zhihu.com/question/24304289" target="_blank" rel="noopener">学习java应该如何理解反射？<br>-知乎</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/18/Head First设计模式/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -334,7 +531,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 <a class="post-title-link" href="/2019/01/18/Head First设计模式/" itemprop="url">
-                  Head First设计模式1-5
+                  Head First设计模式1-9
                 </a>
               
             
@@ -377,7 +574,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-01-23 21:20:30" itemprop="dateModified" datetime="2019-01-23T21:20:30+08:00">2019-01-23</time>
+                <time title="修改时间：2019-02-15 21:20:30" itemprop="dateModified" datetime="2019-02-15T21:20:30+08:00">2019-02-15</time>
               
             
           </span>
@@ -431,13 +628,15 @@
         
           
             <hr>
-<h1 id="Head-First-设计模式1-4"><a href="#Head-First-设计模式1-4" class="headerlink" title="Head First 设计模式1-4"></a>Head First 设计模式1-4</h1><h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><ol>
+<h1 id="Head-First-设计模式1-9"><a href="#Head-First-设计模式1-9" class="headerlink" title="Head First 设计模式1-9"></a>Head First 设计模式1-9</h1><h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><ol>
 <li>封装变化。 </li>
 <li>面向接口编程而非实现。</li>
 <li>优先使用组合而非继承。 </li>
 <li>为了交互对象之间的松耦合设计而努力。</li>
 <li>类应该对扩展开放，对修改关闭。</li>
 <li>依赖倒置原则，要依赖抽象，不要依赖具体类。</li>
+<li>最少知识原则</li>
+<li>好莱坞原则</li>
 </ol>
 <h2 id="模式类型"><a href="#模式类型" class="headerlink" title="模式类型"></a>模式类型</h2><h3 id="类型归集"><a href="#类型归集" class="headerlink" title="类型归集"></a>类型归集</h3><ol>
 <li>OO模式</li>
@@ -445,6 +644,9 @@
 <li>装饰者模式</li>
 <li>工厂模式</li>
 <li>抽象工厂模式</li>
+<li>命令模式</li>
+<li>模板方法模式</li>
+<li>组合模式</li>
 </ol>
 <h3 id="OO模式"><a href="#OO模式" class="headerlink" title="OO模式"></a>OO模式</h3><h3 id="观察者模式"><a href="#观察者模式" class="headerlink" title="观察者模式"></a>观察者模式</h3><p>此种模式中，一个目标物件管理所有相依于它的观察者物件，并且在它本身的状态改变时主动发出通知。</p>
 <h4 id="策略模式"><a href="#策略模式" class="headerlink" title="策略模式"></a>策略模式</h4><p>策略模式定义了算法族，分别封装起来让他们之间可以相互替换，此模式让算法的变化独立于使用算法的客户。</p>
@@ -461,7 +663,7 @@
 <li>扩展麻烦，需要改动现有的代码</li>
 <li>孤注一掷，所有的逻辑都放在一个工厂里面，一旦这个类出现什么问题，那么就全GG </li>
 </ul>
-<h4 id="工厂模式-1"><a href="#工厂模式-1" class="headerlink" title="工厂模式"></a>工厂模式</h4><p>定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。</p>
+<h4 id="工厂模式-1"><a href="#工厂模式-1" class="headerlink" title="工厂模式"></a>工厂模式</h4><p>定义：定义了一个创建对象的接口，但由子类决定要实例化的类是哪一个。工厂方法让类把实例化推迟到子类。</p>
 <p>产品和工厂分离，它把工厂也抽象出一个接口来；它让一个工厂只负责生产一种产品；</p>
 <p><strong>优点</strong>：</p>
 <ul>
@@ -485,11 +687,22 @@
 <ul>
 <li>扩展 <code>产品族</code> 很费劲 </li>
 </ul>
-<h4 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h4><p>确保一个类只有一个实例，并提供一个全局访问点。</p>
+<h3 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a>单例模式</h3><p>确保一个类只有一个实例，并提供一个全局访问点。</p>
 <p><strong>关键点：构造函数是私有的</strong></p>
 <p>在计算机系统中，线程池、缓存、日志对象、对话框、打印机、显卡的驱动程序对象常被设计成单例的模式；</p>
-<h5 id="单件模式和全局变量比较"><a href="#单件模式和全局变量比较" class="headerlink" title="单件模式和全局变量比较"></a>单件模式和全局变量比较</h5><p>急切实例化VS,延迟实例化。</p>
+<h4 id="单件模式和全局变量比较"><a href="#单件模式和全局变量比较" class="headerlink" title="单件模式和全局变量比较"></a>单件模式和全局变量比较</h4><p>急切实例化VS,延迟实例化。</p>
 <p>全局变量可以提供全局访问，但是不能确保只有一个实例。全局变量也会变相鼓励开发人员，用许多全局变量指向许多小对象来造成命名空间的污染，单件不鼓励这样的现象，但单件任然可能被滥用。</p>
+<h3 id="命令模式"><a href="#命令模式" class="headerlink" title="命令模式"></a>命令模式</h3><p>定义：将“请求”封装成对象，以便使用不同的请求、队列或者日志来参数化其他对象。命令模式也支持可撤销的操作。</p>
+<p>设计空对象，表示什么都不做，这种设计可以免去一些校验操作。</p>
+<h3 id="适配器模式"><a href="#适配器模式" class="headerlink" title="适配器模式"></a>适配器模式</h3><p>适配器模式：将一个类的接口转换成客户希望的另一个接口</p>
+<h4 id="外观模式"><a href="#外观模式" class="headerlink" title="外观模式"></a>外观模式</h4><p>提供一个统一的接口，用来访问子系统中的一群接口。外观定义一个高层接口，让子系统更容易使用。</p>
+<h3 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h3><p>模板方法模式：在一个方法中定义一个算法骨架，而将一些步骤延迟到子类中。模板方法使得子类在不改变算法结构的情况下，重新定义算法中的某些步骤。</p>
+<h4 id="hook方法"><a href="#hook方法" class="headerlink" title="hook方法"></a>hook方法</h4><p>void hook():是指一种抽象类中可选的方法，你可以选择性的继承它，因此不需要把他设置为抽象方法，避免子类实现麻烦。</p>
+<h4 id="好莱坞原则"><a href="#好莱坞原则" class="headerlink" title="好莱坞原则"></a>好莱坞原则</h4><p>别调用我们，我们会调用你。</p>
+<p>防止“依赖腐败”（环形依赖调用），在此原则下，高层组件会调用低层组件，底层不应该调用高层。</p>
+<h3 id="迭代器模式"><a href="#迭代器模式" class="headerlink" title="迭代器模式"></a>迭代器模式</h3><h3 id="组合模式"><a href="#组合模式" class="headerlink" title="组合模式"></a>组合模式</h3><p><strong>定义</strong>：允许你将对象组合成树形结构来表现“整体/部分”层次结构。组合能让客户以一致的方式处理个别对象以及对象组合。</p>
+<h2 id="附：UML图解释"><a href="#附：UML图解释" class="headerlink" title="附：UML图解释"></a>附：UML图解释</h2><p>箭头从A指向B，实线+实心箭头：A继承自B</p>
+<p>箭头从A指向B，虚线线+实心箭头：实现关系，表现为继承抽象类</p>
 
           
         
@@ -2155,225 +2368,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/06/Effective-Java-3rd第11章(79~84)/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/06/Effective-Java-3rd第11章(79~84)/" itemprop="url">
-                  Effective Java 3rd 第11章 并发(79~84)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-06 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-06T16:37:30+08:00">2018-12-06</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 21:49:53" itemprop="dateModified" datetime="2019-01-06T21:49:53+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第11章-并发"><a href="#第11章-并发" class="headerlink" title="第11章 并发"></a>第11章 并发</h1><h2 id="第78条-同步访问共享的可变数据"><a href="#第78条-同步访问共享的可变数据" class="headerlink" title="第78条 同步访问共享的可变数据"></a>第78条 同步访问共享的可变数据</h2><p>为了在线程之间进行可靠的通信，也为了互斥访问，同步是必要的。这归因于Java语言规范中的内存模型,它规定了一个线程所做的变化何时以及如何变成对其他线程可见。</p>
-<p>不要使用Thread.stop，因为它本质上是不安全的。</p>
-<p>当多个线程共享可变数据的时候，每个读或者写数据的线程都必须执行同步。volatile修饰符就是一种可以接受的同步形式，但要正确地使用它可能需要一些技巧。</p>
-<h2 id="第79条-避免过度同步"><a href="#第79条-避免过度同步" class="headerlink" title="第79条 避免过度同步"></a>第79条 避免过度同步</h2><p>依据情况的不同，过度同步可能会导致性能降低、死锁，甚至不确定的行为。</p>
-<p>我们正企图在遍历列表的过程中，将一个元素从列表中删除，这是非法的。</p>
-<p>将外来方法的调用移出同步的代码块来解决（异常和死锁)问题通常并不太困难。可以通过将外来方法的调用移出同步的代码块.事实上，要将外来方法的调用移出同步的代码块，还有一种更好的方法。自从Java 1.5发行版本以来，Java类库就提供了一个并发集合(concurrent collection), 见第81条。CopyOn WriteArrayList这是专门为此定制的。这是Array List的一种变体。<strong>通过重新拷贝整个底层数组，在这里实现所有的写操作</strong>。由干内部数组永远不改动，因此迭代不需要锁定，速度也非常快。如果大量使用，CopyOoWriteArrayList的性能将大受影响，但是对千观察者列表来说却是很好的，因为它们几乎不改动，并且经常被遍历。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> List&lt;SetObserver&lt;E»observers=</span><br><span class="line"><span class="keyword">new</span> CopyOnWri teArrayL i st&lt;SetObserver&lt;E»();</span><br></pre></td></tr></table></figure></p>
-<p>通常，你应该在同步区域内做尽可能少的工作，如果你必须要执行某个很耗时的动作，则应该设法把这个动作移到同步区域的外面，而不违背第78条中的指导方针。</p>
-<p>如果你在内部同步了类，就可以使用不同的方法来实现高井发性，例如分拆锁(lock splitting)、分离锁(lock striping)和非阻塞(nonblocking)并发控制。如果方法修改了静态域，那么你也必须同步对这个域的访问，即使它往往只用千单个线程。</p>
-<p>简而言之，为了避免死锁和数据破坏，千万不要从同步区域内部调用外来方法。更为一般地讲，要尽址限制同步区域内部的工作县。当你在设计一个可变类的时候，要考虑一下它们是否应该自己完成同步操作。在现在这个多核的时代，这比永远不要过度同步来得更重要。只有当你有足够的理由一定要在内部同步类的时候，才应该这么做，同时还应该将这个决定消楚地写到文档中（见第82条）。</p>
-<h2 id="第80条-优先选择执行器、任务和流，而不是线程"><a href="#第80条-优先选择执行器、任务和流，而不是线程" class="headerlink" title="第80条 优先选择执行器、任务和流，而不是线程"></a>第80条 优先选择执行器、任务和流，而不是线程</h2><p>对于小型程序或负载较轻的服务器，执行器。newCachedThreadPool通常是一个不错的选择，因为它不需要配置，而且通常“做正确的事情”。</p>
-<p>Executor框架被扩展为支持fork-join任务，这些任务由一种称为fork-join池的特殊类型的Executor服务运行。由fork joinask实例表示的fork-join任务可以被分割成更小的子任务，而组成ForkJoinPool的线程不仅可以处理这些任务，还可以相互“窃取”任务，以确保所有线程都处于繁忙状态，从而导致更高的CPU利用率、更高的吞吐量和更低的延迟。编写和调优fork-join任务非常棘手。并行流(Item 48)是在fork连接池之上编写的，假设它们适合当前的任务，则允许您轻松地利用它们的性能优势。</p>
-<h2 id="第81条-并发工具优先于wait和notify"><a href="#第81条-并发工具优先于wait和notify" class="headerlink" title="第81条 并发工具优先于wait和notify"></a>第81条 并发工具优先于wait和notify</h2><p>并发集合为标准的集合接口（如List、Queue和Map)提供了高性能的并发实现。为了提供高并发性，这些实现在内部自己管理同步（见第67条）。因此，并发集合中不可能排除并发活动；将它锁定没有什么作用，只会使程序的速度变慢。</p>
-<p>非不得已，否则应该优先使用ConcurrentHashMap而不是使用Collections.synchronizedMap 或者Hash table。<strong>只要用并发Map替换老式的同步Map,就可以极大地提升井发应用程序的性能</strong>。更一般地，应该优先使用并发梊合，而不是使用外部同步的集合。</p>
-<p>有些集合接口已经通过阻寒操作( blocking operation ) 进行了扩展，它们会一直等待（或者阻寒）到可以成功执行为止。例如，BlockingQueue扩展了Queue接口，并添加了包括take在内的几个方法，它从队列中删除并返回了头元素，如果队列为空，就等待。</p>
-<p><strong>同步器</strong>是一些使线程能够等待另一个线程的对象，允许它们协调动作。最常用的同步器是CountDownLatch和Semaphore。较不常用的是CyclicBarrier和Exchanger 。</p>
-<p><strong>倒计数锁存器</strong>(Countdown Latch)是一次性障碍，允许一个或者多个线程等待一个或者多个其他线程来做某些事情。CountDownLatch的唯一构造器带有一个int类型的参数，这个int参数是指允许所有在等待的线程袚处理之前，必须在锁存器上调用countDown方法的次数。</p>
-<p>对于间歇式的定时，始终应该优先使用System.nanoTime,而不是使用System.currentTimeMills。System.nanoTime更加准确也更加精确，它不受系统的实时时钟的调整所影响。</p>
-<p>下面是使用wait方法的标准模式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The st andard i di0t11 for using the wait 11ethod</span></span><br><span class="line"><span class="keyword">synchronized</span> (obj) &#123;</span><br><span class="line">    <span class="keyword">while</span> (&lt;condition does not hold&gt;)</span><br><span class="line">        obj .wait(); <span class="comment">//- (Releases lock, and reacquires on wakeup)</span></span><br><span class="line">    ... <span class="comment">//Perform action appropriate to condition</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><strong>始终应该使用wait循环模式来调用wait方法；永远不要在徙环之外调用wait方法</strong>。把wait调用<br>放在一个循环中，以避免在公有可访问对象上的意外或恶意的通知。</p>
-<p>简而言之，直接使用wait和notify就像用”并发汇编语言”进行编程一样，而java.util.concurrent则提供了更吓级的语官。没有双由在新代码中使用wait和notify,即使有，也是极少的。如果你在维护使用wait和notify的代码，务必确保始终是利用标准的模式从while循环内部调用wait。一般情况下，你应该优先使用notify All,而不是使用notify。如果使用notify,诏一定要小心，以确保程序的活性(liveness) 。</p>
-<h2 id="第82条-线程安全性文档化"><a href="#第82条-线程安全性文档化" class="headerlink" title="第82条 线程安全性文档化"></a>第82条 线程安全性文档化</h2><p>Javadoc并没有在它的输出中包含synchronized修饰符。因为在一个方法声明中出现synchronized修饰符，这是个实现细节，并不是导出的API的一部分。</p>
-<p>一个类为了可被多个线程安全地使用，必须在文档中清楚地说明它所支持的线程安全性级别。</p>
-<p>下面的列表概括了线程安全性的儿种级别。这份列表并没有涵盖所有的可能，而只是些常见的情形：</p>
-<ol>
-<li><strong>不可变的</strong><br> 这个类的实例是不变的。所以，不需要外部的同步。这样的例子包括String,Long和Biglnteger</li>
-<li><strong>无条件的线程安全</strong><br> 这个类的实例是可变的，但是这个类有若足够的内部同步，所以，它的实例可以被并发使用，无儒任何外部同步。其例子包括Random和ConcurrentHashMap 。</li>
-<li><strong>有条件的线程安全</strong><br> 除了有些方法为进行安全的并发使用而带要外部同步之外，这种线程安全级别与无条件的线程安全相同。这样的例子包括Collections.sy nchronized包装返回的集合，它们的迭代器(iterator ) 要求外部同步。</li>
-<li><strong>非线程安全</strong><br> 这个类的实例是可变的。为了并发地使用它们，客户必须利用自己选择的外部同步包围每个方法调用（或者调用序列）。这样的例子包括通用的集合实现，例如ArrayList和HashMap 。</li>
-<li><strong>线程对立的</strong><br> 即使每个方法调用都被外部同步所包围，这个类对于并发使用也是不安全的。线程敌意通常是由于在没有同步的情况下修改静态数据而引起的。没有人故意写第82项:文档线程安全331线程敌对类;此类类通常是由于没有考虑并发性而导致的。当一个类或方法被发现是线程不友好的，它通常是固定的或不赞成的。第78项中的generateSerialNumber方法在没有内部同步的情况下是线程不友好的，如第322页所述。</li>
-</ol>
-<p>这些分类（除了线程对立的之外）粗略对应于《Java Concurrency in Practice 》一书中的<br>线程安全注觥(thread safety annotation) , 分别为<code>Immutable</code>、<code>ThreadSafe</code>和<code>NotThreadsafe</code>。上述分类中无条件和有条件的线程安全类别都涵盖在<code>ThreadSafe</code>注解中了。</p>
-<p>私有对象锁：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Private l ock object i dio11 - thwarts denial-of-service attack</span></span><br><span class="line"><span class="keyword">private</span> ·<span class="keyword">final</span> Object lock= <span class="keyword">new</span> Object();</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">foo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="function">synchroni <span class="title">zed</span><span class="params">(lock)</span> </span>&#123;</span><br><span class="line">        ......</span><br><span class="line">     &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>私有锁对象模式只能用在无条件的线程安全类上。有条件的线程安全类不能使用这种模式。私有锁对象模式特别适用于那些专门为继承而设计的类（见第17 条）。</p>
-<p>简而言之，每个类都应该利用字斟句酌的说明或者线程安全注解，渚楚地在文档中说明它的线程安全属性。synchronized修饰符与这个文档毫无关系。有条件的线程安全类必须在文档中指明“哪个方法调用序列需要外部同步，以及在执行这些序列的时候要获得哪把锁”。如果你编写的是无条件的线程安全类，就应该考虑使用私有锁对象来代替同步的方法。这样可以防止客户端程序和子类的不同步干扰，让你能够在后续的版本中灵活地对并发控制采用更加复杂的方法。</p>
-<h2 id="第83条-慎用延迟初始化"><a href="#第83条-慎用延迟初始化" class="headerlink" title="第83条 慎用延迟初始化"></a>第83条 慎用延迟初始化</h2><p>虽然延迟初始化主要是一种优化，但它也可以用来打破类和实例初始化中的有害循环。延迟初始化就像一把双刃剑。它降低了初始化类或者创建实例的开销，却增加了访问被延迟初始化的域的开销。</p>
-<p>当有多个线程时，延迟初始化是需要技巧的。如果两个或者多个线程共享一个延迟初始化的域，采用某种形式的同步是很重要的，否则就可能造成严重的Bug(见第66条）。本条目中讨论的所有初始化方法都是线程安全的。</p>
-<p>在大多数情况下，正常的初始化要优先于延迟初始化。下面是正常初始化的实例域的一个典型声明。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Normal initialization of an instance field</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br></pre></td></tr></table></figure></p>
-<p>如果利用延迟优化来破坏初始化的彼环，就要使用同步访问方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization of instance field - synchronized accessor</span></span><br><span class="line"><span class="keyword">private</span> FieldType field;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">synchronized</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (field == <span class="keyword">null</span>)</span><br><span class="line">        field = computeFieldValue();</span><br><span class="line">    <span class="keyword">return</span> field;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>如果出于性能的考虑而需要对静态域使用延迟初始化，就使用lazy initialization holder class模式。保了类要到被用到的时候才会被初始化.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Lazy initialization holder class idiom for static fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">FieldHolder</span> </span>&#123;</span><br><span class="line">    <span class="keyword">static</span> <span class="keyword">final</span> FieldType field = computeFieldValue();</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">static</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> FieldHolder.field; &#125;</span><br></pre></td></tr></table></figure></p>
-<p>当getFiel~方法第一次被调用时，它第一次读取FieldHolder.field,导致FieldHolder类得到初始化。</p>
-<p>如果出于性能的考虑而需要对实例域使用延迟初始化，就使用双重检查模式。如今，双重检查模式是延迟初始化一个实例域的方法。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Double-check idiom for lazy initialization of instance fields</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>) &#123; <span class="comment">// First check (no locking)</span></span><br><span class="line">            <span class="keyword">synchronized</span>(<span class="keyword">this</span>) &#123;</span><br><span class="line">                result= field;</span><br><span class="line">                <span class="keyword">if</span> (field == <span class="keyword">null</span>) <span class="comment">// Second check (with locking)</span></span><br><span class="line">                    field = result = computeFieldValue();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>有时候，你可能需要延迟初始化一个可以接受重复初始化的实例域，它就是单重检查模式<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Single-check idiom - can cause repeated initialization!</span></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">volatile</span> FieldType field;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> FieldType <span class="title">getField</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        FieldType result = field;</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span>)</span><br><span class="line">            field = result = computeFieldValue();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>简而言之，大多数的域应该正常地进行初始化，而不是延迟初始化。如果为了达到性能目标，或者为了破坏有害的初始化循环，而必须延迟初始化一个域，就可以使用相应的延迟初始化方法。对千实例域，就使用双重检查模式, 对于静态域，则使用lazy initialization holder class idiom。对于可以接受重复初始化的实例域，也可以考虑使用单重检查模式 。</p>
-<h2 id="第84条-不要依赖线程调度程序"><a href="#第84条-不要依赖线程调度程序" class="headerlink" title="第84条 不要依赖线程调度程序"></a>第84条 不要依赖线程调度程序</h2><p>任何依赖于<strong>线程调度器</strong>来达到正确性或者性能要求的程序，很有可能都是不可移植的。要编写健壮的、响应良好的、可移植的多线程应用程序，最好的办法是确保可运行线程的平均数址不明显多于处理器的数址。</p>
-<p>线程任务应适当地小并彼此独立，但又不能太小，否则分配开销也会影响性能。</p>
-<p>线程不应该一直处于忙－等( busy-wait ) 的状态，即反复地检查一个共享对象，以等待<br>某些事情发生。</p>
-<p>如果某一个程序不能工作，是因为某些线程无法像其他线程那样获得足够的CPU时间，那么，不要企图通过调用Thread.yield来“修正”该程序，Thread.yield没有可测试的语义，同一个yield调用在一个JVM实现上能提高性能，而在另一个JVM实现上却有可能会更差。</p>
-<p>有一种相关的方法是调整线程优先级(thread priority),同样有类似的警告。线程优先级是Java平台上最不可移植的特征了。</p>
-<p>简而言之，不要让应用程序的正确性依赖于线程调度器。否则，结果得到的应用程序将既不健壮，也不具有可移植性。作为推论，不要依赖Thread.yield或者线程优先级。这些设施仅仅对调度器作些暗示。线程优先级可以用来提高一个已经能够正常工作的程序的服务质县，但永远不应该用来“修正”一个原本并不能工作的程序。</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2421,7 +2415,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">26</span>
+                    <span class="site-state-item-count">27</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2448,7 +2442,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">7</span>
+                      
+                    
+                    <span class="site-state-item-count">8</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
