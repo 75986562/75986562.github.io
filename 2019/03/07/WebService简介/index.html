@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=6.5.0" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.5.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.5.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.5.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.5.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="WebService学习webService简介webService接口，cxf框架，用xml配置暴露的接口，接口提供方可以用已实现序列化接口的对象来接收，当然，一般接口的数据结构没有那么简单，那我们也可以相对应的在我们要接收数据的对象里加List或者对象属性来实现。cxf框架会自动把xml数据转化为我们所需的对象，底层传输的实际上是通过http协议传输xml数据（可以写一个拦截器获取发送的xm">
+<meta name="keywords" content="WebService">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WebService简介">
+<meta property="og:url" content="http://yoursite.com/2019/03/07/WebService简介/index.html">
+<meta property="og:site_name" content="萌面超人">
+<meta property="og:description" content="WebService学习webService简介webService接口，cxf框架，用xml配置暴露的接口，接口提供方可以用已实现序列化接口的对象来接收，当然，一般接口的数据结构没有那么简单，那我们也可以相对应的在我们要接收数据的对象里加List或者对象属性来实现。cxf框架会自动把xml数据转化为我们所需的对象，底层传输的实际上是通过http协议传输xml数据（可以写一个拦截器获取发送的xm">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-11T13:20:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WebService简介">
+<meta name="twitter:description" content="WebService学习webService简介webService接口，cxf框架，用xml配置暴露的接口，接口提供方可以用已实现序列化接口的对象来接收，当然，一般接口的数据结构没有那么简单，那我们也可以相对应的在我们要接收数据的对象里加List或者对象属性来实现。cxf框架会自动把xml数据转化为我们所需的对象，底层传输的实际上是通过http协议传输xml数据（可以写一个拦截器获取发送的xm">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/03/07/WebService简介/">
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>WebService简介 | 萌面超人</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">萌面超人</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-tags">
+    <a href="/tags/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>标签</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-categories">
+    <a href="/categories/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-th"></i> <br>分类</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-schedule">
+    <a href="/schedule/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br>日程表</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-commonweal">
+    <a href="/404/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-heartbeat"></i> <br>公益 404</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/07/WebService简介/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WebService简介
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-07 16:37:30" itemprop="dateCreated datePublished" datetime="2019-03-07T16:37:30+08:00">2019-03-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-11 21:20:30" itemprop="dateModified" datetime="2019-03-11T21:20:30+08:00">2019-03-11</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/WebService/" itemprop="url" rel="index"><span itemprop="name">WebService</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <hr>
+<h1 id="WebService学习"><a href="#WebService学习" class="headerlink" title="WebService学习"></a>WebService学习</h1><h2 id="webService简介"><a href="#webService简介" class="headerlink" title="webService简介"></a>webService简介</h2><p>webService接口，cxf框架，用xml配置暴露的接口，接口提供方可以用已实现序列化接口的对象来接收，当然，一般接口的数据结构没有那么简单，那我们也可以相对应的在我们要接收数据的对象里加List或者对象属性来实现。cxf框架会自动把xml数据转化为我们所需的对象，底层传输的实际上是通过http协议传输xml数据（可以写一个拦截器获取发送的xml文件）</p>
+<p>说白了就是xml文档的生成、传递、解析的过程。客户端生成xml文件后通过网络传送给服务器，服务器解析xml，获取参数执行方法得到返回值，之后生成xml文件，再传输给客户端，客户端解析xml后显示数据。</p>
+<p>xml传输数据的话一般是webSerivce,偏银行多一些；而Json则偏互联网多一些。暴露接口的话，我们可以写一个controller,用@RequestMapping(“xxxx”)来指定接口的调用地址；底层传输的都是json字符串，我们可以用String来接收，也可以用对象来接收（实现序列化接口），一般用的框架有阿里的fastjson跟springMvc自带的jackson</p>
+<h2 id="暴露webservice服务"><a href="#暴露webservice服务" class="headerlink" title="暴露webservice服务"></a>暴露webservice服务</h2><h3 id="场景一：Spring-boot2-X"><a href="#场景一：Spring-boot2-X" class="headerlink" title="场景一：Spring boot2.X"></a>场景一：Spring boot2.X</h3><p>环境：Spring boot2.X</p>
+<ol>
+<li>添加cxf依赖</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">   &lt;groupId&gt;org.apache.cxf&lt;/groupId&gt;</span><br><span class="line">   &lt;artifactId&gt;cxf-spring-boot-starter-jaxws&lt;/artifactId&gt;</span><br><span class="line">   &lt;version&gt;3.2.5&lt;/version&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>在外放的Facade接口上添加@WebService注解，方法上添加@WebMethod注解</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebService</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">AuthServiceFacade</span> </span>&#123;</span><br><span class="line">    <span class="meta">@WebMethod</span></span><br><span class="line">    <span class="function">AuthResponse <span class="title">auth</span><span class="params">(AuthRequest request)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li><p>实现类上添加注解@WebService注解</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="meta">@WebService</span>(targetNamespace = <span class="string">"http://webservice.company.com/"</span>,endpointInterface = <span class="string">"com.***.auth.service.facade.AuthServiceFacade"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BankCardSingleAuthServiceImpl</span> <span class="keyword">extends</span> <span class="title">AbstractAuthService</span></span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">AuthServiceFacade</span> </span>&#123;&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>设置WebServiceConfig</p>
+</li>
+<li>在启动类的main函数中添加以下代码<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@AutoConfigureBefore</span></span><br><span class="line"><span class="meta">@MapperScan</span>(<span class="string">"com.hfi.web01.mapper"</span>)</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Web01Application</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Service service = <span class="keyword">new</span> Service();</span><br><span class="line">        Endpoint.publish(<span class="string">"http://"</span>+url+<span class="string">":8080/service"</span>, service);</span><br><span class="line">        SpringApplication.run(Web01Application.class, args);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h3 id="场景二：通过CommandLineRunner暴露"><a href="#场景二：通过CommandLineRunner暴露" class="headerlink" title="场景二：通过CommandLineRunner暴露"></a>场景二：通过CommandLineRunner暴露</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//SpringBoot启动后会自动加载并暴露服务，服务ip可以动态适配</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="meta">@Order</span>(<span class="number">1</span>)<span class="comment">//数字为初始化顺序</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CxfConfig</span> <span class="keyword">implements</span> <span class="title">CommandLineRunner</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value</span>(<span class="string">"$&#123;url:localhost&#125;"</span>)</span><br><span class="line">    <span class="keyword">private</span> String url ;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">(String... args)</span></span>&#123;</span><br><span class="line">        Service service = <span class="keyword">new</span> Service();</span><br><span class="line">        Endpoint.publish(<span class="string">"http://"</span>+url+<span class="string">":8080/service"</span>, service);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="Wsdl文件"><a href="#Wsdl文件" class="headerlink" title="Wsdl文件"></a>Wsdl文件</h2><h3 id="重要属性"><a href="#重要属性" class="headerlink" title="重要属性"></a>重要属性</h3><p>重要标签的说明</p>
+<p>· <strong>types</strong> - 数据类型(标签)定义的容器，里面使用schema定义了一些标签结构供message引用</p>
+<p>· <strong>message</strong> - 通信消息的数据结构的抽象类型化定义。引用types中定义的标签</p>
+<p>· <strong>operation</strong> - 对服务中所支持的操作的抽象描述，一个operation描述了一个访问入口的请求消息与响应消息对。</p>
+<p>· <strong>portType</strong> - 对于某个访问入口点类型所支持的操作的抽象集合，这些操作可以由一个或多个服务访问点来支持。</p>
+<p>· <strong>binding</strong> - 特定端口类型的具体协议和数据格式规范的绑定。</p>
+<p>· <strong>service</strong>- 相关服务访问点的集合</p>
+<p>· <strong>port</strong> - 定义为协议/数据格式绑定与具体Web访问地址组合的单个服务访问点。</p>
+<h2 id="常见错误"><a href="#常见错误" class="headerlink" title="常见错误"></a>常见错误</h2><h3 id="无法通过包wsdl文件以maven打包的方式生成"><a href="#无法通过包wsdl文件以maven打包的方式生成" class="headerlink" title="无法通过包wsdl文件以maven打包的方式生成"></a>无法通过包wsdl文件以maven打包的方式生成</h3><p>需要删除maven打包的targe再打包即可生成</p>
+<h3 id="WebService注解的类中无法注入-Autowrite"><a href="#WebService注解的类中无法注入-Autowrite" class="headerlink" title="@WebService注解的类中无法注入@Autowrite"></a>@WebService注解的类中无法注入@Autowrite</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@WebService</span>(endpointInterface = <span class="string">"***"</span>, serviceName = <span class="string">"***"</span>)</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebService</span> <span class="keyword">implements</span> <span class="title">IWebService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> ISecondService secondService;</span><br><span class="line"><span class="comment">//      这里使用静态，让 service 属于类</span></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        <span class="comment">//装载单个配置文件实例化ApplicationContext容器</span></span><br><span class="line">        ApplicationContext ctx = <span class="keyword">new</span> ClassPathXmlApplicationContext(<span class="string">"spring\\dubbo.xml"</span>);</span><br><span class="line">        secondService = (ISecondService) ctx.getBean(<span class="string">"secondService"</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>*** soupUI能调试通但注册到别人服务中无法接收到请求<br>两个服务之间格式不一样，可以在注册服务中再包一层。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="https://blog.csdn.net/qq_30750447/article/details/80956595" target="_blank" rel="noopener">SpringBoot+Dubbo+zk实现暴露与调用外网接口</a></p>
+<p>[2] <a href="https://www.cnblogs.com/lthaoshao/p/9517693.html" target="_blank" rel="noopener">使用SpringBoot2.X发布WebService接口</a></p>
+<p>[3] <a href="https://blog.csdn.net/a412588063/article/details/55049602" target="_blank" rel="noopener">Webservice底层调用的本质</a></p>
+<p>[4] <a href="https://www.cnblogs.com/fuxin41/p/6289162.html" target="_blank" rel="noopener">Spring boot+CXF开发WebService Demo</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WebService/" rel="tag"># WebService</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/05/java-XML解析工具类/" rel="next" title="java-XML解析工具类">
+                <i class="fa fa-chevron-left"></i> java-XML解析工具类
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/27/oauth简介/" rel="prev" title="OAuth学习">
+                OAuth学习 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">小华</p>
+              <p class="site-description motion-element" itemprop="description">个人学习博客</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  <a href="/categories/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">9</span>
+                    <span class="site-state-item-name">分类</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  <a href="/tags/index.html">
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
+                    <span class="site-state-item-name">标签</span>
+                  </a>
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#WebService学习"><span class="nav-number">1.</span> <span class="nav-text">WebService学习</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#webService简介"><span class="nav-number">1.1.</span> <span class="nav-text">webService简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#暴露webservice服务"><span class="nav-number">1.2.</span> <span class="nav-text">暴露webservice服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#场景一：Spring-boot2-X"><span class="nav-number">1.2.1.</span> <span class="nav-text">场景一：Spring boot2.X</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#场景二：通过CommandLineRunner暴露"><span class="nav-number">1.2.2.</span> <span class="nav-text">场景二：通过CommandLineRunner暴露</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Wsdl文件"><span class="nav-number">1.3.</span> <span class="nav-text">Wsdl文件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#重要属性"><span class="nav-number">1.3.1.</span> <span class="nav-text">重要属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#常见错误"><span class="nav-number">1.4.</span> <span class="nav-text">常见错误</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#无法通过包wsdl文件以maven打包的方式生成"><span class="nav-number">1.4.1.</span> <span class="nav-text">无法通过包wsdl文件以maven打包的方式生成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#WebService注解的类中无法注入-Autowrite"><span class="nav-number">1.4.2.</span> <span class="nav-text">@WebService注解的类中无法注入@Autowrite</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">1.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright"> &copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">小华</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a class="theme-link" target="_blank" href="https://theme-next.org">NexT.Pisces</a> v6.5.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+	
+    
+
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.5.0"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=6.5.0"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=6.5.0"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.5.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.5.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.5.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

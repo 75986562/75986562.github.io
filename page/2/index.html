@@ -314,6 +314,687 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/第62阶：jvm虚拟机优化/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/14/第62阶：jvm虚拟机优化/" itemprop="url">
+                  第62阶：jvm虚拟机优化
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-14 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-14T16:37:30+08:00">2018-12-14</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-18 21:20:30" itemprop="dateModified" datetime="2018-12-18T21:20:30+08:00">2018-12-18</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第62阶：jvm虚拟机优化"><a href="#第62阶：jvm虚拟机优化" class="headerlink" title="第62阶：jvm虚拟机优化"></a>第62阶：jvm虚拟机优化</h1><p><a href="https://www.bilibili.com/video/av31834249/?spm_id_from=333.788.videocard.17" target="_blank" rel="noopener">jvm虚拟机优化</a></p>
+<h2 id="虚拟机桥接模式和NAT"><a href="#虚拟机桥接模式和NAT" class="headerlink" title="虚拟机桥接模式和NAT"></a>虚拟机桥接模式和NAT</h2><p>在桥接模式下。VMWare虚拟出来的操作系统就像是局域网中的一台独立的主机，它能够訪问网内不论什么一台机器。你须要手工为虚拟系统配置IP地址、子网掩码，并且还要和宿主机器处于同一网段，这样虚拟系统才干和宿主机器进行通信。</p>
+<p>使用NAT模式。就是让虚拟系统借助NAT(网络地址转换)功能，通过宿主机器所在的网络来訪问公网。使用NAT模式能够实如今虚拟系统里訪问互联网。</p>
+<p>注意：NAT模式和桥接模式不能相互连接</p>
+<h2 id="java虚拟机的基本结构"><a href="#java虚拟机的基本结构" class="headerlink" title="java虚拟机的基本结构"></a>java虚拟机的基本结构</h2><p><a href="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png" target="_blank" rel="noopener">JVM的基本结构及其各部分详解（一）</a></p>
+<p><img src="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png" alt="java虚拟机的基本结构"></p>
+<ol>
+<li><p>类加载子系统负责从文件系统或者网络中加载Class信息，加载的类信息存放于一块称为方法区的内存空间。除了类的信息外，方法区中可能还会存放运行时常量池信息，包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）。</p>
+</li>
+<li><p>java堆在虚拟机启动的时候建立，它是java程序最主要的内存工作区域。几乎所有的java对象实例都存放在java堆中。堆空间是所有线程共享的，这是一块与java应用密切相关的内存空间。</p>
+</li>
+<li><p>java的NIO库允许java程序使用直接内存。直接内存是在java堆外的、直接向系统申请的内存空间。通常访问直接内存的速度会优于java堆。因此出于性能的考虑，读写频繁的场合可能会考虑使用直接内存。由于直接内存在java堆外，因此它的大小不会直接受限于Xmx指定的最大堆大小，但是系统内存是有限的，java堆和直接内存的总和依然受限于操作系统能给出的最大内存。</p>
+</li>
+<li><p>垃圾回收系统是java虚拟机的重要组成部分，垃圾回收器可以对方法区、java堆和直接内存进行回收。其中，java堆是垃圾收集器的工作重点。和C/C++不同，java中所有的对象空间释放都是隐式的，也就是说，java中没有类似free()或者delete()这样的函数释放指定的内存区域。对于不再使用的垃圾对象，垃圾回收系统会在后台默默工作，默默查找、标识并释放垃圾对象，完成包括java堆、方法区和直接内存中的全自动化管理。</p>
+</li>
+<li><p>每一个java虚拟机线程都有一个私有的java栈，一个线程的java栈在线程创建的时候被创建，java栈中保存着帧信息，java栈中保存着局部变量、方法参数，同时和java方法的调用、返回密切相关。</p>
+</li>
+<li><p>本地方法栈和java栈非常类似，最大的不同在于java栈用于方法的调用，而本地方法栈则用于本地方法的调用，作为对java虚拟机的重要扩展，java虚拟机允许java直接调用本地方法（通常使用C编写）</p>
+</li>
+<li><p>PC（Program Counter）寄存器也是每一个线程私有的空间，java虚拟机会为每一个java线程创建PC寄存器。在任意时刻，一个java线程总是在执行一个方法，这个正在被执行的方法称为当前方法。如果当前方法不是本地方法，PC寄存器就会指向当前正在被执行的指令。如果当前方法是本地方法，那么PC寄存器的值就是undefined</p>
+</li>
+<li><p>执行引擎是java虚拟机的最核心组件之一，它负责执行虚拟机的字节码，现代虚拟机为了提高执行效率，会使用即时编译技术将方法编译成机器码后再执行。 </p>
+</li>
+</ol>
+<h2 id="jvm虚拟机参数"><a href="#jvm虚拟机参数" class="headerlink" title="jvm虚拟机参数"></a>jvm虚拟机参数</h2><p><a href="https://blog.csdn.net/momo_ibeike/article/details/76370428" target="_blank" rel="noopener">常用Java虚拟机调试和配置参数</a></p>
+<ol>
+<li><strong>-XX</strong>：对于系统级别的（jvm）配置，如配置日志信息、配置JVM使用什么样的垃圾回收器。</li>
+<li><strong>非-XX</strong>：的基本上是应用层面上的配置。</li>
+<li><strong>+</strong>：启用</li>
+<li><strong>-</strong>：禁用</li>
+<li><strong>-Xmn2g</strong>：设置年轻代(Eden)大小。</li>
+<li>输入内存溢出信息、设置内存溢出路径。</li>
+<li><strong>-Xss</strong>：线程最大栈空间，</li>
+<li><strong>-XX:PermSize，-XX:PermSize=MaxPermSize</strong>：方法区大小。</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+<li><em>**</em>：</li>
+</ol>
+<p>基本策略：可以设置新生代的大小、新生代和老年代的比例。尽量将对象预留在新生代，减少老年代GC次数。</p>
+<h2 id="负载均衡和反向代理"><a href="#负载均衡和反向代理" class="headerlink" title="负载均衡和反向代理"></a>负载均衡和反向代理</h2><p><strong>负载均衡</strong>（Load Balance）<br>其意思就是分摊到多个操作单元上进行执行，例如Web服务器、FTP服务器、企业关键应用服务器和其它关键任务服务器等，从而共同完成工作任务。</p>
+<p>常见的负载均衡服务器有：<code>F5</code>,<code>LVS</code></p>
+<p><strong>反向代理</strong>（Reverse Proxy）<br>是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。</p>
+<p>常见的反向代理服务器有:<code>nginx</code>,<code>haproxy</code></p>
+<h2 id="GC清除对象"><a href="#GC清除对象" class="headerlink" title="GC清除对象"></a>GC清除对象</h2><p>当connection=null时，GC并没有立即回收对象，什么时候回收并不知道。除非手动调用GC回收方法。</p>
+<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><p><a href="https://www.cnblogs.com/huajiezh/p/5769255.html" target="_blank" rel="noopener">深入理解java垃圾回收算法</a></p>
+<ol>
+<li>引用计数算法<br> 给对象中添加一个引用计数器，每当有一个地方引用它时，计数器值就加1；当引用失效时，计数器值就减1；任何时刻计数器都为0的对象就是不再被使用的，垃圾收集器将回收该对象使用的内存。<strong>缺点</strong>：相互循环引用会出现问题</li>
+<li>标记-清除算法<br> 最基础的垃圾收集算法，算法分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成之后统一回收掉所有被标记的对象。<strong>缺点</strong>：首先，效率问题，标记和清除<strong>效率都不高</strong>。其次，标记清除之后会产生大量的<strong>不连续的内存碎片</strong>，空间碎片太多会导致当程序需要为较大对象分配内存时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</li>
+<li>复制算法<br> 目前用于新生代，将可用内存按容量分成大小相等的两块，每次只使用其中一块，当这块内存使用完了，就将还存活的对象复制到另一块内存上去，然后把使用过的内存空间一次清理掉。这样使得每次都是对其中一块内存进行回收，内存分配时不用考虑内存碎片等复杂情况，只需要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。<strong>缺点</strong>：可使用的内存降为原来一半。</li>
+<li>标记压缩算法<br> 目前用于老年代</li>
+</ol>
+<h2 id="TLAB区域"><a href="#TLAB区域" class="headerlink" title="TLAB区域"></a>TLAB区域</h2>
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/08/第09阶：多线程/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/08/第09阶：多线程/" itemprop="url">
+                  2018第09阶：多线程
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-08 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-08T16:37:30+08:00">2018-12-08</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-12-23 21:20:30" itemprop="dateModified" datetime="2018-12-23T21:20:30+08:00">2018-12-23</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第09阶：多线程"><a href="#第09阶：多线程" class="headerlink" title="第09阶：多线程"></a>第09阶：多线程</h1><h2 id="学习地址"><a href="#学习地址" class="headerlink" title="学习地址"></a>学习地址</h2><p><a href="https://www.bilibili.com/video/av31434494/?p=3" target="_blank" rel="noopener">2018百战程序员JAVA全系列终结版第09阶：多线程</a></p>
+<h2 id="run-和start-的区别"><a href="#run-和start-的区别" class="headerlink" title="run()和start()的区别"></a>run()和start()的区别</h2><ol>
+<li>start：<br>　　用start方法来启动线程，真正实现了多线程运行，这时无需等待run方法体代码执行完毕而直接继续执行下面的代码。      </li>
+<li>run：<br>　　run()方法只是类的一个普通方法而已，如果直接调用Run方法，<strong>程序中依然只有主线程这一个线程，其程序执行路径还是只有一条</strong>，还是要顺序执行，还是要等待run方法体执行完毕后才可继续执行下面的代码，这样就没有达到写线程的目的。</li>
+</ol>
+<h2 id="匿名类"><a href="#匿名类" class="headerlink" title="匿名类"></a>匿名类</h2><p>如果一个对象只是用一次，可以使用匿名。</p>
+<p>例如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建实现类对象</span></span><br><span class="line">StartRun st = <span class="keyword">new</span> StartRun();</span><br><span class="line"><span class="comment">//创建代理类</span></span><br><span class="line">Thread t = <span class="keyword">new</span> Thread(sr);</span><br><span class="line"><span class="comment">//启动</span></span><br><span class="line">t.start();</span><br></pre></td></tr></table></figure></p>
+<p>可以简化为：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">new</span> Thread(<span class="keyword">new</span> StartRun()).start();</span><br></pre></td></tr></table></figure></p>
+<h2 id="Thread类、Runnable接和Callable接口"><a href="#Thread类、Runnable接和Callable接口" class="headerlink" title="Thread类、Runnable接和Callable接口"></a>Thread类、Runnable接和Callable接口</h2><p>推荐使用Runnable接口，好处是：</p>
+<ol>
+<li>接口可以实现多个，突破单继承。</li>
+<li><p>便于共享资源。因为一个线程只能启动一次，通过Thread实现线程时，线程和线程所要执行的任务是捆绑在一起的。而一个任务可以启动多个线程，通过Runnable方式实现的线程，实际是开辟一个线程，将任务传递进去，由此线程执行。</p>
+</li>
+<li><p>Callable接口<br>Callable接口用于juc并发编程</p>
+</li>
+</ol>
+<ul>
+<li>Callable规定的方法是call()，而Runnable规定的方法是run()。</li>
+<li>Callable的任务执行后可返回值，而Runnable的任务是不能返回值的。</li>
+<li>call()方法可抛出异常，而run()方法是不能抛出异常的。</li>
+<li>运行Callable任务可拿到一个Future对象。</li>
+</ul>
+<p>Future<br>    Callable任务返回Future对象。即：Callable和Future一个产生结果，一个拿到结果。Future 表示异步计算的结果。</p>
+<p><a href="https://www.cnblogs.com/felixzh/p/6044371.html" target="_blank" rel="noopener">Callable接口、Runable接口、Future接口</a></p>
+<h2 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h2><p>Lambda推导必须存在类型</p>
+<h2 id="守护线程"><a href="#守护线程" class="headerlink" title="守护线程"></a>守护线程</h2><p>守护线程只为用户线程服务，JVM不用等待守护线程结束才结束。而JVM默认会等用户线程结束才会结束。</p>
+<h2 id="synchronized"><a href="#synchronized" class="headerlink" title="synchronized"></a>synchronized</h2><p>同步方法与同步块的区别：</p>
+<p>1.同步方法<br>同步方法锁定的是this对象，不是方法。<br>即有synchronized关键字修饰的方法。由于java的每个对象都有一个内置锁，当用此关键字修饰方法时，内置锁会保护整个方法。在调用该方法前，需要获得内置锁，否则就处于阻塞状态。代码如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">save</span><span class="params">()</span></span>&#123;&#125;</span><br></pre></td></tr></table></figure></p>
+<p>2.同步代码块<br>即有synchronized关键字修饰的语句块。 被该关键字修饰的语句块会自动被加上内置锁，从而实现同步。代码如：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">synchronized</span>(object)&#123; </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>注：同步是一种高开销的操作，因此应该尽量减少同步的内容。通常没有必要同步整个方法，使用synchronized代码块同步关键代码即可。 </p>
+<h2 id="选区加锁对象"><a href="#选区加锁对象" class="headerlink" title="选区加锁对象"></a>选区加锁对象</h2><p>加锁的时候应该加在大对象上，防止调用对象不是同一个。</p>
+<h2 id="Quartz使用"><a href="#Quartz使用" class="headerlink" title="Quartz使用"></a>Quartz使用</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//1. 创建Scheduler工厂</span></span><br><span class="line">SchedulerFactory sf = <span class="keyword">new</span> SchedulerFactory();</span><br><span class="line"><span class="comment">//2. 从工厂中获取调度器</span></span><br><span class="line">Scheduler sched = sf.getScheduler();</span><br><span class="line"><span class="comment">//3. 创建JobDetail</span></span><br><span class="line">JobDetail job = newJob(HelloJob.class).withIdentify(<span class="string">"job1"</span>,<span class="string">"group1"</span>).build();</span><br><span class="line"><span class="comment">//时间</span></span><br><span class="line">Date runTime = evenSecondDateAfterNow();</span><br><span class="line"><span class="comment">//4. 触发条件</span></span><br><span class="line">Trigger trigger = newTrigger().withIdentify(<span class="string">"trigger1"</span>,<span class="string">"group1"</span>).start(runTime).build();</span><br><span class="line"><span class="comment">//5. 注册任务</span></span><br><span class="line">sched.schedulerJob(job,trigger);</span><br><span class="line"><span class="comment">//6. 启动</span></span><br><span class="line">sched.start</span><br></pre></td></tr></table></figure>
+<h2 id="volatile"><a href="#volatile" class="headerlink" title="volatile"></a>volatile</h2><p>只保证数据同步，当数据修改时立即通知其他持有者更新数据。比synchronized开销小，但不保证操作的原子性。已经很少使用了。</p>
+<h2 id="使用double-checking和volatile进行单例设计"><a href="#使用double-checking和volatile进行单例设计" class="headerlink" title="使用double-checking和volatile进行单例设计"></a>使用double-checking和volatile进行单例设计</h2><p>单例模式：套路，在多线程环境下，对外存在一个对象。<br>在懒汉式基础上修改。</p>
+<ol>
+<li>构造器私有化，防止外部创建</li>
+<li>提供私有的静态属性</li>
+<li>提供公共的静态方法<br>静态方法示例：<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> DoubleCheckedLocking <span class="title">getInstance</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//再次检测，减少不必要的同步。</span></span><br><span class="line">    <span class="keyword">if</span>(<span class="keyword">null</span> !== instance)&#123;<span class="keyword">return</span> instance&#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">synchronized</span>(DoubleCheckedLocking.class)&#123;</span><br><span class="line">        <span class="keyword">if</span>(<span class="keyword">null</span> == instance)&#123;</span><br><span class="line">            instance = <span class="keyword">new</span> DoubleCheckedLocking();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> instance;</span><br><span class="line"></span><br><span class="line">&#125;instance</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<h2 id="ThreadLoacl"><a href="#ThreadLoacl" class="headerlink" title="ThreadLoacl"></a>ThreadLoacl</h2><p>ThreadLoacl：分析上下文、环境、起点。    </p>
+<ol>
+<li>构造器：哪里调用就属于哪里，找线程体。</li>
+<li>run方法：线程本身的。<br>InheritableThreadLoacl：继承上下文，环境的数据，拷贝一份给线程，起点</li>
+</ol>
+<h2 id="可重入锁"><a href="#可重入锁" class="headerlink" title="可重入锁"></a>可重入锁</h2><p>原理：锁添加计数器，当加锁对象被访问时，判断是否锁定且为当前持有锁对象，否则wait();，是则计数器加1，当计数器为0时说明对象释放锁。</p>
+<h2 id="CAS"><a href="#CAS" class="headerlink" title="CAS"></a>CAS</h2><h3 id="悲观锁"><a href="#悲观锁" class="headerlink" title="悲观锁"></a>悲观锁</h3><p>独占锁，会导致其他线程挂起。</p>
+<h3 id="乐观锁"><a href="#乐观锁" class="headerlink" title="乐观锁"></a>乐观锁</h3><p>没有锁，失败重试，直到成功。<br>乐观锁实现方式：Compare and Swap 比较并交换。<br>需要读写的内存位置（V）、进行比较的预期原值（A）和拟写入的新值(B)。如果内存位置V的值与预期原值A相匹配，那么处理器会自动将该位置值更新为新值B。否则处理器不做任何操作。CAS有效地说明了“我认为位置V应该包含值A；如果包含该值，则将B放到这个位置；否则，不要更改该位置，只告诉我这个位置现在的值即可。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/07/Effective-Java-3rd第12章(85~90)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/07/Effective-Java-3rd第12章(85~90)/" itemprop="url">
+                  Effective Java 3rd 第12章 序列化(85~90)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-12-07 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-07T16:37:30+08:00">2018-12-07</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-06 21:51:00" itemprop="dateModified" datetime="2019-01-06T21:51:00+08:00">2019-01-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h2 id="第12章-序列化"><a href="#第12章-序列化" class="headerlink" title="第12章 序列化"></a>第12章 序列化</h2><h2 id="第85条-尽量不要使用Serializable"><a href="#第85条-尽量不要使用Serializable" class="headerlink" title="第85条 尽量不要使用Serializable"></a>第85条 尽量不要使用Serializable</h2><p>序列化的一个基本问题是它的攻击面太大而无法保护，在对字节流进行反序列化的过程中，该方法可以执行来自这些类型的任何代码。不可信流的反序列化可能导致远程代码执行(RCE)、拒绝服务(DoS)和一系列其他利用。这些方法称为gadget。多个小工具可以协同使用，形成一个小工具链。有时会发现一个小工具链，它足够强大，允许攻击者在底层硬件上执行任意本机代码，只给攻击者提交精心设计的字节流进行反序列化的机会。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Deserialization bomb - deserializing this stream takes forever</span></span><br><span class="line"><span class="keyword">static</span> <span class="keyword">byte</span>[] bomb() &#123;</span><br><span class="line">    Set&lt;Object&gt; root = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    Set&lt;Object&gt; s1 = root;</span><br><span class="line">    Set&lt;Object&gt; s2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">100</span>; i++) &#123;</span><br><span class="line">        Set&lt;Object&gt; t1 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        Set&lt;Object&gt; t2 = <span class="keyword">new</span> HashSet&lt;&gt;();</span><br><span class="line">        t1.add(<span class="string">"foo"</span>); <span class="comment">// Make t1 unequal to t2</span></span><br><span class="line">        s1.add(t1); s1.add(t2);</span><br><span class="line">        s2.add(t1); s2.add(t2);</span><br><span class="line">        s1 = t1;</span><br><span class="line">        s2 = t2;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> serialize(root); <span class="comment">// Method omitted for brevity</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>对象图由201个HashSet实例组成，每个实例包含3个或更少的对象引用。整个流的长度为5744字节，但是在反序列化之前sun就已经耗尽了。问题是反序列化哈希集实例需要计算其元素的哈希码。root哈希集的2个元素本身就是包含2个哈希集元素的哈希集，每个哈希集元素包含2个哈希集元素，依此类推，深度为100层。因此，反序列化集合会导致hashCode方法被调用超过2100次。除了反序列化要花费很长时间之外，反序列化器没有任何出错的迹象。生成的对象很少，堆栈深度是有限的。</p>
+<p>避免序列化被利用的最佳方法是永远不要反序列化任何东西。没有理由在您编写的任何新系统中使用Java序列化。</p>
+<p>有许多其他的跨平台序列化方法，最常用的是以下两个：</p>
+<table>
+<thead>
+<tr>
+<th>属性</th>
+<th>Json</th>
+<th>protobuf</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>本质</td>
+<td>基于文本的</td>
+<td>基于二进制的</td>
+</tr>
+<tr>
+<td>优点</td>
+<td>可读性好</td>
+<td>高效</td>
+</tr>
+<tr>
+<td>用途</td>
+<td>完全是一种数据表示</td>
+<td>提供模式(类型)来记录和强制适当的使用</td>
+</tr>
+<tr>
+<td>备注</td>
+<td>对于基于文本的表示非常有效</td>
+<td>提供了一种可供选择的文本表示，以便在需要人类可读性的地方使用(pbtxt)</td>
+</tr>
+</tbody>
+</table>
+<p>总之，序列化是危险的，应该避免。如果您从头开始设计系统，那么可以使用跨平台的结构化数据表示，例如JSON或protobuf。不要反序列化不可信的数据。如果必须这样做，请使用对象反序列化筛选，但要注意，它不能保证阻止所有攻击。避免编写可序列化的类。如果你必须这样做，一定要非常小心。</p>
+<h2 id="第86条-非常谨慎地实现可序列化"><a href="#第86条-非常谨慎地实现可序列化" class="headerlink" title="第86条 非常谨慎地实现可序列化"></a>第86条 非常谨慎地实现可序列化</h2><p>虽然使一个类可被序列化的直接开销非常低，甚至可以忽略不计，但是为了序列化而付出的长期开销往往是实实在在的。实现Serializable 接口而付出的最大代价是，一旦一个类被发布，就大大降低了“改变这个类的实现”的灵活性。如果你接受了默认的序列化形式，这个类中私有的和包级私有的实例域将都变成导出的API的一部分，这不符合“最低限度地访问域”的实践准则（见第15条），从而它就失去了作为信息隐藏工具的有效性。</p>
+<ol>
+<li><strong>序列化会使类的演变受到限制</strong>，这种限制的一个例子与流的唯一标识符(stream unique identifier)有关，通常它也被称为序列版本UID (serial version UID )</li>
+<li><strong>实现Serializable的第二个代价是，它增加了出现Bug和安全漏洞的可能性(第85条)</strong>。无论你是接受了默认的行为，还是覆盖了默认的行为，反序列化机制(deserialization)都是一个“隐藏的构造器”，具备与其他构造器相同的特点。因为反序列化机制中没有显式的构造器，所以你很容易忘记要确保：反序列化过程必须也要保证所有“由真正的构造器建立起来的约束关系”，井且不允许攻击者访问正在构造过程中的对象的内部信息。依靠默认的反序列化机制，很容易使对象的约束关系遭到破坏，以及遭受到非法访问（见第88条）。</li>
+<li><strong>实现Serializable的第三个成本是，它增加了与发布类的新版本相关联的测试负担</strong>。当一个可序列化的类被修订的时候，要检查是否可以在新版本中序列化一个实例，然后在旧版本中反序列化。</li>
+<li><strong>为继承而设计的类(项目19)很少实现可序列化，接口也很少扩展它</strong>。</li>
+<li><strong>内部类(项目24)不应该实现可序列化</strong>。它们使用编译器生成的合成字段存储对封闭实例的引用，并存储来自封闭范围的局部变量值。这些字段如何与类定义对应是未指定的，匿名类和本地类的名称也是未指定的。因此，内部类的默认序列化形式是未定义的。然而，静态成员类可以实现序列化。</li>
+</ol>
+<p>如果一个类将要加入到某个框架中，井且该框架依赖于序列化来实现对象传输或者持久化，对干这个类来说，实现SeriaJizable接口就非常有必要。</p>
+<p>总而言之，实现Serializable的易用性是似是而非的。除非类只在受保护的环境中使用，在这种环境中版本永远不必互操作，服务器永远不会暴露于不受信任的数据，否则实现Serializable是一个需要非常小心的严肃承诺。如果类允许继承，则需要格外小心。</p>
+<h2 id="第87条-考虑使用自定义的序列化形式"><a href="#第87条-考虑使用自定义的序列化形式" class="headerlink" title="第87条 考虑使用自定义的序列化形式"></a>第87条 考虑使用自定义的序列化形式</h2><p>如果没有先认真考虑默认的序列化形式是否合达，则不要贸然接受。</p>
+<p>如果一个对象的物理表示法等同于它的逻辑内容，可能就适合于使用默认的序列化形式。使用默认序列化形式会有以下4个缺点：</p>
+<ol>
+<li>它使这个类的导出API永远地束缚在该类的内部表示法上。</li>
+<li>它会消耗过多的空间</li>
+<li>它会消耗过多的时间。</li>
+<li>它会引起栈溢出。</li>
+</ol>
+<p>论你是否使用默认的序列化形式，当defaultWriteObject方法被调用的时候，每一个未被标记为transient的实例域都会被序列化。因此，每一个可以被标记为transient的实例域都应该做上这样的标记。在决定将一个域做成非transient 的乏前，请一定要确信它的值将是该对象逻辑状态的一部分。当一个实例被反序列化的时候，这些域将被初始化为它们的默认值(default value)：对于对象引用域，默认值为null,对于数值基本域，默认值为o,对于boolean域，默认值为false</p>
+<p>总而言之，当你决定要将一个类做成可序列化的时候（见第86条），讲仔细考虑应该采用什么样的序列化形式。只有当默认的序列化形式能够合理地描述对象的逻辑状态时，才能使用默认的序列化形式；否则就要设计一个自定义的序列化形式，通过它合理地描述对象的状态。你应该分配足够多的时间来设计类的序列化形式，就好像分配足够多的时间来设计它的导出方法一样（见第51条）。正如你无法在将来的版本中去掉导出方法一样，你也不能去掉序列化形式中的域；它们必须被永久地保留下去，以确保序列化兼容性。选择错误的序列化形式对干一个类的复杂性和性能都会有永久的负面影响。</p>
+<h2 id="第88条-保护性地编写readObjct方法"><a href="#第88条-保护性地编写readObjct方法" class="headerlink" title="第88条 保护性地编写readObjct方法"></a>第88条 保护性地编写readObjct方法</h2><p>构造器必须检查其参数的有效性（见第38条），并且在必要的时候对参数进行保护性拷贝（见第39条）。</p>
+<p>总而言之，每当你编写readObject方法的时候，都要这样想：你正在编写一个公有的构造器，无论给它传递什么样的字节流，它都必须产生一个有效的实例。不要假设这个字节流一定代表着一个真正被序列化过的实例。虽然在本条目的例子中，类使用了默认的序列化形式，但是，所有讨论到的有可能发生的问题也同样适用千使用自定义序列化形式的类。下面以摘要的形式给出一些指导方针，有助千编写出更加健壮的readObject方法：</p>
+<ul>
+<li>对于对象引用埮必须保持为私有的类，要保护性地拷贝这些域中的每个对象。不可变类的可变组件就属千这一类别。</li>
+<li>对干任何约束条件，如果检查失败，则抛出一个InvalidObjectException异常。这些检查动作应该跟在所有的保护性拷贝之后。</li>
+<li>如果整个对象图在被反序列化之后必须进行验证，就应该使用Objectlnput Validation接口[JavaSE6, Serialization]。</li>
+<li>无论是直接方式还是间接方式，都不要调用类中任何可被覆盖的方法。</li>
+</ul>
+<h2 id="第89条-若想控制实例，使用Enum比readResolve"><a href="#第89条-若想控制实例，使用Enum比readResolve" class="headerlink" title="第89条 若想控制实例，使用Enum比readResolve"></a>第89条 若想控制实例，使用Enum比readResolve</h2><p>总而言之，你应该尽可能地使用枚举类型来实施实例控制的约束条件。如果做不到，同时又需要一个既可序列化又是实例受控(instance-co?trolled)的类，就必须提供一个readResolver方法，并确保该类的所有实例域都为基本类型，或者是transient的。</p>
+<h2 id="第90条-考虑用序列化代理代替序列化实例"><a href="#第90条-考虑用序列化代理代替序列化实例" class="headerlink" title="第90条 考虑用序列化代理代替序列化实例"></a>第90条 考虑用序列化代理代替序列化实例</h2><p>总而言之，每当你发现自己必须在一个不能被客户端扩展的类上编写readObject或者writeObject方法的时候，就应该考虑使用序列化代理模式。要想稳健地将带有重要约束条件的对象序列化时，这种模式可能是最容易的方法。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/06/Effective-Java-3rd第11章(79~84)/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2003,582 +2684,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Lambda学习-1/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/Lambda学习-1/" itemprop="url">
-                  Lambda学习(1)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 21:37:52" itemprop="dateCreated datePublished" datetime="2018-11-08T21:37:52+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 17:10:30" itemprop="dateModified" datetime="2019-01-06T17:10:30+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="lambda表达式学习"><a href="#lambda表达式学习" class="headerlink" title="lambda表达式学习"></a>lambda表达式学习</h1><h2 id="思想"><a href="#思想" class="headerlink" title="思想"></a>思想</h2><p>传递一段代码。</p>
-<p>面向对象编程：想要做一件事，就让可以完成这件事的对象去做。</p>
-<p>面向函数编程：只要能获取结果，谁去做的，怎么做的都不重要，重视的是结果，不重视过程。</p>
-<h2 id="了解匿名内部类"><a href="#了解匿名内部类" class="headerlink" title="了解匿名内部类"></a>了解匿名内部类</h2><h3 id="匿名内部类"><a href="#匿名内部类" class="headerlink" title="匿名内部类"></a>匿名内部类</h3><p>匿名内部类的定义格式：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">接口名称 对象名 = <span class="keyword">new</span> 接口名称()&#123;       </span><br><span class="line">    <span class="comment">//覆盖重写所有抽象方法      </span></span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
-<p>格式“new 接口名称(){……}”解析：   </p>
-<ol>
-<li>new代表创建对象的动作</li>
-<li>接口名称就是匿名内部类需要实现的接口</li>
-<li>{…………}这才是匿名内部类的内容</li>
-</ol>
-<p>特点：</p>
-<ol>
-<li>匿名内部类在【创建对象】时只能使用唯一一次。</li>
-<li>匿名内部类在【调用方法】时只能使用唯一一次。</li>
-<li>匿名内部类省略了【实现类/子类名称】，但是匿名对象省略了【对象名称】。</li>
-</ol>
-<p>Lambda和匿名内部类很相似。</p>
-<h3 id="匿名内部类的优劣"><a href="#匿名内部类的优劣" class="headerlink" title="匿名内部类的优劣"></a>匿名内部类的优劣</h3><p>优点：省去实现类的定义<br>缺点：语法复杂</p>
-<h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p>lambda 表达式的语法格式如下：</p>
-<p>(parameters) -&gt; expression<br>或<br>(parameters) -&gt;{ statements; }  </p>
-<p>以下是lambda表达式的重要特征:   </p>
-<ol>
-<li>可选类型声明：不需要声明参数类型，编译器可以统一识别参数值。    </li>
-<li>可选的参数圆括号：一个参数无需定义圆括号，但多个参数需要定义圆括号。</li>
-<li>可选的大括号：如果主体包含了一个语句，就不需要使用大括号。</li>
-<li>可选的返回关键字：如果主体只有一个表达式返回值则编译器会自动返回值，大括号需要指定明表达式返回了一个数值。</li>
-</ol>
-<p>有且仅有一个抽象方法的接口，成为<strong>函数式接口</strong>。</p>
-<h3 id="语法解析"><a href="#语法解析" class="headerlink" title="语法解析"></a>语法解析</h3><p>Lambda表达式由三部分组成：1.一些参数。2.一个箭头。3.一段代码<br>(参数列表) -&gt; {方法体}</p>
-<ol>
-<li>():一些参数,有就写，没有就空着，多个参数用”,”号隔开。</li>
-<li>-&gt;:传递的意思，表示把参数传递给方法体。</li>
-<li>{}:重写接口对象方法。</li>
-</ol>
-<h3 id="在lambda中我们遵循如下的表达式来编写："><a href="#在lambda中我们遵循如下的表达式来编写：" class="headerlink" title="在lambda中我们遵循如下的表达式来编写："></a>在lambda中我们遵循如下的表达式来编写：</h3><p><code>expression = (variable) -&gt; action</code><br>variable: 这是一个变量,一个占位符。像x,y,z,可以是多个变量；<br>action: 这里我称它为action, 这是我们实现的代码逻辑部分,它可以是一行代码也可以是一个代码片段。<br>可以看到Java中lambda表达式的格式：参数、箭头、以及动作实现，当一个动作实现无法用一行代码完成，可以编写 一段代码用{}包裹起来。</p>
-<p>lambda表达式可以包含多个参数,例如：<br><code>int sum = (x, y) -&gt; x + y;</code><br>这时候我们应该思考这段代码不是之前的x和y数字相加，而是创建了一个函数，用来计算两个操作数的和。 后面用int类型进行接收，在lambda中为我们省略去了return。</p>
-<h2 id="Lambda-表达式实例"><a href="#Lambda-表达式实例" class="headerlink" title="Lambda 表达式实例"></a>Lambda 表达式实例</h2><p>Lambda 表达式的简单例子:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">// 1. 不需要参数,返回值为 5  </span><br><span class="line">() -&gt; 5  </span><br><span class="line">  </span><br><span class="line">// 2. 接收一个参数(数字类型),返回其2倍的值  </span><br><span class="line">x -&gt; 2 * x  </span><br><span class="line">  </span><br><span class="line">// 3. 接受2个参数(数字),并返回他们的差值  </span><br><span class="line">(x, y) -&gt; x – y  </span><br><span class="line">  </span><br><span class="line">// 4. 接收2个int型整数,返回他们的和  </span><br><span class="line">(int x, int y) -&gt; x + y  </span><br><span class="line">  </span><br><span class="line">// 5. 接受一个 string 对象,并在控制台打印,不返回任何值(看起来像是返回void)  </span><br><span class="line">(String s) -&gt; System.out.print(s)</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">public class Java8Tester &#123;</span><br><span class="line">   public static void main(String args[])&#123;</span><br><span class="line">      Java8Tester tester = new Java8Tester();</span><br><span class="line">        </span><br><span class="line">      // 类型声明</span><br><span class="line">      MathOperation addition = (int a, int b) -&gt; a + b;</span><br><span class="line">        </span><br><span class="line">      // 不用类型声明</span><br><span class="line">      MathOperation subtraction = (a, b) -&gt; a - b;</span><br><span class="line">        </span><br><span class="line">      // 大括号中的返回语句</span><br><span class="line">      MathOperation multiplication = (int a, int b) -&gt; &#123; return a * b; &#125;;</span><br><span class="line">        </span><br><span class="line">      // 没有大括号及返回语句</span><br><span class="line">      MathOperation division = (int a, int b) -&gt; a / b;</span><br><span class="line">        </span><br><span class="line">      System.out.println(&quot;10 + 5 = &quot; + tester.operate(10, 5, addition));</span><br><span class="line">      System.out.println(&quot;10 - 5 = &quot; + tester.operate(10, 5, subtraction));</span><br><span class="line">      System.out.println(&quot;10 x 5 = &quot; + tester.operate(10, 5, multiplication));</span><br><span class="line">      System.out.println(&quot;10 / 5 = &quot; + tester.operate(10, 5, division));</span><br><span class="line">        </span><br><span class="line">      // 不用括号</span><br><span class="line">      GreetingService greetService1 = message -&gt;</span><br><span class="line">      System.out.println(&quot;Hello &quot; + message);</span><br><span class="line">        </span><br><span class="line">      // 用括号</span><br><span class="line">      GreetingService greetService2 = (message) -&gt;</span><br><span class="line">      System.out.println(&quot;Hello &quot; + message);</span><br><span class="line">        </span><br><span class="line">      greetService1.sayMessage(&quot;Runoob&quot;);</span><br><span class="line">      greetService2.sayMessage(&quot;Google&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">    </span><br><span class="line">   interface MathOperation &#123;</span><br><span class="line">      int operation(int a, int b);</span><br><span class="line">   &#125;</span><br><span class="line">    </span><br><span class="line">   interface GreetingService &#123;</span><br><span class="line">      void sayMessage(String message);</span><br><span class="line">   &#125;</span><br><span class="line">    </span><br><span class="line">   private int operate(int a, int b, MathOperation mathOperation)&#123;</span><br><span class="line">      return mathOperation.operation(a, b);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>程序输出结果为<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ javac Java8Tester.java </span><br><span class="line">$ java Java8Tester</span><br><span class="line">10 + 5 = 15</span><br><span class="line">10 - 5 = 5</span><br><span class="line">10 x 5 = 50</span><br><span class="line">10 / 5 = 2</span><br><span class="line">Hello Runoob</span><br><span class="line">Hello Google</span><br></pre></td></tr></table></figure></p>
-<h3 id="java8的新特性允许这样写"><a href="#java8的新特性允许这样写" class="headerlink" title="java8的新特性允许这样写"></a>java8的新特性允许这样写</h3><hr>
-<p><code>System.out.println(&quot;10 + 5 = &quot; + tester.operate(10, 5, addition));</code><br>这里还有另外一种写法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">System.out.println(&quot;10+5=&quot; + addition.operation(10, 5));</span><br><span class="line"></span><br><span class="line">interface MathOperation &#123; int operation(int a, int b); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>此接口要求必须是函数式接口，如果<strong>其中有两个方法则lambda表达式会编译错误</strong>。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">interface MathOperation &#123;</span><br><span class="line">    int operation(int a, int b);</span><br><span class="line">        default int addition(int a, int b)&#123;</span><br><span class="line">        return a+b;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<p>使用 Lambda 表达式需要注意以下两点：    </p>
-<ul>
-<li><strong>Lambda表达式主要用来定义行内执行的方法类型接口</strong>，例如，一个简单方法接口。在上面例子中，我们使用各种类型的Lambda表达式来定义MathOperation接口的方法。然后我们定义了sayMessage的执行。  </li>
-<li>Lambda 表达式免去了使用匿名方法的麻烦，并且给予Java简单但是强大的函数化的编程能力。</li>
-</ul>
-<h2 id="变量作用域"><a href="#变量作用域" class="headerlink" title="变量作用域"></a>变量作用域</h2><p><strong>lambda 表达式只能引用标记了 final 的外层局部变量</strong>，这就是说不能在 lambda 内部修改定义在域外的局部变量，否则会编译错误。</p>
-<p>在 Java8Tester.java 文件输入以下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">public class Java8Tester &#123;</span><br><span class="line"> </span><br><span class="line">   final static String salutation = &quot;Hello! &quot;;</span><br><span class="line">   </span><br><span class="line">   public static void main(String args[])&#123;</span><br><span class="line">      GreetingService greetService1 = message -&gt; </span><br><span class="line">      System.out.println(salutation + message);</span><br><span class="line">      greetService1.sayMessage(&quot;Runoob&quot;);</span><br><span class="line">   &#125;</span><br><span class="line">    </span><br><span class="line">   interface GreetingService &#123;</span><br><span class="line">      void sayMessage(String message);</span><br><span class="line">   &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>执行以上脚本，输出结果为：<br><code>Hello! Runoob</code></p>
-<ul>
-<li>lambda 表达式的局部变量可以不用声明为 final，<strong>但是必须不可被后面的代码修改</strong>（即隐性的具有 final 的语义） </li>
-<li>在 Lambda 表达式当中不允许声明一个与局部变量同名的参数或者局部变量。</li>
-</ul>
-<h2 id="基本lambda例子"><a href="#基本lambda例子" class="headerlink" title="基本lambda例子"></a>基本lambda例子</h2><h3 id="1-List循环"><a href="#1-List循环" class="headerlink" title="1.  List循环"></a>1.  List循环</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">String[] atp = &#123;&quot;Rafael Nadal&quot;, &quot;Novak Djokovic&quot;,  </span><br><span class="line">       &quot;Stanislas Wawrinka&quot;,  </span><br><span class="line">       &quot;David Ferrer&quot;,&quot;Roger Federer&quot;,  </span><br><span class="line">       &quot;Andy Murray&quot;,&quot;Tomas Berdych&quot;,  </span><br><span class="line">       &quot;Juan Martin Del Potro&quot;&#125;;  </span><br><span class="line">List&lt;String&gt; players =  Arrays.asList(atp);  </span><br><span class="line">  </span><br><span class="line">// 以前的循环方式  </span><br><span class="line">for (String player : players) &#123;  </span><br><span class="line">     System.out.print(player + &quot;; &quot;);  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line">// 使用 lambda 表达式以及函数操作(functional operation)  </span><br><span class="line">players.forEach((player) -&gt; System.out.print(player + &quot;; &quot;));  </span><br><span class="line">   </span><br><span class="line">// 在 Java 8 中使用双冒号操作符(double colon operator)  </span><br><span class="line">players.forEach(System.out::println);</span><br></pre></td></tr></table></figure>
-<h3 id="2-lambda表达式来代替匿名类-例如：Runnable"><a href="#2-lambda表达式来代替匿名类-例如：Runnable" class="headerlink" title="2.  lambda表达式来代替匿名类,例如：Runnable"></a>2.  lambda表达式来代替匿名类,例如：Runnable</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">// 1.1使用匿名内部类  </span><br><span class="line">new Thread(new Runnable() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public void run() &#123;  </span><br><span class="line">        System.out.println(&quot;Hello world !&quot;);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;).start();  </span><br><span class="line">  </span><br><span class="line">// 1.2使用 lambda expression  </span><br><span class="line">new Thread(() -&gt; System.out.println(&quot;Hello world !&quot;)).start();  </span><br><span class="line">  </span><br><span class="line">// 2.1使用匿名内部类  </span><br><span class="line">Runnable race1 = new Runnable() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public void run() &#123;  </span><br><span class="line">        System.out.println(&quot;Hello world !&quot;);  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;;  </span><br><span class="line">  </span><br><span class="line">// 2.2使用 lambda expression  </span><br><span class="line">Runnable race2 = () -&gt; System.out.println(&quot;Hello world !&quot;);  </span><br><span class="line">   </span><br><span class="line">// 直接调用 run 方法(没开新线程哦!)  </span><br><span class="line">race1.run();  </span><br><span class="line">race2.run();</span><br></pre></td></tr></table></figure>
-<h3 id="3-使用Lambdas排序集合"><a href="#3-使用Lambdas排序集合" class="headerlink" title="3.  使用Lambdas排序集合"></a>3.  使用Lambdas排序集合</h3><p>在Java中,<strong>Comparator 类</strong>被用来排序集合。 在下面的例子中,我们将根据球员的 name, surname, name 长度 以及最后一个字母。 和前面的示例一样,先使用匿名内部类来排序,然后再使用lambda表达式精简我们的代码。<br>在第一个例子中,我们将根据name来排序list。 使用旧的方式,代码如下所示:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">String[] players = &#123;&quot;Rafael Nadal&quot;, &quot;Novak Djokovic&quot;,   </span><br><span class="line">    &quot;Stanislas Wawrinka&quot;, &quot;David Ferrer&quot;,  </span><br><span class="line">    &quot;Roger Federer&quot;, &quot;Andy Murray&quot;,  </span><br><span class="line">    &quot;Tomas Berdych&quot;, &quot;Juan Martin Del Potro&quot;,  </span><br><span class="line">    &quot;Richard Gasquet&quot;, &quot;John Isner&quot;&#125;;  </span><br><span class="line">   </span><br><span class="line">// 1.1 使用匿名内部类根据 name 排序 players  </span><br><span class="line">Arrays.sort(players, new Comparator&lt;String&gt;() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public int compare(String s1, String s2) &#123;  </span><br><span class="line">        return (s1.compareTo(s2));  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
-<p>使用lambdas,可以通过下面的代码实现同样的功能:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 1.2 使用 lambda expression 排序 players  </span><br><span class="line">Comparator&lt;String&gt; sortByName = (String s1, String s2) -&gt; (s1.compareTo(s2));  </span><br><span class="line">Arrays.sort(players, sortByName);  </span><br><span class="line">  </span><br><span class="line">// 1.3 也可以采用如下形式:  </span><br><span class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.compareTo(s2)));  </span><br><span class="line">// 1.4 也可以采用如下形式: </span><br><span class="line">Arrays.sort(players,(String::compareTo));</span><br></pre></td></tr></table></figure></p>
-<p>其他的排序如下所示。 和上面的示例一样,代码分别通过匿名内部类和一些lambda表达式来实现Comparator :<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">// 1.1 使用匿名内部类根据 surname 排序 players  </span><br><span class="line">Arrays.sort(players, new Comparator&lt;String&gt;() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public int compare(String s1, String s2) &#123;  </span><br><span class="line">        return (s1.substring(s1.indexOf(&quot; &quot;)).compareTo(s2.substring(s2.indexOf(&quot; &quot;))));  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);  </span><br><span class="line">  </span><br><span class="line">// 1.2 使用 lambda expression 排序,根据 surname  </span><br><span class="line">Comparator&lt;String&gt; sortBySurname = (String s1, String s2) -&gt;   </span><br><span class="line">    ( s1.substring(s1.indexOf(&quot; &quot;)).compareTo( s2.substring(s2.indexOf(&quot; &quot;)) ) );  </span><br><span class="line">Arrays.sort(players, sortBySurname);  </span><br><span class="line">  </span><br><span class="line">// 1.3 或者这样,怀疑原作者是不是想错了,括号好多...  </span><br><span class="line">Arrays.sort(players, (String s1, String s2) -&gt;   </span><br><span class="line">      ( s1.substring(s1.indexOf(&quot; &quot;)).compareTo( s2.substring(s2.indexOf(&quot; &quot;)) ) )   </span><br><span class="line">    );  </span><br><span class="line">  </span><br><span class="line">// 2.1 使用匿名内部类根据 name lenght 排序 players  </span><br><span class="line">Arrays.sort(players, new Comparator&lt;String&gt;() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public int compare(String s1, String s2) &#123;  </span><br><span class="line">        return (s1.length() - s2.length());  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);  </span><br><span class="line">  </span><br><span class="line">// 2.2 使用 lambda expression 排序,根据 name lenght  </span><br><span class="line">Comparator&lt;String&gt; sortByNameLenght = (String s1, String s2) -&gt; (s1.length() - s2.length());  </span><br><span class="line">Arrays.sort(players, sortByNameLenght);  </span><br><span class="line">  </span><br><span class="line">// 2.3 or this  </span><br><span class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.length() - s2.length()));  </span><br><span class="line">  </span><br><span class="line">// 3.1 使用匿名内部类排序 players, 根据最后一个字母  </span><br><span class="line">Arrays.sort(players, new Comparator&lt;String&gt;() &#123;  </span><br><span class="line">    @Override  </span><br><span class="line">    public int compare(String s1, String s2) &#123;  </span><br><span class="line">        return (s1.charAt(s1.length() - 1) - s2.charAt(s2.length() - 1));  </span><br><span class="line">    &#125;  </span><br><span class="line">&#125;);  </span><br><span class="line">  </span><br><span class="line">// 3.2 使用 lambda expression 排序,根据最后一个字母  </span><br><span class="line">Comparator&lt;String&gt; sortByLastLetter =   </span><br><span class="line">    (String s1, String s2) -&gt;   </span><br><span class="line">        (s1.charAt(s1.length() - 1) - s2.charAt(s2.length() - 1));  </span><br><span class="line">Arrays.sort(players, sortByLastLetter);  </span><br><span class="line">  </span><br><span class="line">// 3.3 or this  </span><br><span class="line">Arrays.sort(players, (String s1, String s2) -&gt; (s1.charAt(s1.length() - 1) - s2.charAt(s2.length() - 1)));</span><br></pre></td></tr></table></figure></p>
-<ol start="4">
-<li></li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Lambda和流学习索引/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/Lambda和流学习索引/" itemprop="url">
-                  Lambda和流
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 21:37:52" itemprop="dateCreated datePublished" datetime="2018-11-08T21:37:52+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 17:10:30" itemprop="dateModified" datetime="2019-01-06T17:10:30+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Lambda和流学习目录"><a href="#Lambda和流学习目录" class="headerlink" title="Lambda和流学习目录"></a>Lambda和流学习目录</h1><h2 id="Lambda"><a href="#Lambda" class="headerlink" title="Lambda"></a>Lambda</h2><h3 id="入门篇"><a href="#入门篇" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://www.cnblogs.com/coprince/p/8692972.html" target="_blank" rel="noopener">Java8 lambda表达式10个示例</a><br><a href="https://blog.csdn.net/qq_37659383/article/details/80210244" target="_blank" rel="noopener">java API中提供的常用的函数式接口</a></p>
-<h2 id="流操作"><a href="#流操作" class="headerlink" title="流操作"></a>流操作</h2><h3 id="入门篇-1"><a href="#入门篇-1" class="headerlink" title="入门篇"></a>入门篇</h3><p><a href="https://blog.csdn.net/u014519461/article/details/77940693" target="_blank" rel="noopener">Java8 常用的Stream流操作</a><br><a href="https://www.jianshu.com/p/98363a966847" target="_blank" rel="noopener">java8 Stream类常用方法总结</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/08/Linux查看内存是否充足/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/11/08/Linux查看内存是否充足/" itemprop="url">
-                  Linux查看内存是否充足
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-11-08 21:22:17 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2018-11-08T21:22:17+08:00">2018-11-08</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Linux查看内存是否充足"><a href="#Linux查看内存是否充足" class="headerlink" title="Linux查看内存是否充足"></a>Linux查看内存是否充足</h1><p><strong>一、内存优化检查主要工具</strong></p>
-<ol>
-<li>free</li>
-<li>top</li>
-<li>vmstat</li>
-</ol>
-<p><strong>二、和内存相关的几个指标</strong></p>
-<ol>
-<li>平均负载</li>
-<li>i/o</li>
-</ol>
-<p><strong>三、如何判断linux服务器是否需要添加内存</strong></p>
-<p> 关键察看是否swap里面参数的si和so参数是否为0，如果为0说明内存够用，一旦不为0，说明内存短缺，所以si和so有非常多的页交换，<br>备注：si是swap Page-ins ,so是swap Page-out</p>
-<p>用top和free查看到的结果有时候两台服务器的的内存空闲量都差不多，但是服务器的负载却会有着很大的差距，只能通过vmstat的si/so检测，发现是否需要添加内存。</p>
-<p>总结：linux内存没有一个工具的能够准确确定内存的使用量，只能使用vmstat的 si和so参数来判断。</p>
-<p>[root@localhost ~]# vmstat<br>procs | memory | swap| io | system | cpu |<br>—|—|—|—|—|—<br>r  b |swpd   free   buff  cache|si   so |bi    bo  |in   cs |us sy id wa st<br>1  0 |13872 1340816  76 309800 | 0    0 | 4     3  | 3    4 |0 0 99  0  0</p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2626,7 +2731,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">27</span>
+                    <span class="site-state-item-count">30</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2655,7 +2760,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">8</span>
+                      
+                    
+                    <span class="site-state-item-count">9</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2696,7 +2803,13 @@
                     
                       
                     
-                    <span class="site-state-item-count">14</span>
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">17</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
