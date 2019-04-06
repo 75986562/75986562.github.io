@@ -314,6 +314,184 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/06/java异常处理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/06/java异常处理/" itemprop="url">
+                  java异常处理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-06 16:37:30 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2019-04-06T16:37:30+08:00">2019-04-06</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="java异常处理"><a href="#java异常处理" class="headerlink" title="java异常处理"></a>java异常处理</h1><h2 id="使用-ControllerAdvice-拦截异常并统一处理"><a href="#使用-ControllerAdvice-拦截异常并统一处理" class="headerlink" title="使用@ControllerAdvice 拦截异常并统一处理"></a>使用@ControllerAdvice 拦截异常并统一处理</h2><h3 id="ControllerAdvice注解简介"><a href="#ControllerAdvice注解简介" class="headerlink" title="@ControllerAdvice注解简介"></a>@ControllerAdvice注解简介</h3><ol>
+<li>通过<code>@ControllerAdvice</code>注解可以将对于控制器的全局配置放在同一个位置。</li>
+<li>注解了<code>@Controller</code>的类的方法可以使用<code>@ExceptionHandler</code>、<code>@InitBinder</code>、<code>@ModelAttribute</code>注解到方法上。</li>
+<li><strong><code>@ControllerAdvice</code>注解将作用在所有注解了<code>@RequestMapping</code>的控制器的方法上</strong></li>
+<li><code>@ExceptionHandler</code>：用于全局处理控制器里的异常。</li>
+</ol>
+<h3 id="使用例子"><a href="#使用例子" class="headerlink" title="使用例子"></a>使用例子</h3><ol>
+<li>创建MyControllerAdvice，并添加 @ControllerAdvice注解。</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@ControllerAdvice</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyControllerAdvice</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//全局异常捕捉处理</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = Exception.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map <span class="title">errorHandler</span><span class="params">(Exception ex)</span> </span>&#123;</span><br><span class="line">        Map map = <span class="keyword">new</span> HashMap();</span><br><span class="line">        map.put(<span class="string">"code"</span>, <span class="number">100</span>);</span><br><span class="line">        map.put(<span class="string">"msg"</span>, ex.getMessage());</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//拦截捕捉自定义异常 MyException.class</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="meta">@ExceptionHandler</span>(value = MyException.class)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map <span class="title">myErrorHandler</span><span class="params">(MyException ex)</span> </span>&#123;</span><br><span class="line">        Map map = <span class="keyword">new</span> HashMap();</span><br><span class="line">        map.put(<span class="string">"code"</span>, ex.getCode());</span><br><span class="line">        map.put(<span class="string">"msg"</span>, ex.getMsg());</span><br><span class="line">        <span class="keyword">return</span> map;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li><p>编写自定义异常类</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyException</span> <span class="keyword">extends</span> <span class="title">RuntimeException</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyException</span><span class="params">(String code, String msg)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.code = code;</span><br><span class="line">        <span class="keyword">this</span>.msg = msg;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String code;</span><br><span class="line">    <span class="keyword">private</span> String msg;</span><br><span class="line">    <span class="comment">// getter &amp; setter</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>controller中抛出异常进行测试</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(<span class="string">"/home/ex2"</span>)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">home</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line"><span class="comment">//        throw new Exception("程序异常");</span></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> MyException(<span class="string">"101"</span>, <span class="string">"自定义异常"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试<br>启动应用，访问：<a href="http://localhost:8080/home/ex" target="_blank" rel="noopener">http://localhost:8080/home/ex</a> ，正常显示以下json内容，证明自定义异常已经成功被拦截。<br><code>{&quot;msg&quot;:&quot;自定义异常&quot;,&quot;code&quot;:&quot;101&quot;}</code> </p>
+</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/27/oauth简介/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -432,6 +610,165 @@
           
             <hr>
 <h1 id="OAuth简介"><a href="#OAuth简介" class="headerlink" title="OAuth简介"></a>OAuth简介</h1><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a href="http://www.ruanyifeng.com/blog/2014/05/oauth_2_0.html" target="_blank" rel="noopener">理解OAuth 2.0</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/09/Json工具类/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/09/Json工具类/" itemprop="url">
+                  json工具类
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-09 16:37:30 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2019-03-09T16:37:30+08:00">2019-03-09</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="Json工具类"><a href="#Json工具类" class="headerlink" title="Json工具类"></a>Json工具类</h1><h2 id="Json转javabean"><a href="#Json转javabean" class="headerlink" title="Json转javabean"></a>Json转javabean</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSON;</span><br><span class="line"><span class="keyword">import</span> com.alibaba.fastjson.JSONObject;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.core.JsonProcessingException;</span><br><span class="line"><span class="keyword">import</span> com.fasterxml.jackson.databind.ObjectMapper;</span><br><span class="line"><span class="keyword">import</span> com.hfi.health.hpp.medical.api.exception.JsonDeseriException;</span><br><span class="line"><span class="keyword">import</span> java.io.IOException;</span><br><span class="line"><span class="keyword">import</span> java.util.Map;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JsonUtil</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">String <span class="title">serialize</span><span class="params">(T obj)</span></span>&#123;</span><br><span class="line">            ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> mapper.writeValueAsString(obj);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (JsonProcessingException e) &#123;</span><br><span class="line">                <span class="comment">//</span></span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">deserialize</span><span class="params">(String str, Class&lt;T&gt; clazz)</span> <span class="keyword">throws</span> JsonDeseriException </span>&#123;</span><br><span class="line">            ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="keyword">return</span> mapper.readValue(str, clazz);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> JsonDeseriException();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">mapToJson</span><span class="params">(Map params)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> JSONObject.toJSON(params).toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Map <span class="title">jsonToMap</span><span class="params">(String jsonParam)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (Map) JSON.parse(jsonParam);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
           
         
@@ -1849,392 +2186,11 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/26/Linux环境下Mysql5.7的tar包形式安装/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/26/Linux环境下Mysql5.7的tar包形式安装/" itemprop="url">
-                  Linux环境下Mysql5.7的tar包形式安装
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-26 16:37:30 / 修改时间：20:20:30" itemprop="dateCreated datePublished" datetime="2018-12-26T16:37:30+08:00">2018-12-26</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="Linux环境下Mysql5-7的tar包形式安装"><a href="#Linux环境下Mysql5-7的tar包形式安装" class="headerlink" title="Linux环境下Mysql5.7的tar包形式安装"></a>Linux环境下Mysql5.7的tar包形式安装</h1><h2 id="前期准备"><a href="#前期准备" class="headerlink" title="前期准备"></a>前期准备</h2><ol>
-<li>下载地址<a href="https://dev.mysql.com/downloads/mysql/" target="_blank" rel="noopener">Mysql官网</a></li>
-<li>选择对应版本：<ol>
-<li>系统选择 Red Hat Enterprise Linux / Oracle Linux 系统</li>
-<li>版本选择 Oracl Linux 7 (x86, 64-bit) 版本</li>
-<li>选择mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar版本下载</li>
-</ol>
-</li>
-<li>上传到服务器<br> 使用相应工具上传到服务器，这里用的是SecureCRT 8.1上传。<br> (1)在服务器界面按快捷键(Alt+P).<br> (2)将文件mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar放到本地的文档目录下<br> (3)输入命令put -r mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar,此时文件会传输到root根目录，当然你也可以自己指定目录</li>
-<li>将文件解压到指定目录，现在我们用的是/usr/local/mysql5.7</li>
-</ol>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><ol>
-<li>卸载centos7中自带的mariadb<br><code>rpm -qa|grep mariadb</code> //查询出来已安装的mariadb<br><code>rpm -e --nodeps</code> 文件名 //卸载mariadb,文件名为上述命令查询出来的文件</li>
-<li><p>查看是否已经安装了mysql(新机器可以跳过)</p>
-<p> <code>rpm -qa | grep -i mysql</code></p>
-<p> 查找mysql文件<code>find / -name mysql</code></p>
-<p> 使用<code>rm -rf mysql</code>文件路径删除</p>
-<p> 删除分散mysql文件<code>find / -name mysql / # whereis mysql</code></p>
-<p> 删除配置文档<code>rm -rf /etc/my.cnf</code></p>
-<p> 再次查找机器是否安装mysql<code>rpm -qa|grep -i mysql</code></p>
-</li>
-<li><p>解压文件<br>tar -xvf mysql-5.7.24-1.el7.x86_64.rpm-bundle.tar</p>
-</li>
-<li><p>创建相应用户组（可忽略）</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">#检查mysql是否存在      </span><br><span class="line">[root@hdp265dnsnfs ~]# rpm -qa | grep mysql     </span><br><span class="line">[root@hdp265dnsnfs ~]#      </span><br><span class="line"></span><br><span class="line">#检查mysql组和用户是否存在，如无创建    </span><br><span class="line">[root@hdp265dnsnfs ~]# cat /etc/group | grep mysql  </span><br><span class="line">[root@hdp265dnsnfs ~]#  cat /etc/passwd | grep mysql    </span><br><span class="line"></span><br><span class="line">#创建mysql用户组    </span><br><span class="line">[root@hdp265dnsnfs ~]# groupadd mysql   </span><br><span class="line">#创建一个用户名为mysql的用户并加入mysql用户组   </span><br><span class="line">[root@hdp265dnsnfs ~]# useradd -g mysql mysql   </span><br><span class="line">#制定password 为111111  </span><br><span class="line">[root@hdp265dnsnfs ~]# passwd mysql </span><br><span class="line">Changing password for user mysql.   </span><br><span class="line">New password:   </span><br><span class="line">BAD PASSWORD: The password is a palindrome  </span><br><span class="line">Retype new password:    </span><br><span class="line">passwd: all authentication tokens updated successfully.</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>写配置文件/etc/my.cnf<br> 命令：<code>touch my.cnf</code> 创建文件<br> 命令：<code>mkdir data</code> 创建文件夹<br> 命令：<code>vi my.cnf</code> 编辑文件</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">[mysql] </span><br><span class="line">#设置mysql客户端默认字符集  </span><br><span class="line">default-character-set=utf8      </span><br><span class="line">[mysqld]    </span><br><span class="line">#设置3306端口   </span><br><span class="line">port = 3306     </span><br><span class="line">#设置mysql的安装目录    </span><br><span class="line">basedir=/var/mysql5.7    </span><br><span class="line">#设置mysql数据库的数据的存放目录    </span><br><span class="line">datadir=/var/mysql5.7/data   </span><br><span class="line">#允许最大连接数     </span><br><span class="line">max_connections=200     </span><br><span class="line">#服务端使用的字符集默认为8比特编码的latin1字符集    </span><br><span class="line">character-set-server=utf8   </span><br><span class="line">#创建新表时将使用的默认存储引擎     </span><br><span class="line">lower_case_table_names=1    </span><br><span class="line">max_allowed_packet=16M</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>配置环境变量<br>命令：<code>vi .bashrc</code> 打开配置文件<br>输入export PATH=$PATH:/usr/local/mysql5.7</p>
-</li>
-<li><p>初始化<br><code>/usr/local/mysql5.7/bin/mysqld --initialize-insecure --user=mysql</code></p>
-</li>
-<li><p>启动<br>命令：<code>/usr/local/mysql5.7/bin/mysqld_safe &amp;</code>启动<br>接着设置root的密码</p>
-</li>
-<li><p>检查是否成功<br>命令：<code>ps -ef |grep mysql</code> 检查进程<br>命令: <code>netstat -an |grep 3306</code>  检查默认端口</p>
-</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/22/第96阶：Redis/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/22/第96阶：Redis/" itemprop="url">
-                  第96阶：Redis
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-22 16:37:30 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2018-12-22T16:37:30+08:00">2018-12-22</time>
-            
-
-            
-              
-
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/数据库/" itemprop="url" rel="index"><span itemprop="name">数据库</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第96阶：Redis"><a href="#第96阶：Redis" class="headerlink" title="第96阶：Redis"></a>第96阶：Redis</h1><h2 id="Redis简介"><a href="#Redis简介" class="headerlink" title="Redis简介"></a>Redis简介</h2><p>Redis是一种高级key-value数据库。它跟memcached类似，不过数据可以持久化，而且支持的数据类型很丰富。有字符串，链表，集合和有序集合。支持在服务器端计算集合的并，交和补集(difference)等，还支持多种排序功能。</p>
-<p>Redis的所有数据都是保存在内存中，然后不定期的通过异步方式保存到磁盘上(这称为“半持久化模式”)；也可以把每一次数据变化都写入到一个append only file(aof)里面(这称为“全持久化模式”)。 </p>
-<p>redis提供两种方式进行持久化，一种是<strong>RDB持久化</strong>（原理是将Reids在内存中的数据库记录定时dump到磁盘上的RDB持久化），另外一种是<strong>AOF（append only file）持久化</strong>（原理是将Reids的操作日志以追加的方式写入文件）。</p>
-<h2 id="Redis持久化"><a href="#Redis持久化" class="headerlink" title="Redis持久化"></a>Redis持久化</h2><p><a href="https://www.cnblogs.com/chenliangcl/p/7240350.html" target="_blank" rel="noopener">redis持久化的几种方式</a></p>
-<h3 id="二者的区别："><a href="#二者的区别：" class="headerlink" title="二者的区别："></a>二者的区别：</h3><ol>
-<li>RDB持久化<br> RDB持久化是指在指定的时间间隔内将内存中的数据集快照写入磁盘，实际操作过程是fork一个子进程，先将数据集写入临时文件，写入成功后，再替换之前的文件，用二进制压缩存储。<br><img src="https://images2017.cnblogs.com/blog/388326/201707/388326-20170726161552843-904424952.png" alt="RDB持久化原理图"></li>
-<li>AOF持久化<br> AOF持久化以日志的形式记录服务器所处理的每一个写、删除操作，查询操作不会记录，以文本的方式记录，可以打开文件看到详细的操作记录。<br><img src="https://images2017.cnblogs.com/blog/388326/201707/388326-20170726161604968-371688235.png" alt="AOF持久化"></li>
-</ol>
-<h3 id="二者优缺点"><a href="#二者优缺点" class="headerlink" title="二者优缺点"></a>二者优缺点</h3><p>RDB存在哪些优势呢？     </p>
-<ol>
-<li><p>一旦采用该方式，那么你的整个Redis数据库将只包含一个文件，这对于文件备份而言是非常完美的。比如，你可能打算每个小时归档一次最近24小时的数据，同时还要每天归档一次最近30天的数据。通过这样的备份策略，一旦系统出现灾难性故障，我们可以非常容易的进行恢复。</p>
-</li>
-<li><p>对于灾难恢复而言，RDB是非常不错的选择。因为我们可以非常轻松的将一个单独的文件压缩后再转移到其它存储介质上。</p>
-</li>
-<li><p>性能最大化。对于Redis的服务进程而言，在开始持久化时，它唯一需要做的只是fork出子进程，之后再由子进程完成这些持久化的工作，这样就可以极大的避免服务进程执行IO操作了。</p>
-</li>
-<li><p>相比于AOF机制，如果数据集很大，RDB的启动效率会更高。</p>
-</li>
-</ol>
-<p>RDB又存在哪些劣势呢？</p>
-<ol>
-<li><p>如果你想保证数据的高可用性，即最大限度的避免数据丢失，那么RDB将不是一个很好的选择。因为系统一旦在定时持久化之前出现宕机现象，此前没有来得及写入磁盘的数据都将丢失。</p>
-</li>
-<li><p>由于RDB是通过fork子进程来协助完成数据持久化工作的，因此，如果当数据集较大时，可能会导致整个服务器停止服务几百毫秒，甚至是1秒钟。</p>
-</li>
-</ol>
-<h2 id="Redis常用指令"><a href="#Redis常用指令" class="headerlink" title="Redis常用指令"></a>Redis常用指令</h2><p><a href="http://www.runoob.com/redis/redis-tutorial.html" target="_blank" rel="noopener">Redis常用指菜鸟教程</a></p>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/4/">4</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2277,7 +2233,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">30</span>
+                    <span class="site-state-item-count">32</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2355,7 +2311,11 @@
                     
                       
                     
-                    <span class="site-state-item-count">17</span>
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">19</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
