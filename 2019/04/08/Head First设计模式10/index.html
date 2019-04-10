@@ -108,27 +108,25 @@
 
 
 
-  <meta name="description" content="第62阶：jvm虚拟机优化jvm虚拟机优化 虚拟机桥接模式和NAT在桥接模式下。VMWare虚拟出来的操作系统就像是局域网中的一台独立的主机，它能够訪问网内不论什么一台机器。你须要手工为虚拟系统配置IP地址、子网掩码，并且还要和宿主机器处于同一网段，这样虚拟系统才干和宿主机器进行通信。 使用NAT模式。就是让虚拟系统借助NAT(网络地址转换)功能，通过宿主机器所在的网络来訪问公网。使用NAT模式">
-<meta name="keywords" content="jvm虚拟机">
+  <meta name="description" content="Head First设计模式10设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。 最少知识原则 好莱坞原则  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式 命令模式 模板方法模式 组合模式 状态模式 代理模式  状态模式状态模式定">
+<meta name="keywords" content="Head First设计模式">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第62阶：jvm虚拟机优化">
-<meta property="og:url" content="http://yoursite.com/2018/12/14/第62阶：jvm虚拟机优化/index.html">
+<meta property="og:title" content="Head First设计模式10">
+<meta property="og:url" content="http://yoursite.com/2019/04/08/Head First设计模式10/index.html">
 <meta property="og:site_name" content="萌面超人">
-<meta property="og:description" content="第62阶：jvm虚拟机优化jvm虚拟机优化 虚拟机桥接模式和NAT在桥接模式下。VMWare虚拟出来的操作系统就像是局域网中的一台独立的主机，它能够訪问网内不论什么一台机器。你须要手工为虚拟系统配置IP地址、子网掩码，并且还要和宿主机器处于同一网段，这样虚拟系统才干和宿主机器进行通信。 使用NAT模式。就是让虚拟系统借助NAT(网络地址转换)功能，通过宿主机器所在的网络来訪问公网。使用NAT模式">
+<meta property="og:description" content="Head First设计模式10设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。 最少知识原则 好莱坞原则  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式 命令模式 模板方法模式 组合模式 状态模式 代理模式  状态模式状态模式定">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png">
-<meta property="og:updated_time" content="2018-12-18T13:20:30.000Z">
+<meta property="og:updated_time" content="2019-04-10T13:20:30.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="第62阶：jvm虚拟机优化">
-<meta name="twitter:description" content="第62阶：jvm虚拟机优化jvm虚拟机优化 虚拟机桥接模式和NAT在桥接模式下。VMWare虚拟出来的操作系统就像是局域网中的一台独立的主机，它能够訪问网内不论什么一台机器。你须要手工为虚拟系统配置IP地址、子网掩码，并且还要和宿主机器处于同一网段，这样虚拟系统才干和宿主机器进行通信。 使用NAT模式。就是让虚拟系统借助NAT(网络地址转换)功能，通过宿主机器所在的网络来訪问公网。使用NAT模式">
-<meta name="twitter:image" content="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png">
+<meta name="twitter:title" content="Head First设计模式10">
+<meta name="twitter:description" content="Head First设计模式10设计原则 封装变化。  面向接口编程而非实现。 优先使用组合而非继承。  为了交互对象之间的松耦合设计而努力。 类应该对扩展开放，对修改关闭。 依赖倒置原则，要依赖抽象，不要依赖具体类。 最少知识原则 好莱坞原则  模式类型类型归集 OO模式 观察者模式 装饰者模式 工厂模式 抽象工厂模式 命令模式 模板方法模式 组合模式 状态模式 代理模式  状态模式状态模式定">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2018/12/14/第62阶：jvm虚拟机优化/">
+  <link rel="canonical" href="http://yoursite.com/2019/04/08/Head First设计模式10/">
 
 
 
@@ -138,7 +136,7 @@
   };
 </script>
 
-  <title>第62阶：jvm虚拟机优化 | 萌面超人</title>
+  <title>Head First设计模式10 | 萌面超人</title>
   
 
 
@@ -317,7 +315,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/14/第62阶：jvm虚拟机优化/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/08/Head First设计模式10/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="小华">
@@ -334,7 +332,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">第62阶：jvm虚拟机优化
+          <h1 class="post-title" itemprop="name headline">Head First设计模式10
               
             
           </h1>
@@ -359,7 +357,7 @@
                 
               
 
-              <time title="创建时间：2018-12-14 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-14T16:37:30+08:00">2018-12-14</time>
+              <time title="创建时间：2019-04-08 16:37:30" itemprop="dateCreated datePublished" datetime="2019-04-08T16:37:30+08:00">2019-04-08</time>
             
 
             
@@ -376,7 +374,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2018-12-18 21:20:30" itemprop="dateModified" datetime="2018-12-18T21:20:30+08:00">2018-12-18</time>
+                <time title="修改时间：2019-04-10 21:20:30" itemprop="dateModified" datetime="2019-04-10T21:20:30+08:00">2019-04-10</time>
               
             
           </span>
@@ -393,7 +391,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
 
                 
                 
@@ -428,63 +426,33 @@
 
       
         <hr>
-<h1 id="第62阶：jvm虚拟机优化"><a href="#第62阶：jvm虚拟机优化" class="headerlink" title="第62阶：jvm虚拟机优化"></a>第62阶：jvm虚拟机优化</h1><p><a href="https://www.bilibili.com/video/av31834249/?spm_id_from=333.788.videocard.17" target="_blank" rel="noopener">jvm虚拟机优化</a></p>
-<h2 id="虚拟机桥接模式和NAT"><a href="#虚拟机桥接模式和NAT" class="headerlink" title="虚拟机桥接模式和NAT"></a>虚拟机桥接模式和NAT</h2><p>在桥接模式下。VMWare虚拟出来的操作系统就像是局域网中的一台独立的主机，它能够訪问网内不论什么一台机器。你须要手工为虚拟系统配置IP地址、子网掩码，并且还要和宿主机器处于同一网段，这样虚拟系统才干和宿主机器进行通信。</p>
-<p>使用NAT模式。就是让虚拟系统借助NAT(网络地址转换)功能，通过宿主机器所在的网络来訪问公网。使用NAT模式能够实如今虚拟系统里訪问互联网。</p>
-<p>注意：NAT模式和桥接模式不能相互连接</p>
-<h2 id="java虚拟机的基本结构"><a href="#java虚拟机的基本结构" class="headerlink" title="java虚拟机的基本结构"></a>java虚拟机的基本结构</h2><p><a href="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png" target="_blank" rel="noopener">JVM的基本结构及其各部分详解（一）</a></p>
-<p><img src="https://images2015.cnblogs.com/blog/994276/201612/994276-20161218141127183-1877010567.png" alt="java虚拟机的基本结构"></p>
-<ol>
-<li><p>类加载子系统负责从文件系统或者网络中加载Class信息，加载的类信息存放于一块称为方法区的内存空间。除了类的信息外，方法区中可能还会存放运行时常量池信息，包括字符串字面量和数字常量（这部分常量信息是Class文件中常量池部分的内存映射）。</p>
-</li>
-<li><p>java堆在虚拟机启动的时候建立，它是java程序最主要的内存工作区域。几乎所有的java对象实例都存放在java堆中。堆空间是所有线程共享的，这是一块与java应用密切相关的内存空间。</p>
-</li>
-<li><p>java的NIO库允许java程序使用直接内存。直接内存是在java堆外的、直接向系统申请的内存空间。通常访问直接内存的速度会优于java堆。因此出于性能的考虑，读写频繁的场合可能会考虑使用直接内存。由于直接内存在java堆外，因此它的大小不会直接受限于Xmx指定的最大堆大小，但是系统内存是有限的，java堆和直接内存的总和依然受限于操作系统能给出的最大内存。</p>
-</li>
-<li><p>垃圾回收系统是java虚拟机的重要组成部分，垃圾回收器可以对方法区、java堆和直接内存进行回收。其中，java堆是垃圾收集器的工作重点。和C/C++不同，java中所有的对象空间释放都是隐式的，也就是说，java中没有类似free()或者delete()这样的函数释放指定的内存区域。对于不再使用的垃圾对象，垃圾回收系统会在后台默默工作，默默查找、标识并释放垃圾对象，完成包括java堆、方法区和直接内存中的全自动化管理。</p>
-</li>
-<li><p>每一个java虚拟机线程都有一个私有的java栈，一个线程的java栈在线程创建的时候被创建，java栈中保存着帧信息，java栈中保存着局部变量、方法参数，同时和java方法的调用、返回密切相关。</p>
-</li>
-<li><p>本地方法栈和java栈非常类似，最大的不同在于java栈用于方法的调用，而本地方法栈则用于本地方法的调用，作为对java虚拟机的重要扩展，java虚拟机允许java直接调用本地方法（通常使用C编写）</p>
-</li>
-<li><p>PC（Program Counter）寄存器也是每一个线程私有的空间，java虚拟机会为每一个java线程创建PC寄存器。在任意时刻，一个java线程总是在执行一个方法，这个正在被执行的方法称为当前方法。如果当前方法不是本地方法，PC寄存器就会指向当前正在被执行的指令。如果当前方法是本地方法，那么PC寄存器的值就是undefined</p>
-</li>
-<li><p>执行引擎是java虚拟机的最核心组件之一，它负责执行虚拟机的字节码，现代虚拟机为了提高执行效率，会使用即时编译技术将方法编译成机器码后再执行。 </p>
-</li>
+<h1 id="Head-First设计模式10"><a href="#Head-First设计模式10" class="headerlink" title="Head First设计模式10"></a>Head First设计模式10</h1><h2 id="设计原则"><a href="#设计原则" class="headerlink" title="设计原则"></a>设计原则</h2><ol>
+<li>封装变化。 </li>
+<li>面向接口编程而非实现。</li>
+<li>优先使用组合而非继承。 </li>
+<li>为了交互对象之间的松耦合设计而努力。</li>
+<li>类应该对扩展开放，对修改关闭。</li>
+<li>依赖倒置原则，要依赖抽象，不要依赖具体类。</li>
+<li>最少知识原则</li>
+<li>好莱坞原则</li>
 </ol>
-<h2 id="jvm虚拟机参数"><a href="#jvm虚拟机参数" class="headerlink" title="jvm虚拟机参数"></a>jvm虚拟机参数</h2><p><a href="https://blog.csdn.net/momo_ibeike/article/details/76370428" target="_blank" rel="noopener">常用Java虚拟机调试和配置参数</a></p>
-<ol>
-<li><strong>-XX</strong>：对于系统级别的（jvm）配置，如配置日志信息、配置JVM使用什么样的垃圾回收器。</li>
-<li><strong>非-XX</strong>：的基本上是应用层面上的配置。</li>
-<li><strong>+</strong>：启用</li>
-<li><strong>-</strong>：禁用</li>
-<li><strong>-Xmn2g</strong>：设置年轻代(Eden)大小。</li>
-<li>输入内存溢出信息、设置内存溢出路径。</li>
-<li><strong>-Xss</strong>：线程最大栈空间，</li>
-<li><strong>-XX:PermSize，-XX:PermSize=MaxPermSize</strong>：方法区大小。</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
-<li><em>**</em>：</li>
+<h2 id="模式类型"><a href="#模式类型" class="headerlink" title="模式类型"></a>模式类型</h2><h3 id="类型归集"><a href="#类型归集" class="headerlink" title="类型归集"></a>类型归集</h3><ol>
+<li>OO模式</li>
+<li>观察者模式</li>
+<li>装饰者模式</li>
+<li>工厂模式</li>
+<li>抽象工厂模式</li>
+<li>命令模式</li>
+<li>模板方法模式</li>
+<li>组合模式</li>
+<li>状态模式</li>
+<li>代理模式</li>
 </ol>
-<p>基本策略：可以设置新生代的大小、新生代和老年代的比例。尽量将对象预留在新生代，减少老年代GC次数。</p>
-<h2 id="负载均衡和反向代理"><a href="#负载均衡和反向代理" class="headerlink" title="负载均衡和反向代理"></a>负载均衡和反向代理</h2><p><strong>负载均衡</strong>（Load Balance）<br>其意思就是分摊到多个操作单元上进行执行，例如Web服务器、FTP服务器、企业关键应用服务器和其它关键任务服务器等，从而共同完成工作任务。</p>
-<p>常见的负载均衡服务器有：<code>F5</code>,<code>LVS</code></p>
-<p><strong>反向代理</strong>（Reverse Proxy）<br>是指以代理服务器来接受internet上的连接请求，然后将请求转发给内部网络上的服务器，并将从服务器上得到的结果返回给internet上请求连接的客户端，此时代理服务器对外就表现为一个反向代理服务器。</p>
-<p>常见的反向代理服务器有:<code>nginx</code>,<code>haproxy</code></p>
-<h2 id="GC清除对象"><a href="#GC清除对象" class="headerlink" title="GC清除对象"></a>GC清除对象</h2><p>当connection=null时，GC并没有立即回收对象，什么时候回收并不知道。除非手动调用GC回收方法。</p>
-<h2 id="垃圾回收算法"><a href="#垃圾回收算法" class="headerlink" title="垃圾回收算法"></a>垃圾回收算法</h2><p><a href="https://www.cnblogs.com/huajiezh/p/5769255.html" target="_blank" rel="noopener">深入理解java垃圾回收算法</a></p>
-<ol>
-<li>引用计数算法<br> 给对象中添加一个引用计数器，每当有一个地方引用它时，计数器值就加1；当引用失效时，计数器值就减1；任何时刻计数器都为0的对象就是不再被使用的，垃圾收集器将回收该对象使用的内存。<strong>缺点</strong>：相互循环引用会出现问题</li>
-<li>标记-清除算法<br> 最基础的垃圾收集算法，算法分为“标记”和“清除”两个阶段：首先标记出所有需要回收的对象，在标记完成之后统一回收掉所有被标记的对象。<strong>缺点</strong>：首先，效率问题，标记和清除<strong>效率都不高</strong>。其次，标记清除之后会产生大量的<strong>不连续的内存碎片</strong>，空间碎片太多会导致当程序需要为较大对象分配内存时无法找到足够的连续内存而不得不提前触发另一次垃圾收集动作。</li>
-<li>复制算法<br> 目前用于新生代，将可用内存按容量分成大小相等的两块，每次只使用其中一块，当这块内存使用完了，就将还存活的对象复制到另一块内存上去，然后把使用过的内存空间一次清理掉。这样使得每次都是对其中一块内存进行回收，内存分配时不用考虑内存碎片等复杂情况，只需要移动堆顶指针，按顺序分配内存即可，实现简单，运行高效。<strong>缺点</strong>：可使用的内存降为原来一半。</li>
-<li>标记压缩算法<br> 目前用于老年代</li>
-</ol>
-<h2 id="TLAB区域"><a href="#TLAB区域" class="headerlink" title="TLAB区域"></a>TLAB区域</h2>
+<h3 id="状态模式"><a href="#状态模式" class="headerlink" title="状态模式"></a>状态模式</h3><h3 id="状态模式-1"><a href="#状态模式-1" class="headerlink" title="状态模式"></a>状态模式</h3><p>定义：允许对象在内部状态改变时改变它的行为，对象看起来好像修改了他的类。</p>
+<p>在状态模式（State Pattern）中，类的行为是基于它的状态改变的。这种类型的设计模式属于行为型模式。我们创建表示各种状态的对象和一个行为随着状态对象改变而改变的 context 对象，将行为局部化。</p>
+<h4 id="策略模式和状态模式"><a href="#策略模式和状态模式" class="headerlink" title="策略模式和状态模式"></a>策略模式和状态模式</h4><p>这两个模式十分相似，但策略模式通常会用行为或者方法来配置Context类，会去控制对象使用的策略。而状态模式是允许Context类随着状态的改变而改变行为。意图正是两者的区别。</p>
+<p>使用场景：代码中包含大量与对象状态有关的条件语句。</p>
+<h3 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h3>
       
     </div>
 
@@ -504,7 +472,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/jvm虚拟机/" rel="tag"># jvm虚拟机</a>
+            <a href="/tags/Head-First设计模式/" rel="tag"># Head First设计模式</a>
           
         </div>
       
@@ -517,8 +485,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/08/第09阶：多线程/" rel="next" title="2018第09阶：多线程">
-                <i class="fa fa-chevron-left"></i> 2018第09阶：多线程
+              <a href="/2019/04/06/java异常处理/" rel="next" title="java异常处理">
+                <i class="fa fa-chevron-left"></i> java异常处理
               </a>
             
           </div>
@@ -526,10 +494,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/12/22/第96阶：Redis/" rel="prev" title="第96阶：Redis">
-                第96阶：Redis <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -717,7 +681,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第62阶：jvm虚拟机优化"><span class="nav-number">1.</span> <span class="nav-text">第62阶：jvm虚拟机优化</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#虚拟机桥接模式和NAT"><span class="nav-number">1.1.</span> <span class="nav-text">虚拟机桥接模式和NAT</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#java虚拟机的基本结构"><span class="nav-number">1.2.</span> <span class="nav-text">java虚拟机的基本结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#jvm虚拟机参数"><span class="nav-number">1.3.</span> <span class="nav-text">jvm虚拟机参数</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#负载均衡和反向代理"><span class="nav-number">1.4.</span> <span class="nav-text">负载均衡和反向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#GC清除对象"><span class="nav-number">1.5.</span> <span class="nav-text">GC清除对象</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#垃圾回收算法"><span class="nav-number">1.6.</span> <span class="nav-text">垃圾回收算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TLAB区域"><span class="nav-number">1.7.</span> <span class="nav-text">TLAB区域</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Head-First设计模式10"><span class="nav-number">1.</span> <span class="nav-text">Head First设计模式10</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计原则"><span class="nav-number">1.1.</span> <span class="nav-text">设计原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#模式类型"><span class="nav-number">1.2.</span> <span class="nav-text">模式类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#类型归集"><span class="nav-number">1.2.1.</span> <span class="nav-text">类型归集</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态模式"><span class="nav-number">1.2.2.</span> <span class="nav-text">状态模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#状态模式-1"><span class="nav-number">1.2.3.</span> <span class="nav-text">状态模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#策略模式和状态模式"><span class="nav-number">1.2.3.1.</span> <span class="nav-text">策略模式和状态模式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代理模式"><span class="nav-number">1.2.4.</span> <span class="nav-text">代理模式</span></a></li></ol></li></ol></li></ol></div>
             
 
           </div>
