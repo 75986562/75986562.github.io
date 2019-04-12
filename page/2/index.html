@@ -314,6 +314,387 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/线程池原理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/06/线程池原理/" itemprop="url">
+                  线程池原理解析
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-06 16:37:30" itemprop="dateCreated datePublished" datetime="2019-01-06T16:37:30+08:00">2019-01-06</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-01-06 21:20:30" itemprop="dateModified" datetime="2018-01-06T21:20:30+08:00">2018-01-06</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="线程池原理解析"><a href="#线程池原理解析" class="headerlink" title="线程池原理解析"></a>线程池原理解析</h1><p>参考：JAVA线程池原理详解一</p>
+<h2 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h2><p>线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。<br>可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。</p>
+<h2 id="线程池的创建"><a href="#线程池的创建" class="headerlink" title="线程池的创建"></a>线程池的创建</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,    //线程池核心线程数量</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">int</span> maximumPoolSize,//线程池最大线程数量</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">long</span> keepAliveTime,//当活跃线程数大于核心线程数时，空闲的多余线程最大存活时间</span></span></span><br><span class="line"><span class="function"><span class="params">                              TimeUnit unit,//存活时间的单位</span></span></span><br><span class="line"><span class="function"><span class="params">                              BlockingQueue&lt;Runnable&gt; workQueue,//存放任务的队列</span></span></span><br><span class="line"><span class="function"><span class="params">                              RejectedExecutionHandler handler)</span><span class="comment">//超出线程范围和队列容量的任务的处理程序</span></span></span><br></pre></td></tr></table></figure>
+<p>corePoolSize：线程池核心线程数量<br>maximumPoolSize:线程池最大线程数量<br>keepAliverTime：当活跃线程数大于核心线程数时，空闲的多余线程最大存活时间<br>unit：存活时间的单位<br>workQueue：存放任务的队列<br>handler：超出线程范围和队列容量的任务的处理程序</p>
+<h2 id="线程池的实现原理"><a href="#线程池的实现原理" class="headerlink" title="线程池的实现原理"></a>线程池的实现原理</h2><p>提交一个任务到线程池中，线程池的处理流程如下：</p>
+<ol>
+<li>判断线程池里的核心线程是否都在执行任务，如果不是（核心线程空闲或者还有核心线程没有被创建）则创建一个新的工作线程来执行任务。如果核心线程都在执行任务，则进入下个流程。</li>
+<li>线程池判断工作队列是否已满，如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程。</li>
+<li>判断线程池里的线程是否都处于工作状态，如果没有，则创建一个新的工作线程来执行任务。如果已经满了，则交给饱和策略来处理这个任务。</li>
+</ol>
+<p>线程池容器–&gt;集合(ArrayList,HashSrt,LinkedList<thread>,HashMap)<br>当程序第一次启动的时候，创建多个线程池，保存到一个集合中，当要使用的时候就取出来：<br>Thread t = list.remove(0);//返回的是被移除的元素<br>Thread t  = Linked。removeFist();<br>当使用完毕时归还：<br>list.add(t);<br>linked.addList(t);</thread></p>
+<h2 id="线程池使用步骤"><a href="#线程池使用步骤" class="headerlink" title="线程池使用步骤"></a>线程池使用步骤</h2><ol>
+<li>使用线程池工厂类Executors中的newFixedThreadPool产生一个指定线程数的线程池</li>
+<li>创建一个类，实现Runnable接口，设置线程任务。</li>
+<li>调用ExecutorsService中的方法submit，传递线程任务（实现类），开启线程，执行run方法</li>
+<li>调用ExecutorsService中的方法shutdown销毁线程池（不建议执行）</li>
+</ol>
+<p>线程池的源码解读<br>1、ThreadPoolExecutor的execute()方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (command == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">　　　　　　 <span class="comment">//如果线程数大于等于基本线程数或者线程创建失败，将任务加入队列</span></span><br><span class="line">        <span class="keyword">if</span> (poolSize &gt;= corePoolSize || !addIfUnderCorePoolSize(command)) &#123;</span><br><span class="line">　　　　　　　　　　<span class="comment">//线程池处于运行状态并且加入队列成功</span></span><br><span class="line">            <span class="keyword">if</span> (runState == RUNNING &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (runState != RUNNING || poolSize == <span class="number">0</span>)</span><br><span class="line">                    ensureQueuedTaskHandled(command);</span><br><span class="line">            &#125;</span><br><span class="line">　　　　　　　　　<span class="comment">//线程池不处于运行状态或者加入队列失败，则创建线程（创建的是非核心线程）</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (!addIfUnderMaximumPoolSize(command))</span><br><span class="line">　　　　　　　　　　　<span class="comment">//创建线程失败，则采取阻塞处理的方式</span></span><br><span class="line">                reject(command); <span class="comment">// is shutdown or saturated</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、创建线程的方法：addIfUnderCorePoolSize(command)<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">addIfUnderCorePoolSize</span><span class="params">(Runnable firstTask)</span> </span>&#123;</span><br><span class="line">        Thread t = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">final</span> ReentrantLock mainLock = <span class="keyword">this</span>.mainLock;</span><br><span class="line">        mainLock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (poolSize &lt; corePoolSize &amp;&amp; runState == RUNNING)</span><br><span class="line">                t = addThread(firstTask);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            mainLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        t.start();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>我们通过一个程序来观察线程池的工作原理：</p>
+<ol>
+<li><p>创建一个线程</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class ThreadPoolTest implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        try</span><br><span class="line">        &#123;</span><br><span class="line">            Thread.sleep(300);</span><br><span class="line">        &#125;</span><br><span class="line">        catch (InterruptedException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>线程池循环运行16个线程：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        LinkedBlockingQueue&lt;Runnable&gt; queue =</span><br><span class="line">            <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(<span class="number">5</span>);</span><br><span class="line">        ThreadPoolExecutor threadPool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">10</span>, <span class="number">60</span>, TimeUnit.SECONDS, queue);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span> ; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            threadPool.execute(</span><br><span class="line">                <span class="keyword">new</span> Thread(<span class="keyword">new</span> ThreadPoolTest(), <span class="string">"Thread"</span>.concat(i + <span class="string">""</span>)));</span><br><span class="line">            System.out.println(<span class="string">"线程池中活跃的线程数： "</span> + threadPool.getPoolSize());</span><br><span class="line">            <span class="keyword">if</span> (queue.size() &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(<span class="string">"----------------队列中阻塞的线程数"</span> + queue.size());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>执行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">线程池中活跃的线程数： <span class="number">1</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">2</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">3</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">4</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">1</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">2</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">3</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">4</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">6</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">7</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">8</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">9</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">10</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> java.util.concurrent.RejectedExecutionException: Task Thread[Thread15,<span class="number">5</span>,main] rejected from java.util.concurrent.ThreadPoolExecutor@<span class="number">232204</span>a1[Running, pool size = <span class="number">10</span>, active threads = <span class="number">10</span>, queued tasks = <span class="number">5</span>, completed tasks = <span class="number">0</span>]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:<span class="number">2047</span>)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:<span class="number">823</span>)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:<span class="number">1369</span>)</span><br><span class="line">    at test.ThreadTest.main(ThreadTest.java:<span class="number">17</span>)</span><br></pre></td></tr></table></figure></p>
+<p>从结果可以观察出：</p>
+<ol>
+<li>创建的线程池具体配置为：核心线程数量为5个；全部线程数量为10个；工作队列的长度为5。</li>
+<li>我们通过queue.size()的方法来获取工作队列中的任务数。</li>
+<li>运行原理：<br>   <strong>刚开始都是在创建新的线程，达到核心线程数量5个后，新的任务进来后不再创建新的线程，而是将任务加入工作队列，任务队列到达上线5个后，新的任务又会创建新的普通线程，直到达到线程池最大的线程数量10个，后面的任务则根据配置的饱和策略来处理。我们这里没有具体配置，使用的是默认的配置AbortPolicy:直接抛出异常。当然，为了达到我需要的效果，上述线程处理的任务都是利用休眠导致线程没有释放！！！</strong></li>
+</ol>
+<h2 id="RejectedExecutionHandler：饱和策略"><a href="#RejectedExecutionHandler：饱和策略" class="headerlink" title="RejectedExecutionHandler：饱和策略"></a>RejectedExecutionHandler：饱和策略</h2><p>当队列和线程池都满了，说明线程池处于饱和状态，那么必须对新提交的任务采用一种特殊的策略来进行处理。这个策略默认配置是AbortPolicy，表示无法处理新的任务而抛出异常。JAVA提供了4中策略：</p>
+<ol>
+<li>AbortPolicy：直接抛出异常</li>
+<li>CallerRunsPolicy：只用调用所在的线程运行任务</li>
+<li>DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务。</li>
+<li>DiscardPolicy：不处理，丢弃掉。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/模板/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/01/03/模板/" itemprop="url">
+                  模板
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-01-03 16:37:30" itemprop="dateCreated datePublished" datetime="2019-01-03T16:37:30+08:00">2019-01-03</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-05 21:20:30" itemprop="dateModified" datetime="2019-01-05T21:20:30+08:00">2019-01-05</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/模板/" itemprop="url" rel="index"><span itemprop="name">模板</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/31/Nginx配置简介/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -2011,525 +2392,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/04/Effective-Java-3rd第9章(57~69) /">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/04/Effective-Java-3rd第9章(57~69) /" itemprop="url">
-                  Effective Java 3rd 第9章 一般编程(48~56)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-04 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-04T16:37:30+08:00">2018-12-04</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 21:50:53" itemprop="dateModified" datetime="2019-01-06T21:50:53+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第9章-一般编程"><a href="#第9章-一般编程" class="headerlink" title="第9章 一般编程"></a>第9章 一般编程</h1><h2 id="第57条-最小化局部变量的作用域"><a href="#第57条-最小化局部变量的作用域" class="headerlink" title="第57条 最小化局部变量的作用域"></a>第57条 最小化局部变量的作用域</h2><p>最小化局部变量作用域的最强大技术是在首次使用它的地方声明它。</p>
-<h2 id="第58条-与传统的for循环相比，更喜欢for-each循环"><a href="#第58条-与传统的for循环相比，更喜欢for-each循环" class="headerlink" title="第58条 与传统的for循环相比，更喜欢for-each循环"></a>第58条 与传统的for循环相比，更喜欢for-each循环</h2><p>for-each循环通过隐藏迭代器或索引变量来消除混乱和出错的机会。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// The preferred idiom for iterating over collections and arrays</span></span><br><span class="line">    <span class="keyword">for</span> (Element e : elements) &#123;</span><br><span class="line">    ... <span class="comment">// Do something with e</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>当您看到冒号(:)时，将其读为“in”。因此，上面的循环读作“对于元素中的每个元素e”。使用for-each循环没有性能损失，甚至对于数组也是如此:它们生成的代码基本上与手工编写的代码相同。</p>
-<p>不幸的是，有三种常见的情况您不能使用for-each:</p>
-<ol>
-<li><strong>破坏性筛选</strong>——如果需要遍历一个集合，删除选定的元素，则需要使用显式迭代器，以便调用其删除方法。通过使用Java8中添加的Collection的removeIf方法，通常可以避免显式遍历。</li>
-<li><strong>转换</strong>——如果需要遍历列表或数组并替换其元素的部分或全部值，则需要列表迭代器或数组索引来替换元素的值。</li>
-<li><strong>并行迭代</strong>——如果您需要并行地遍历多个集合，那么您需要显式地控制迭代器或索引变量，以便所有迭代器或索引变量都可以同步地推进(如上面的bug卡和骰子示例中无意中演示的那样)。</li>
-</ol>
-<p>for-each循环不仅允许对集合和数组进行迭代，还允许对实现可迭代接口(由单个方法组成)的任何对象进行迭代。写起来是这样的:<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Iterable</span>&lt;<span class="title">E</span>&gt; </span>&#123;</span><br><span class="line"><span class="comment">// Returns an iterator over the elements in this iterable</span></span><br><span class="line">    <span class="function">Iterator&lt;E&gt; <span class="title">iterator</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="第59条-了解和使用依赖"><a href="#第59条-了解和使用依赖" class="headerlink" title="第59条 了解和使用依赖"></a>第59条 了解和使用依赖</h2><p>总之，不要重复发明轮子。如果您需要做一些看起来应该相当常见的事情，那么库中可能已经有一个工具可以完成您想要的工作。</p>
-<h2 id="第60条-如果需要准确的答案，应避免使用浮点数和双精度数"><a href="#第60条-如果需要准确的答案，应避免使用浮点数和双精度数" class="headerlink" title="第60条 如果需要准确的答案，应避免使用浮点数和双精度数"></a>第60条 如果需要准确的答案，应避免使用浮点数和双精度数</h2><p>请使用<code>BigDecimal</code>、<code>int</code>或<code>long</code>进行货币计算。</p>
-<p>使用BigDecimal的优点是，它可以对舍入进行完全控制，让您在执行需要舍入的操作时从8种舍入模式中进行选择。如果数量不超过9位小数，可以使用int;如果不超过18位，可以使用long。如果数量可能超过18位，请使用BigDecimal。</p>
-<h2 id="第61条-原语类型优于装箱原语类型"><a href="#第61条-原语类型优于装箱原语类型" class="headerlink" title="第61条 原语类型优于装箱原语类型"></a>第61条 原语类型优于装箱原语类型</h2><p>在原语和装箱原语之间有三个主要区别。<em>首先</em>，原语只有它们的值，而装箱原语的标识与它们的值不同。换句话说，两个装箱的原语实例可以具有相同的值和不同的标识。<em>第二</em>，基元类型只有全功能值，而每个装箱基元类型除了对应基元类型的所有功能值之外，还有一个非功能值，即null。<em>最后</em>，原语比装箱原语更节省时间和空间。如果你不小心，这三种不同会给你带来真正的麻烦。</p>
-<p>在几乎所有情况下，当您在操作中混合原语和装箱原语时，装箱原语都是自动解除装箱的。</p>
-<p>总之，无论何时，只要有选择，都要优先使用原语，而不是盒装原语。基本类型更简单、更快。如果必须使用装箱的原语，请小心!自动装箱减少了使用装箱原语的冗长，但没有减少危险。当您的程序将两个装箱原语与==操作符进行比较时，它会进行身份比较，这几乎肯定不是您想要的。当您的程序执行混合类型的计算时，包括已装箱和未装箱的原语时，它将执行解装箱，以及当您的程序执行此操作时<br>解除装箱时，它可以抛出NullPointerException。最后，当您的程序将原语值装箱时，可能会导致创建昂贵且不必要的对象。</p>
-<h3 id="附-java中基本类型和包装类的区别："><a href="#附-java中基本类型和包装类的区别：" class="headerlink" title="附 java中基本类型和包装类的区别："></a>附 java中基本类型和包装类的区别：</h3><ol>
-<li>包装类创建的是对象，拥有方法和字段.对象的调用都是通过引用对象的地址 ;基本类型不是。</li>
-<li>包装类是引用传递 而基本类型是值传递;</li>
-<li>变量的值存储在栈里，而对象存储在堆里，相比而言，栈比堆更高效，这也是java保留基本类型的原因。包装类创建的对象，可以使用api提供的一些有用的方法。更为强大。</li>
-<li>int 是基本类型，直接存数值。Integer是类，产生对象时用一个引用指向这个对象 .</li>
-</ol>
-<p>Java把内存划分成两种：一种是栈内存，另一种是堆内存 </p>
-<p>在函数中定义的一些基本类型的变量和对象的引用变量都是在函数的栈内存中分配 而实际的对象是在存储堆内存中<br>即<br>  int i = 5;//直接在栈中分配空间 </p>
-<p>  Integer i = new Integr(5);//对象是在堆内存中,而i(引用变量)是在栈内存中 </p>
-<p>在堆中分配的内存，由java虚拟机的自动垃圾回收器来管理. </p>
-<p>因为在堆中分配空间所需的时间远大于从栈中分配存储空间,所以JAVA速度比C慢。</p>
-<p>当需要往ArrayList，HashMap中放东西时，像int，double这种基本类型是放不进去的，因为容器都是装object的，这是就需要这些基本类型的包装类了。Java中每种基本类型都有相应的包装类。<strong>总的来说，基本类型效率高，装箱类型可以使用扩展的api，功能更强大。</strong></p>
-<h2 id="第62条-使用其他类型更合适的时候不应用String"><a href="#第62条-使用其他类型更合适的时候不应用String" class="headerlink" title="第62条 使用其他类型更合适的时候不应用String"></a>第62条 使用其他类型更合适的时候不应用String</h2><p>字符串是枚举类型的糟糕替代品。字符串不能很好地替代聚合类型。<br>基于字符串的API:</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocal</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadLocal</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(Object value)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>基于键的API：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">ThreadLocal</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ThreadLocal</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">set</span><span class="params">(T value)</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">get</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>最初的基于字符串的API类型安全是不可能的，而基于键的API类型安全也是困难的，但是通过使ThreadLocal成为一个参数化的类来实现这个API类型安全是一件简单的事情(Item 29)</p>
-<p>总之，当存在更好的数据类型或可以编写更好的数据类型时，避免将对象表示为字符串的自然趋势。<strong>如果使用不当，字符串会比其他类型更麻烦、灵活性更差、速度更慢、更容易出错</strong>。字符串经常被误用的类型包括基本类型、枚举和聚合类型。</p>
-<h2 id="第63条-注意字符串连接的性能"><a href="#第63条-注意字符串连接的性能" class="headerlink" title="第63条 注意字符串连接的性能"></a>第63条 注意字符串连接的性能</h2><p>重复使用字符串连接运算符来连接n个字符串需要时间为n^2*（单次连接时间）。</p>
-<p>道理很简单:除非性能无关，否则不要使用字符串连接操作符组合多个字符串。使用StringBuilder的append方法。或者，使用一个字符数组，或者一次处理一个字符串，而不是组合它们。</p>
-<h2 id="第64条-通过接口引用对象"><a href="#第64条-通过接口引用对象" class="headerlink" title="第64条 通过接口引用对象"></a>第64条 通过接口引用对象</h2><p>引用对象应该像这样引用接口。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Good - uses interface as type</span></span><br><span class="line">Set&lt;Son&gt; sonSet = <span class="keyword">new</span> LinkedHashSet&lt;&gt;();</span><br></pre></td></tr></table></figure></p>
-<p>而不是像这样直接用类。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Bad - uses class as type!</span></span><br><span class="line">LinkedHashSet&lt;Son&gt; sonSet = <span class="keyword">new</span> LinkedHashSet&lt;&gt;();</span><br></pre></td></tr></table></figure></p>
-<p>如果您养成了使用接口作为类型的习惯，那么您的程序将更加灵活。如果不存在合适的接口，则完全可以通过类而不是接口引用对象。</p>
-<p>例如，考虑值类，例如String和BigInteger。在编写值类时，很少考虑多个实现。它们通常是最终的，很少有相应的接口。将这样的值类用作参数、变量、字段或返回类型非常合适。</p>
-<p>没有合适接口类型的第二种情况是属于框架的对象，框架的基本类型是类而不是接口。如果一个对象属于这样一个基于类的框架，最好通过相关的基类(通常是抽象的)来引用它，而不是通过它的实现类。许多java。io类(如OutputStream)属于这一类别。</p>
-<p>最后一种不存在合适接口类型的情况是实现接口但同时提供接口中未找到的额外方法的类——例如，PriorityQueue有一个不在队列接口上的comparator方法。只有当程序依赖于额外的方法时，才应该使用这样的类来引用它的实例，这种情况应该非常少见。</p>
-<p>这三种情况并不是详尽无遗的，而仅仅是为了表达按类引用对象是适当的情况。在实践中，一个给定的对象是否具有适当的接口是显而易见的。如果是这样，您的程序将更加灵活和时尚，如果您使用接口来引用对象。<strong>如果没有合适的接口，就使用类层次结构中提供所需功能的最不特定的类</strong>。</p>
-<h2 id="第65条-接口优于反射机制"><a href="#第65条-接口优于反射机制" class="headerlink" title="第65条 接口优于反射机制"></a>第65条 接口优于反射机制</h2><p>核心反射机制java.lang.reflect提供了“通过程序来访问关于已装载的类的信息”的能力，给定一个Class实例，可以获得Constructor、Method、Field实例，这些对象提供“通过程序来访问类的成员名称、域类型、方法签名等信息”的能力。</p>
-<p>反射机制允许一个类使用另一个类，即使当前者被编译的时候后者还根本不存在，存在的代价：</p>
-<ol>
-<li>失去编译时类型检查的好处，包括异常检查。</li>
-<li>执行反射访问所需的代码很长。</li>
-<li>性能上的损失。</li>
-</ol>
-<p>反射机制的例子：</p>
-<p>创建Set实例，吧命令行参数插入到集合中，然后打印该集合，其中第一个参数指定打印的结果，如果是HashSet以随机的方式打印出来，如果是TreeSet按照字母顺序打印出来的程序：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Class&lt;?&gt; c = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            c = Class.forName(args[<span class="number">0</span>]);</span><br><span class="line">        &#125; <span class="keyword">catch</span>(ClassNotFoundException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Class not found"</span>);</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        Set&lt;String&gt; s = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            s = (Set&lt;String&gt;) c.newInstance();</span><br><span class="line">        &#125; <span class="keyword">catch</span>(IllegalAccessException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Class not accessible"</span>);</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span>(InstantiationException e) &#123;</span><br><span class="line">            System.out.println(<span class="string">"Class not instantiable"</span>);</span><br><span class="line">            System.exit(<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        s.addAll(Arrays.asList(args).subList(<span class="number">1</span>, args.length));</span><br><span class="line">        System.out.println(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>这相当于一个集合测试器，通过反射测试Set实现，同时，它也可以作为通用的集合性能分析工具。<br>这种方法足以完成成熟的服务提供者框架。</p>
-<p>总之，反射是一种功能强大的工具，对于某些复杂的系统编程任务是必需的，但是它有许多缺点。如果您编写的程序必须处理编译时未知的类，则应该(如果可能的话)仅使用反射实例化对象，并使用编译时已知的接口或超类访问对象。</p>
-<h2 id="第66条-谨慎地使用本地方法"><a href="#第66条-谨慎地使用本地方法" class="headerlink" title="第66条 谨慎地使用本地方法"></a>第66条 谨慎地使用本地方法</h2><p>本地方法,是指本地程序设计语言(c,或者c++)来编写的特殊方法. 本地方法在本地语言中可移植性任意的计算任务,并且返回到java程序语言.</p>
-<p>需要真正高性能多精度算法的Java程序员现在可以通过本机方法来使用GMP [Blum14]</p>
-<p>为什么说谨慎使用本地方法?</p>
-<ol>
-<li>由于本机语言不安全(项目50)，使用本机方法的应用程序不再能够避免内存损坏错误。</li>
-<li>由于本机语言比Java更依赖于平台，所以使用本机方法的程序可移植性较差,也更难调试。</li>
-<li>本机方法可能会降低性能，因为垃圾收集器不能自动化，甚至不能跟踪本机内存使用情况(项目8)。</li>
-<li>最后，本机方法需要“粘合代码”，这些代码很难读，而且编写起来也很繁琐。</li>
-</ol>
-<p>使用本地方法需要三思,极少情况会使用本地方法来提高性能,如果必须访问本地方法访问资源,那也要尽可能少用本地代码,并且要进行全面测试,只要本地代码出现个bug,对系统都有整体的破坏作用.</p>
-<h2 id="第67条-谨慎优化"><a href="#第67条-谨慎优化" class="headerlink" title="第67条 谨慎优化"></a>第67条 谨慎优化</h2><p>有三个关于优化的格言:</p>
-<ol>
-<li>与其他任何单一原因相比，以效率(不一定能实现)的名义犯下的计算机罪更多——包括盲目的愚蠢。</li>
-<li>我们应该忘记小的效率，比如97%的情况下:过早的优化是万恶之源。</li>
-<li><p>在优化问题上，我们遵循两条规则:<br>规则1:不要这样做。<br>规则2:(仅适用于专家)。现在先别做，也就是说，等你有了一个完全清晰和未优化的解决方案。</p>
-</li>
-<li><p>努力避免限制性能的设计决策。</p>
-</li>
-<li>考虑API设计决策的性能后果。为了获得良好的性能而扭曲API是一个非常糟糕的主意</li>
-<li>在每次尝试优化之前和之后测量性能。</li>
-</ol>
-<p>总之，不要努力写快的程序——要努力写好的程序;速度将跟随。但是在设计系统时一定要考虑性能，尤其是在设计api、线级别协议和持久数据格式时。当您完成了系统的构建之后，度量它的性能。如果足够快，你就完成了。如果没有，在分析器的帮助下找到问题的根源，并开始优化系统的相关部分。<strong>第一步是检查您对算法的选择</strong>:低级的优化不能弥补对算法的糟糕选择。根据需要重复这个过程，在每次更改之后测量性能，直到您满意为止。</p>
-<h2 id="第68条-遵守公认的命名约定"><a href="#第68条-遵守公认的命名约定" class="headerlink" title="第68条 遵守公认的命名约定"></a>第68条 遵守公认的命名约定</h2><ol>
-<li>包的名称应该是层次状的，用句号分隔每个部分。每个部分都包括小写字母和数字（很少使用数字）。包名称的其余部分应该包括一个或者多个描述该包的组成部分。这些组成部分应该比较简短，通常不超过8个字符。鼓励使用有意义的缩写形式。例如，使用<code>util</code>而不是utilities，只取首字母的缩写形式也是可以接受的，例如<code>awt</code>。</li>
-<li>类和接口的名称，包括枚举和注解类型的名称，都应该包括一个或者多个单词，每个单词的首字母大写,应该尽扯避免用缩写,使用缩写强烈建议采用仅有首字母大写的形式。</li>
-<li>字面惯例的例子</li>
-</ol>
-<table>
-<thead>
-<tr>
-<th>标识符类型</th>
-<th>例子</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>包</td>
-<td>com.google.inject, org.joda. time.format</td>
-</tr>
-<tr>
-<td>类或者接口</td>
-<td>Timer, FutureTask, LinkedHashMap, H1tpServlet</td>
-</tr>
-<tr>
-<td>常量域</td>
-<td>MIN_ VALUE, NEGATIVE_INF!NITY</td>
-</tr>
-<tr>
-<td>方法或者域</td>
-<td>remove, ensureCapacity, getCrc</td>
-</tr>
-<tr>
-<td>局部变量杂</td>
-<td>i, xref, houseNumber</td>
-</tr>
-<tr>
-<td>类型参数</td>
-<td>T, E, K, V, X, Tl, T2</td>
-</tr>
-</tbody>
-</table>
-<ol start="4">
-<li><p>对于返回boolean值的方法，其名称往往以单词”is” 开头。</p>
-</li>
-<li><p>如果方法所在的类是个Bean[JavaBeans],就要强制使用以”get” 或者 “set” 开头的形式。</p>
-</li>
-<li>有些方法的名称值得专门提及。转换对象类型的方法、返回不同类型的独立对象的方法，通常被称为toType, 例如toString和toArray 。</li>
-</ol>
-<h3 id="附-阿里巴巴命名规则"><a href="#附-阿里巴巴命名规则" class="headerlink" title="附 阿里巴巴命名规则"></a>附 阿里巴巴命名规则</h3><ol>
-<li>【强制】代码中的命名均不能以下划线或美元符号开始，也不能以下划线或美元符号结束。<br>反例： <em>name / __name / $Object / name</em> / name$ / Object$</li>
-<li>【强制】代码中的命名严禁使用拼音与英文混合的方式，更不允许直接使用中文的方式。<br>说明：正确的英文拼写和语法可以让阅读者易于理解，避免歧义。注意，即使纯拼音命名方式<br>也要避免采用。<br>正例： alibaba /  taobao /  youku /  hangzhou 等国际通用的名称，可视同英文。<br>反例： DaZhePromotion [ 打折 ] /  getPingfenByName() [ 评分 ] /  int 某变量 = 3</li>
-<li>【强制】类名使用 UpperCamelCase 风格，必须遵从驼峰形式，但以下情形例外： DO /  BO  /<br>DTO /  VO /  AO<br>正例： MarcoPolo /  UserDO /  XmlService /  TcpUdpDeal /  TaPromotion<br>反例： macroPolo /  UserDo /  XMLService /  TCPUDPDeal /  TAPromotion</li>
-<li>【强制】方法名、参数名、成员变量、局部变量都统一使用 lowerCamelCase 风格，必须遵从<br>驼峰形式。<br>正例：  localValue /  getHttpMessage() /  inputUserId</li>
-<li>【强制】常量命名全部大写，单词间用下划线隔开，力求语义表达完整清楚，不要嫌名字长。<br>正例： MAX _ STOCK _ COUNT<br>反例： MAX _ COUNT</li>
-<li>【强制】抽象类命名使用 Abstract 或 Base 开头 ； 异常类命名使用 Exception 结尾 ； 测试类<br>命名以它要测试的类的名称开始，以 Test 结尾。</li>
-<li>【强制】中括号是数组类型的一部分，数组定义如下： String[] args;反例：使用 String args[] 的方式来定义。</li>
-<li>【强制】 POJO 类中布尔类型的变量，都不要加is，否则部分框架解析会引起序列化错误。<br>反例：定义为基本数据类型 Boolean isDeleted； 的属性，它的方法也是 isDeleted() ， RPC 框架在反向解析的时候，“以为”对应的属性名称是deleted，导致属性获取不到，进而抛出异常。</li>
-<li>【强制】包名统一使用小写，点分隔符之间有且仅有一个自然语义的英语单词。包名统一使用单数形式，但是类名如果有复数含义，类名可以使用复数形式。<br>正例： 应用工具类包名为com.alibaba.open.util、类名为MessageUtils（此规则参考spring 的框架结构 ）</li>
-<li>【强制】杜绝完全不规范的缩写，避免望文不知义。<br>反例： AbstractClass “缩写”命名成 AbsClass；condition “缩写”命名成  condi ，此类随<br>意缩写严重降低了代码的可阅读性。</li>
-<li>【推荐】为了达到代码自解释的目标，任何自定义编程元素在命名时，使用尽量完整的单词<br>组合来表达其意。<br>正例：从远程仓库拉取代码的类命名为 PullCodeFromRemoteRepository。<br>反例：变量 int a; 的随意命名方式。</li>
-<li>【推荐】如果模块、接口、类、方法使用了设计模式，在命名时体现出具体模式。<br>说明：将设计模式体现在名字中，有利于阅读者快速理解架构设计理念。<br>正例： public class OrderFactory;<br>public class LoginProxy;<br>public class ResourceObserver;</li>
-<li>【推荐】接口类中的方法和属性不要加任何修饰符号 （public 也不要加 ） ，保持代码的简洁<br>性，并加上有效的 Javadoc 注释。尽量不要在接口里定义变量，如果一定要定义变量，肯定是<br>与接口方法相关，并且是整个应用的基础常量。</li>
-</ol>
-<p>正例：接口方法签名： void f();<br>接口基础常量表示： String COMPANY = “ alibaba “ ;<br>反例：接口方法定义： public abstract void f();<br>说明： JDK 8 中接口允许有默认实现，那么这个 default 方法，是对所有实现类都有价值的默<br>认实现。</p>
-<ol start="14">
-<li><p>接口和实现类的命名有两套规则：<br>【强制】对于 Service 和 DAO 类，基于 SOA 的理念，暴露出来的服务一定是接口，内部<br>的实现类用 Impl 的后缀与接口区别。<br>正例： CacheServiceImpl 实现 CacheService 接口。<br>【推荐】 如果是形容能力的接口名称，取对应的形容词做接口名 （ 通常是– able 的形式 ） 。<br>正例： AbstractTranslator 实现  Translatable 。</p>
-</li>
-<li><p>【参考】枚举类名建议带上 Enum 后缀，枚举成员名称需要全大写，单词间用下划线隔开。<br>说明：枚举其实就是特殊的常量类，且构造方法被默认强制是私有。<br>正例：枚举名字为 ProcessStatusEnum 的 成员名称： SUCCESS /  UNKOWN _ REASON 。</p>
-</li>
-<li>【参考】各层命名规约：<br>A) Service / DAO 层方法命名规约<br>） 获取单个对象的方法用 get 做前缀。<br>） 获取多个对象的方法用 list 做前缀。<br>） 获取统计值的方法用 count 做前缀。<br>） 插入的方法用 save/insert 做前缀。<br>） 删除的方法用 remove/delete 做前缀。<br>） 修改的方法用 update 做前缀。<br>B) 领域模型命名规约<br>） 数据对象： xxxDO ， xxx 即为数据表名。<br>） 数据传输对象： xxxDTO ， xxx  为业务领域相关的名称<br>） 展示对象： xxxVO ， xxx 一般为网页名称。<br>） POJO 是 DO / DTO / BO / VO 的统称，禁止命名成     xxxPOJO 。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/12/02/Effective-Java-3rd第8章(48~56) /">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/12/02/Effective-Java-3rd第8章(48~56) /" itemprop="url">
-                  Effective Java 3rd 第8章 Methods(48~56)
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2018-12-02 16:37:30" itemprop="dateCreated datePublished" datetime="2018-12-02T16:37:30+08:00">2018-12-02</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-06 21:50:52" itemprop="dateModified" datetime="2019-01-06T21:50:52+08:00">2019-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-<h1 id="第8章-方法"><a href="#第8章-方法" class="headerlink" title="第8章 方法"></a>第8章 方法</h1><h2 id="第49条-检查参数有效性"><a href="#第49条-检查参数有效性" class="headerlink" title="第49条 检查参数有效性"></a>第49条 检查参数有效性</h2><p>总而言之，每次编写方法或构造方法时，都应该考虑对其参数存在哪些限制。 应该记在这些限制，并在方法体的开头使用显式检查来强制执行这些限制。 养成这样做的习惯很重要。在第一次有效性检查失败时，它所需要的少量工作将会得到对应的回报。</p>
-<h2 id="第50条-必要时进行保护性拷贝"><a href="#第50条-必要时进行保护性拷贝" class="headerlink" title="第50条 必要时进行保护性拷贝"></a>第50条 必要时进行保护性拷贝</h2><p>保护性拷贝是在检查参数的有效性（见笫49条）之前进行的，并且有效性检查是针对拷贝之后的对象，而不是针对原始的对象。</p>
-<h2 id="第51条-谨慎设计方法签名"><a href="#第51条-谨慎设计方法签名" class="headerlink" title="第51条 谨慎设计方法签名"></a>第51条 谨慎设计方法签名</h2><ol>
-<li>谨慎地选择方法的名称</li>
-<li>不要过干追求提供便利的方法</li>
-<li>避免过长的参数列表，目标是四个参数，或者更少。<br> 缩短参数列表的方法有：  <ol>
-<li>是把方法分解成多个方法。</li>
-<li>创建辅助类</li>
-<li>采用Builder模式（请见第2 条）</li>
-</ol>
-</li>
-</ol>
-<h2 id="第52条-慎用重载"><a href="#第52条-慎用重载" class="headerlink" title="第52条 慎用重载"></a>第52条 慎用重载</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Broken! - What does this p卤ram print?</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Col</span> <span class="title">l</span> <span class="title">ectionClassifier</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(Set&lt;?&gt; s)</span> </span>&#123;</span><br><span class="line">     <span class="keyword">return</span> <span class="string">"Set"</span> ;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(List&lt;?&gt; <span class="number">1</span>st)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"List"</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function">publ ic <span class="keyword">static</span> String <span class="title">classify</span><span class="params">(Collection&lt;?&gt; c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">"Unknown Collection"</span>;</span><br><span class="line">    &#125; </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Collection&lt;?&gt;[] collections = &#123;</span><br><span class="line">            <span class="keyword">new</span> HashSet&lt;String&gt;(),</span><br><span class="line">            <span class="keyword">new</span> ArrayList&lt;BigInteger&gt;(),</span><br><span class="line">            <span class="keyword">new</span> HashMap&lt;String, String&gt;().values()</span><br><span class="line">        &#125;;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">for</span> (Collection&lt;?&gt; c : collections)</span><br><span class="line">        System.out.println(classify(c));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>参数的编译时类型都是相同的：Collection&lt;?&gt;。每次迭代的运行时类型都是不同的，但这并不影响对重载方法的选择。因为该参数的编译时类型为Collection&lt;?&gt;，所以，唯一合适的重载方法是第三个： classify(Collection&lt;?&gt;), 在循环的每次迭代中，都会调用这个重载方法。</p>
-<p>这个程序的行为有悖常理，因为对于重载方法的选择是静态的，而对于被履盖的方法的选择则是动态的。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Wine</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"wine"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">SparklingWine</span> <span class="keyword">extends</span> <span class="title">Wine</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span> <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"sparkling wine"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Champagne</span> <span class="keyword">extends</span> <span class="title">SparklingWine</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span> <span class="function">String <span class="title">name</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> <span class="string">"champagne"</span>; &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Overriding</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Wine&gt; wineList = List.of(<span class="keyword">new</span> Wine(), <span class="keyword">new</span> SparklingWine(), <span class="keyword">new</span> Champagne());</span><br><span class="line">        <span class="keyword">for</span> (Wine wine : wineList)</span><br><span class="line">            System.out.println(wine.name());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>正如你所预期的那样，这个程序打印出”wine, sparkling wine和champagne”，尽管在循环的每次迭代中，实例的编译时类型都为Wine。当调用被覆盖的方法时，对象的编译时类型不会影响到哪个方法将被执行； “最为具体的(most specific)”那个覆盖版本总是会得到执行。这与重载的情形相比，对象的运行时类型并不影响“哪个重载版本将被执行”；选择工作是在编译时进行的，完全基于参数的编译时类型。</p>
-<p>安全而保守的菜略是，永远不要导出两个具有相同未数数目的重载方法。如果方法使用可变参数( varargs ),保守的策略是根本不要重载它，除第53条中所述的情形之外。如果对于每一对重载方法，至少有一个对应的参数在两个重载方法中具有“根本不同(radically different)” 的类型。在这种情况下，一组给定的实际参数应用千哪个重载方法上就完全由参数的运行时类型来决定。</p>
-<h2 id="第53条-慎用可变参数"><a href="#第53条-慎用可变参数" class="headerlink" title="第53条 慎用可变参数"></a>第53条 慎用可变参数</h2><p>简而言之，在定义参数数目不定的方法时，可变参数方法是一种很方便的方式，但是它们不应该被过度滥用。</p>
-<h2 id="第54条-返回零长度的数组或集合，而不是null"><a href="#第54条-返回零长度的数组或集合，而不是null" class="headerlink" title="第54条 返回零长度的数组或集合，而不是null"></a>第54条 返回零长度的数组或集合，而不是null</h2><p>简而言之，返回类型为数组或集合的方法没理由返回null , 而不是返回一个零长度的数组或者集合。这种习惯做法（指返回null)很有可能是从C程序设计语言中沿袭过来的，在C语言中，数组长度是与实际的数组分开返回的。在C语言中，如果返回的数组长度为零，再分配一个数组就没有任何好处。</p>
-<h2 id="第55条-明智而审慎地返回optionals类型"><a href="#第55条-明智而审慎地返回optionals类型" class="headerlink" title="第55条 明智而审慎地返回optionals类型"></a>第55条 明智而审慎地返回optionals类型</h2><p>抛出异常花销比较大<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Returns maximum value in collection as an Optional&lt;E&gt;</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;E extends Comparable&lt;E&gt;&gt;</span><br><span class="line"><span class="function">Optional&lt;E&gt; <span class="title">max</span><span class="params">(Collection&lt;E&gt; c)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (c.isEmpty())</span><br><span class="line">        <span class="keyword">return</span> Optional.empty();</span><br><span class="line">        </span><br><span class="line">    E result = <span class="keyword">null</span>;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">for</span> (E e : c)</span><br><span class="line">        <span class="keyword">if</span> (result == <span class="keyword">null</span> || e.compareTo(result) &gt; <span class="number">0</span>)</span><br><span class="line">            result = Objects.requireNonNull(e);</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">return</span> Optional.of(result);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="第56条-为所有公开的API元素编写文档注释"><a href="#第56条-为所有公开的API元素编写文档注释" class="headerlink" title="第56条 为所有公开的API元素编写文档注释"></a>第56条 为所有公开的API元素编写文档注释</h2><p>Javadoc利用特殊格式的文档注释( documentation comment, 通常被写作doc comment) , 根据源代码自动产生API文档。</p>
-<p>在Java 9中添加了一个重要的doc标记，{@index};Java 8中的一个，{@ impspec};Java 5中有两个，{@literal}和{@code}。上述web页面中缺少这些标记，但将在本项目中进行讨论。</p>
-<ol>
-<li>要正确地记录API，必须在每个导出的类、接口、构造函数、方法和字段声明之前加上doc注释。</li>
-<li>方法的文档注释应该简洁地描述方法与其客户之间的契约。</li>
-<li>文档注释应该在源代码和生成的文档中都是可读的。</li>
-<li>类或接口中的两个成员或构造函数不应该具有相同的摘要描述.</li>
-<li>在记录泛型类型或方法时，请确保记录所有类型参数。</li>
-<li>在记录枚举类型时，一定要记录常量。</li>
-<li>在记录注释类型时，一定要记录任何成员</li>
-<li>不管类或静态方法是否是线程安全的，都应该记录它的线程安全</li>
-<li>读取Javadoc实用程序生成的web页面</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2577,7 +2439,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2608,7 +2470,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2659,7 +2523,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

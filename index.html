@@ -314,6 +314,169 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/12/Shell脚本实现服务器活跃情况检测/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/12/Shell脚本实现服务器活跃情况检测/" itemprop="url">
+                  Shell脚本实现服务器活跃情况检测
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-04-12 16:37:30 / 修改时间：23:15:30" itemprop="dateCreated datePublished" datetime="2019-04-12T16:37:30+08:00">2019-04-12</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Shell/" itemprop="url" rel="index"><span itemprop="name">Shell</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="Shell脚本实现服务器活跃情况检测"><a href="#Shell脚本实现服务器活跃情况检测" class="headerlink" title="Shell脚本实现服务器活跃情况检测"></a>Shell脚本实现服务器活跃情况检测</h1><p>在没有网络监控软件的情况下，我们想检测服务其他人提供的环境是否能一直保持畅通，我们可以通过定时启动shell脚本来实现服务器活性检测这个功能。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># check link</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#在脚本执行目录下创建日志文件 .log 和检测的最终结果文件.dat</span></span><br><span class="line">resultfile=<span class="variable">$PWD</span>/checklink.dat</span><br><span class="line">log_file=<span class="variable">$PWD</span>/checklink.log</span><br><span class="line"></span><br><span class="line"><span class="comment">#请根据实际需求更改</span></span><br><span class="line">IP=127.0.0.1</span><br><span class="line">port=8080</span><br><span class="line"></span><br><span class="line"><span class="comment">#判断两个参数是否为空</span></span><br><span class="line"><span class="keyword">if</span> [ -z <span class="variable">$IP</span> -o -z <span class="variable">$port</span> ]</span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">"the parameter should not be null,exit!"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line">    <span class="built_in">exit</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#通过Ping命令先检测指定的ip地址是否能连通，通过ping命令发送四个包(可以是发送另外的数量)，限制超时时间为3秒钟(也可以是其他值，具体要看能忍受多长时间的延迟)，主要根据丢包的比例来决定该ip地址是否能连通，比如ping 百度返回id结果如下：</span></span><br><span class="line"></span><br><span class="line">zxin10@ubuntu:~/lijian$ ping www.baidu.com -c 4 -w 3</span><br><span class="line">PING www.a.shifen.com (180.97.33.108) 56(84) bytes of data.</span><br><span class="line">64 bytes from 180.97.33.108: icmp_seq=1 ttl=128 time=3.79 ms</span><br><span class="line">64 bytes from 180.97.33.108: icmp_seq=2 ttl=128 time=5.32 ms</span><br><span class="line">64 bytes from 180.97.33.108: icmp_seq=3 ttl=128 time=3.92 ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">--- www.a.shifen.com ping statistics ---</span><br><span class="line">3 packets transmitted, 3 received, 0% packet loss, time 2004ms</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">RATE=`ping -c 4 -w 3 <span class="variable">$IP</span> | grep <span class="string">'packet loss'</span> | grep -v grep | awk -F<span class="string">','</span> <span class="string">'&#123;print $3&#125;'</span> | awk -F<span class="string">'%'</span> <span class="string">'&#123;print $1&#125;'</span>`     <span class="comment">#得到丢包的比例的数值</span></span><br><span class="line"><span class="comment">#RATE=`ping -c 4 -w 3 $IP | grep 'packet loss' | grep -v grep | cut -f3 -d, | cut -f1 -d%`</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$RATE</span> -eq 100 ]     <span class="comment">#这个值具体可以设置成75、50等等，这里设置成包全丢的情况下为不通</span></span><br><span class="line"><span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">" ping the <span class="variable">$IP</span> is not connected, FAILURE"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"FAILURE"</span>           <span class="comment">#全丢了说明该IP地址不通</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">	telnet <span class="variable">$IP</span> <span class="variable">$port</span>&lt;&lt;@@@ 2&gt;<span class="variable">$&#123;resultfile&#125;</span> 1&gt;&amp;2       <span class="comment">#否则telnet命令检测指定端口号PORT是否连通，如果可以连通，则立马quit退出连接，将连接结果和错误信息等都写入到结果文件中</span></span><br><span class="line">	quit</span><br><span class="line">	@@@</span><br><span class="line"></span><br><span class="line">    RESULT=`cat <span class="variable">$&#123;resultfile&#125;</span> 2&gt;/dev/null | grep <span class="string">"Connection closed by foreign host"</span> | wc -l`       <span class="comment">#匹配看结果文件中手否有这句话</span></span><br><span class="line">    <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">"the result of telnet is <span class="variable">$RESULT</span>"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line">  </span><br><span class="line">    <span class="keyword">if</span> [ <span class="variable">$RESULT</span> -eq 1 ]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">    <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">" telnet the <span class="variable">$IP</span> and <span class="variable">$port</span> SUCCESS"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span>     <span class="comment">#如果有的话就说明该端口是通的，返回结果字符串SUCCESS到文件并同时打印大屏幕上</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"SUCCESS"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">" telnet the <span class="variable">$IP</span> and <span class="variable">$port</span> FAILURE"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span>     <span class="comment">#否则就说明该端口是不通的，打印FAILURE</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">"FAILURE"</span></span><br><span class="line">    <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">rm -f <span class="variable">$&#123;resultfile&#125;</span></span><br></pre></td></tr></table></figure>
+<p>但是问题来的，有些地址是不可以ping的，但是可以telnet。这样其实更简单了<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line"><span class="comment"># check link</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#在脚本执行目录下创建日志文件 .log 和检测的最终结果文件.txt(临时文件)</span></span><br><span class="line">resultfile=<span class="variable">$PWD</span>/checklink.txt</span><br><span class="line">log_file=<span class="variable">$PWD</span>/checklink.log</span><br><span class="line">IP=127.0.0.1</span><br><span class="line">port=8080</span><br><span class="line">telnet <span class="variable">$IP</span> <span class="variable">$port</span>&lt;&lt;@@@ 2&gt;&gt;<span class="variable">$&#123;resultfile&#125;</span> 1&gt;&amp;2</span><br><span class="line">quit</span><br><span class="line">@@@</span><br><span class="line"></span><br><span class="line">RESULT=`cat <span class="variable">$&#123;resultfile&#125;</span> 2&gt;/dev/null | grep <span class="string">"Connection closed by foreign host"</span> | wc -l`</span><br><span class="line"><span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">"the result of telnet is <span class="variable">$RESULT</span>"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> [ <span class="variable">$RESULT</span> -eq 1 ]</span><br><span class="line">    <span class="keyword">then</span></span><br><span class="line">        <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">" telnet the <span class="variable">$IP</span> and <span class="variable">$port</span> SUCCESS"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"SUCCESS"</span></span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="built_in">echo</span> `date +<span class="string">"%Y.%m.%d %T"</span>`<span class="string">" telnet the <span class="variable">$IP</span> and <span class="variable">$port</span> FAILURE"</span> &gt;&gt;<span class="variable">$&#123;log_file&#125;</span></span><br><span class="line">        <span class="built_in">echo</span> <span class="string">"FAILURE"</span></span><br><span class="line"><span class="keyword">fi</span></span><br><span class="line">rm -f <span class="variable">$&#123;resultfile&#125;</span></span><br></pre></td></tr></table></figure></p>
+<p>脚本完成后，进行以下操作<br>则可以，输入命令或者直接修改文件，添加一行<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#赋予执行权限</span></span><br><span class="line">chmod -x checklink.sh </span><br><span class="line"><span class="comment">#开始进行定时执行设置</span></span><br><span class="line">crontab -e </span><br><span class="line"><span class="comment">#添加这一条，以下为每分钟执行一次</span></span><br><span class="line">*/1 * * * *  /opt/shell/checklink.sh</span><br></pre></td></tr></table></figure></p>
+<p>这样就可以了，找到一段时间后可在相应目录查找checklink.log文件。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/04/08/Head First设计模式10/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1388,6 +1551,186 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/01/Linux中URL特殊字符处理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/03/01/Linux中URL特殊字符处理/" itemprop="url">
+                  Linux中URL特殊字符处理
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-03-01 16:37:30 / 修改时间：21:20:30" itemprop="dateCreated datePublished" datetime="2019-03-01T16:37:30+08:00">2019-03-01</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="Linux中URL特殊字符处理"><a href="#Linux中URL特殊字符处理" class="headerlink" title="Linux中URL特殊字符处理"></a>Linux中URL特殊字符处理</h1><p>服务器中使用<code>curl</code>命令时，当遇到一些特殊字符的时候需要进行转义</p>
+<p>最简单的方法是在命令前后加上‘’，如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl &apos;http://localhost:8080/test/111&amp;222&apos;</span><br></pre></td></tr></table></figure></p>
+<p>也可以使用URL特殊字符需转义来进行访问 </p>
+<p>1、空格换成加号(+)<br>2、正斜杠(/)分隔目录和子目录<br>3、问号(?)分隔URL和查询<br>4、百分号(%)制定特殊字符<br>5、#号指定书签<br>6、&amp;号分隔参数  </p>
+<p>转义字符的原因： </p>
+<p>如果你的表单使用get方法提交，并且提交的参数中有“&amp;”等特殊符的话，如果不做处理，在service端就会将&amp;后面的作为另外一个参数来看待。例如<br>表单的action为list.jsf?act=go&amp;state=5<br>则提交时通过request.getParameter可以分别取得act和state的值。<br>如果你的本意是act=’go&amp;state=5’这个字符串，那么为了在服务端拿到act的准确值，你必须对&amp;进行转义 </p>
+<p>url转义字符原理： </p>
+<p>将这些特殊的字符转换成ASCII码，格式为：%加字符的ASCII码，即一个百分号%，后面跟对应字符的ASCII（16进制）码值。例如 空格的编码值是”%20”。 </p>
+<p>URL特殊符号及对应的十六进制值编码： </p>
+<ol>
+<li><ul>
+<li>URL 中+号表示空格 %2B </li>
+</ul>
+</li>
+<li>空格 URL中的空格可以用+号或者编码 %20 </li>
+<li>/  分隔目录和子目录 %2F  </li>
+<li>?  分隔实际的 URL 和参数 %3F  </li>
+<li>% 指定特殊字符 %25  </li>
+<li>#表示书签 %23  </li>
+<li>&amp; URL 中指定的参数间的分隔符 %26  </li>
+<li>= URL 中指定参数的值 %3D </li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/19/JAVA类加载和反射介绍/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1838,387 +2181,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/06/线程池原理/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/06/线程池原理/" itemprop="url">
-                  线程池原理解析
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-06 16:37:30" itemprop="dateCreated datePublished" datetime="2019-01-06T16:37:30+08:00">2019-01-06</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2018-01-06 21:20:30" itemprop="dateModified" datetime="2018-01-06T21:20:30+08:00">2018-01-06</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="线程池原理解析"><a href="#线程池原理解析" class="headerlink" title="线程池原理解析"></a>线程池原理解析</h1><p>参考：JAVA线程池原理详解一</p>
-<h2 id="线程池的优点"><a href="#线程池的优点" class="headerlink" title="线程池的优点"></a>线程池的优点</h2><p>线程是稀缺资源，使用线程池可以减少创建和销毁线程的次数，每个工作线程都可以重复使用。<br>可以根据系统的承受能力，调整线程池中工作线程的数量，防止因为消耗过多内存导致服务器崩溃。</p>
-<h2 id="线程池的创建"><a href="#线程池的创建" class="headerlink" title="线程池的创建"></a>线程池的创建</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,    //线程池核心线程数量</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">int</span> maximumPoolSize,//线程池最大线程数量</span></span></span><br><span class="line"><span class="function"><span class="params">                              <span class="keyword">long</span> keepAliveTime,//当活跃线程数大于核心线程数时，空闲的多余线程最大存活时间</span></span></span><br><span class="line"><span class="function"><span class="params">                              TimeUnit unit,//存活时间的单位</span></span></span><br><span class="line"><span class="function"><span class="params">                              BlockingQueue&lt;Runnable&gt; workQueue,//存放任务的队列</span></span></span><br><span class="line"><span class="function"><span class="params">                              RejectedExecutionHandler handler)</span><span class="comment">//超出线程范围和队列容量的任务的处理程序</span></span></span><br></pre></td></tr></table></figure>
-<p>corePoolSize：线程池核心线程数量<br>maximumPoolSize:线程池最大线程数量<br>keepAliverTime：当活跃线程数大于核心线程数时，空闲的多余线程最大存活时间<br>unit：存活时间的单位<br>workQueue：存放任务的队列<br>handler：超出线程范围和队列容量的任务的处理程序</p>
-<h2 id="线程池的实现原理"><a href="#线程池的实现原理" class="headerlink" title="线程池的实现原理"></a>线程池的实现原理</h2><p>提交一个任务到线程池中，线程池的处理流程如下：</p>
-<ol>
-<li>判断线程池里的核心线程是否都在执行任务，如果不是（核心线程空闲或者还有核心线程没有被创建）则创建一个新的工作线程来执行任务。如果核心线程都在执行任务，则进入下个流程。</li>
-<li>线程池判断工作队列是否已满，如果工作队列没有满，则将新提交的任务存储在这个工作队列里。如果工作队列满了，则进入下个流程。</li>
-<li>判断线程池里的线程是否都处于工作状态，如果没有，则创建一个新的工作线程来执行任务。如果已经满了，则交给饱和策略来处理这个任务。</li>
-</ol>
-<p>线程池容器–&gt;集合(ArrayList,HashSrt,LinkedList<thread>,HashMap)<br>当程序第一次启动的时候，创建多个线程池，保存到一个集合中，当要使用的时候就取出来：<br>Thread t = list.remove(0);//返回的是被移除的元素<br>Thread t  = Linked。removeFist();<br>当使用完毕时归还：<br>list.add(t);<br>linked.addList(t);</thread></p>
-<h2 id="线程池使用步骤"><a href="#线程池使用步骤" class="headerlink" title="线程池使用步骤"></a>线程池使用步骤</h2><ol>
-<li>使用线程池工厂类Executors中的newFixedThreadPool产生一个指定线程数的线程池</li>
-<li>创建一个类，实现Runnable接口，设置线程任务。</li>
-<li>调用ExecutorsService中的方法submit，传递线程任务（实现类），开启线程，执行run方法</li>
-<li>调用ExecutorsService中的方法shutdown销毁线程池（不建议执行）</li>
-</ol>
-<p>线程池的源码解读<br>1、ThreadPoolExecutor的execute()方法<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (command == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">　　　　　　 <span class="comment">//如果线程数大于等于基本线程数或者线程创建失败，将任务加入队列</span></span><br><span class="line">        <span class="keyword">if</span> (poolSize &gt;= corePoolSize || !addIfUnderCorePoolSize(command)) &#123;</span><br><span class="line">　　　　　　　　　　<span class="comment">//线程池处于运行状态并且加入队列成功</span></span><br><span class="line">            <span class="keyword">if</span> (runState == RUNNING &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">                <span class="keyword">if</span> (runState != RUNNING || poolSize == <span class="number">0</span>)</span><br><span class="line">                    ensureQueuedTaskHandled(command);</span><br><span class="line">            &#125;</span><br><span class="line">　　　　　　　　　<span class="comment">//线程池不处于运行状态或者加入队列失败，则创建线程（创建的是非核心线程）</span></span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (!addIfUnderMaximumPoolSize(command))</span><br><span class="line">　　　　　　　　　　　<span class="comment">//创建线程失败，则采取阻塞处理的方式</span></span><br><span class="line">                reject(command); <span class="comment">// is shutdown or saturated</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>2、创建线程的方法：addIfUnderCorePoolSize(command)<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">addIfUnderCorePoolSize</span><span class="params">(Runnable firstTask)</span> </span>&#123;</span><br><span class="line">        Thread t = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">final</span> ReentrantLock mainLock = <span class="keyword">this</span>.mainLock;</span><br><span class="line">        mainLock.lock();</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">if</span> (poolSize &lt; corePoolSize &amp;&amp; runState == RUNNING)</span><br><span class="line">                t = addThread(firstTask);</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            mainLock.unlock();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (t == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        t.start();</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
-<p>我们通过一个程序来观察线程池的工作原理：</p>
-<ol>
-<li><p>创建一个线程</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">public class ThreadPoolTest implements Runnable</span><br><span class="line">&#123;</span><br><span class="line">    @Override</span><br><span class="line">    public void run()</span><br><span class="line">    &#123;</span><br><span class="line">        try</span><br><span class="line">        &#123;</span><br><span class="line">            Thread.sleep(300);</span><br><span class="line">        &#125;</span><br><span class="line">        catch (InterruptedException e)</span><br><span class="line">        &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>线程池循环运行16个线程：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        LinkedBlockingQueue&lt;Runnable&gt; queue =</span><br><span class="line">            <span class="keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;(<span class="number">5</span>);</span><br><span class="line">        ThreadPoolExecutor threadPool = <span class="keyword">new</span> ThreadPoolExecutor(<span class="number">5</span>, <span class="number">10</span>, <span class="number">60</span>, TimeUnit.SECONDS, queue);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">16</span> ; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            threadPool.execute(</span><br><span class="line">                <span class="keyword">new</span> Thread(<span class="keyword">new</span> ThreadPoolTest(), <span class="string">"Thread"</span>.concat(i + <span class="string">""</span>)));</span><br><span class="line">            System.out.println(<span class="string">"线程池中活跃的线程数： "</span> + threadPool.getPoolSize());</span><br><span class="line">            <span class="keyword">if</span> (queue.size() &gt; <span class="number">0</span>)</span><br><span class="line">            &#123;</span><br><span class="line">                System.out.println(<span class="string">"----------------队列中阻塞的线程数"</span> + queue.size());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        threadPool.shutdown();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>执行结果：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">线程池中活跃的线程数： <span class="number">1</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">2</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">3</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">4</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">1</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">2</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">3</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">4</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">5</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">6</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">7</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">8</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">9</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">线程池中活跃的线程数： <span class="number">10</span></span><br><span class="line">----------------队列中阻塞的线程数<span class="number">5</span></span><br><span class="line">Exception in thread <span class="string">"main"</span> java.util.concurrent.RejectedExecutionException: Task Thread[Thread15,<span class="number">5</span>,main] rejected from java.util.concurrent.ThreadPoolExecutor@<span class="number">232204</span>a1[Running, pool size = <span class="number">10</span>, active threads = <span class="number">10</span>, queued tasks = <span class="number">5</span>, completed tasks = <span class="number">0</span>]</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor$AbortPolicy.rejectedExecution(ThreadPoolExecutor.java:<span class="number">2047</span>)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.reject(ThreadPoolExecutor.java:<span class="number">823</span>)</span><br><span class="line">    at java.util.concurrent.ThreadPoolExecutor.execute(ThreadPoolExecutor.java:<span class="number">1369</span>)</span><br><span class="line">    at test.ThreadTest.main(ThreadTest.java:<span class="number">17</span>)</span><br></pre></td></tr></table></figure></p>
-<p>从结果可以观察出：</p>
-<ol>
-<li>创建的线程池具体配置为：核心线程数量为5个；全部线程数量为10个；工作队列的长度为5。</li>
-<li>我们通过queue.size()的方法来获取工作队列中的任务数。</li>
-<li>运行原理：<br>   <strong>刚开始都是在创建新的线程，达到核心线程数量5个后，新的任务进来后不再创建新的线程，而是将任务加入工作队列，任务队列到达上线5个后，新的任务又会创建新的普通线程，直到达到线程池最大的线程数量10个，后面的任务则根据配置的饱和策略来处理。我们这里没有具体配置，使用的是默认的配置AbortPolicy:直接抛出异常。当然，为了达到我需要的效果，上述线程处理的任务都是利用休眠导致线程没有释放！！！</strong></li>
-</ol>
-<h2 id="RejectedExecutionHandler：饱和策略"><a href="#RejectedExecutionHandler：饱和策略" class="headerlink" title="RejectedExecutionHandler：饱和策略"></a>RejectedExecutionHandler：饱和策略</h2><p>当队列和线程池都满了，说明线程池处于饱和状态，那么必须对新提交的任务采用一种特殊的策略来进行处理。这个策略默认配置是AbortPolicy，表示无法处理新的任务而抛出异常。JAVA提供了4中策略：</p>
-<ol>
-<li>AbortPolicy：直接抛出异常</li>
-<li>CallerRunsPolicy：只用调用所在的线程运行任务</li>
-<li>DiscardOldestPolicy：丢弃队列里最近的一个任务，并执行当前任务。</li>
-<li>DiscardPolicy：不处理，丢弃掉。</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/01/03/模板/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="小华">
-      <meta itemprop="description" content="个人学习博客">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="萌面超人">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/01/03/模板/" itemprop="url">
-                  模板
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2019-01-03 16:37:30" itemprop="dateCreated datePublished" datetime="2019-01-03T16:37:30+08:00">2019-01-03</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-01-05 21:20:30" itemprop="dateModified" datetime="2019-01-05T21:20:30+08:00">2019-01-05</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/模板/" itemprop="url" rel="index"><span itemprop="name">模板</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <hr>
-
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
   </section>
 
   
@@ -2266,7 +2228,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -2297,7 +2259,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -2348,7 +2312,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>

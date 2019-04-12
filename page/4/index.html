@@ -314,6 +314,422 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/05/Effective-Java-3rd第4章(15~25)/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/05/Effective-Java-3rd第4章(15~25)/" itemprop="url">
+                  Effective Java 3rd 第4章 类与接口(15~25)
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-05 16:37:30" itemprop="dateCreated datePublished" datetime="2018-11-05T16:37:30+08:00">2018-11-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/java/" itemprop="url" rel="index"><span itemprop="name">java</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <hr>
+<h1 id="第4章-类与接口"><a href="#第4章-类与接口" class="headerlink" title="第4章 类与接口"></a>第4章 类与接口</h1><h2 id="第15条-最小化类和类成员的可访问性"><a href="#第15条-最小化类和类成员的可访问性" class="headerlink" title="第15条 最小化类和类成员的可访问性"></a>第15条 最小化类和类成员的可访问性</h2><ol>
+<li><p>类的实例字段最好不要设置成public的，同样的建议也适用于static字段，而且这些static字段应该包含原始值或对不可变对象的引用（Item17），如果包含了可变对象那就有了像非final字段一样的缺点：虽然不能修改这个final引用，但是却可以修改引用的对象,这具有灾难性的后果。</p>
+</li>
+<li><p>需要注意的是：<strong>一个长度不为零的数组总是可变（mutable）的</strong>。所以一个类有一个public static final array 字段或者geter方法（accessor）返回一个这样的字段都是不正确的。</p>
+</li>
+<li>概括起来就是：在合理的范围内你应该尽可能减少程序的可访问等级。当仔细的设计完最小化公开的API之后，你应该放置任何零散的类、接口或者成员变成API的一部分。公共类除了pubic static final的常量（constant）属性外，不应该有任何其他的公共属性，而且要保证public static final的属性是不可变的。</li>
+</ol>
+<h2 id="第16条-使用存取器方法（setter-or-getter）代替public属性"><a href="#第16条-使用存取器方法（setter-or-getter）代替public属性" class="headerlink" title="第16条 使用存取器方法（setter or getter）代替public属性"></a>第16条 使用存取器方法（setter or getter）代替public属性</h2><p>如果一个类可以在它的包外部被访问到，就应该提供访问器方法来保持类可被修改的灵活性。</p>
+<p>总结起来就是，<strong>public的类不能暴漏可变对象给外部</strong>。即使是不可变对象也同样具有一定危害。</p>
+<p>私有的内部静态类通常用来表示宿主类的一个组件。例如Map对象中的表示Keys和Values的关联关系的组件。Map中的每一对key-value的关联关系都会有一个Entry的对象来表示。即使每一个entry都是和map相关的，但是entry中的方法（getKey, getValue, 和 setValue）都不需要调用map类。因此使用私有静态类来表示entry是最好的。如果你忘记将其设置成静态类，它也能工作，但是会造成每个entry都会隐式的包含map的引用，这将造成很大的空间和时间的浪费。</p>
+<p>第17条 使可变性最小化</p>
+<ol>
+<li>使类变得不可变的5条原则：<ol>
+<li>不提供修改类对象的方法。</li>
+<li>类不能被继承。</li>
+<li>将所有属性设置成final</li>
+<li>将所有属性设置成private</li>
+<li>确保任何可变对象都只能被自己访问。</li>
+</ol>
+</li>
+<li>不可变对象与生俱来就是线程安全的，所以不需要synchronization。</li>
+<li>不可变对象免费提供失败原子性（Item76）。</li>
+<li>不可变对象的主要缺点是：对于不同的值它都需要一个全新的对象。如果你执行很多步骤，每一步都产生一个新对象，并仅仅在最后才释放所有对象的话，这将会产生很严重的性能问题。有两种方法应对这个问题。第一是将公用的多步操作封装起来，就不用每一步都生成一个新的对象了。如果没办法预测可能需要什么操作时，你最好提供一个public的可变伙伴类，例如String类，它的可变伙伴类是StringBuilder（它的已废弃的前身是StringBuffer）。</li>
+<li>不能变成不可变的类，那就应该尽量限制它的可变形。结合item15说的，你应该自然的把变量设置成private final的，除非有原因需要设置成其他的。</li>
+<li>除非有充足的理由，都<strong>不要创建除了构造器和静态方法之外的公共初始化方法。</strong></li>
+</ol>
+<h2 id="第18条-重组合，轻继承"><a href="#第18条-重组合，轻继承" class="headerlink" title="第18条 重组合，轻继承"></a>第18条 重组合，轻继承</h2><ol>
+<li>在一个包里使用继承是安全的，这里子类和父类都由同一个程序员控制。在特定的设计和文档说明下使用也是安全的（Item19）。但是<strong>跨越包继承就是危险的</strong>了。这里说的继承指的是实现继承（一个类extends另外一个类），不包括接口的继承（一个类实现一个接口或一个接口继承另一个接口）。<strong>继承破坏了封装性</strong>。</li>
+<li>写转发类是乏味的，而且你不得不为每一个接口写一次转发类。只有当一个类的类型真正属于另一个类的时候才适合使用继承。如果你不能确定，那就不应该使用继承。</li>
+<li>使用组合和转发来代替继承。</li>
+</ol>
+<h2 id="第19条-为继承设计文档，否则就禁止继承"><a href="#第19条-为继承设计文档，否则就禁止继承" class="headerlink" title="第19条 为继承设计文档，否则就禁止继承"></a>第19条 为继承设计文档，否则就禁止继承</h2><ol>
+<li>首先，必须为可重写的方法添加明确的文档。换句话说就是，类必须说明它自己使用的那些可被重写的方法。</li>
+<li>一个好的API文档应该仅仅描述方法干了什么，而不应该描述它是如何实现的。一般调用了可被重写方法的描述在文档描述后面，被关键字Implementation Requirements指定，这个关键字由Javadoc的@implSpec生成,这里会描述方法内部的实现。</li>
+<li>构造方法不能直接或间接的调用可被重写的方法。因为一个父类的构造方法先于子类的构造方法被调用，子类重写的方法会在子类构造方法调用之前被调用，如果这个被重写的方法的一些初始化在子类的构造方法中就会产生错误。</li>
+<li>在设计继承的时候Cloneable 和 Serializable接口会带来特殊的困难。如果一个类实现了这样类似的接口，那就会给继承于它的类带来很大的麻烦。所以可以使用特殊的动作来允许子类实现这些接口，而不是强制它们实现这些接口，这写细节讲述在Item 13 和 Item 86.</li>
+<li>很多程序员已经习惯于继承具体的类来实现一些功能，例如通知、同步、限制功能等等。如果一些类实现了包含本质的一些接口，例如Set、List或 Map，就可以通过使用包装类（Item18）的方式提供比继承更好的添加功能的方法。</li>
+</ol>
+<h2 id="第20条-接口优先于继承"><a href="#第20条-接口优先于继承" class="headerlink" title="第20条 接口优先于继承"></a>第20条 接口优先于继承</h2><ol>
+<li>接口是定义mixins类型的理想。选择例如，Comparable允许一个类使用自己的类对象和其他的遵守comparable接口的对象进行排序，像这样的接口被称为一个mixin类型，因为它允许可选的功能被“mixed in”到一个主要的功能上。</li>
+<li>可以结合使用接口和抽象类的优点，使用接口实现抽象的骨架实现类（Skeletal），骨架实现类可以为抽象类提供实现，而不受抽象类做为类型使用时的约束。骨架类其实是个抽象类，它实现了某个接口，但是可以选择地实现它的方法，并不需要全部实现，因为接口本质上也是抽象类。 使用骨架类其实是继承了一个抽象类，又实现了一个上层接口。</li>
+<li>骨架实现是为继承而设计的。接口是允许多种实现的定义类型最好的方法。如果你导出一个重要的接口，你应该为它提供一个骨架实现。</li>
+<li>补充：java8开始，允许接口有default方法和static方法，我们完全可以把原来骨架实现的抽象类里面的方法放到接口中，用default方法来实现。</li>
+</ol>
+<h2 id="第21条-设计接口要向后兼容"><a href="#第21条-设计接口要向后兼容" class="headerlink" title="第21条 设计接口要向后兼容"></a>第21条 设计接口要向后兼容</h2><p>应该尽量避免为现有的接口添加默认方法，除非这是必要的。然而，在创建接口时添加默认方法的实现时很有用的，可以减轻接口实现的负担（Item20）</p>
+<h2 id="第22条-仅仅使用接口来定义类型"><a href="#第22条-仅仅使用接口来定义类型" class="headerlink" title="第22条 仅仅使用接口来定义类型"></a>第22条 仅仅使用接口来定义类型</h2><ol>
+<li>有一种<strong>失败的接口是常量接口</strong>。这样的接口没有包含任何方法，仅仅包含一些static final的常量。</li>
+<li>注意在上面的数字中使用的下划线（_），从Java7开始是合法的使用，添加下划线不会影响数字的值，而且能使数字的可读性更强。<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">double</span> AVOGADROS_NUMBER =</span><br><span class="line">                <span class="number">6.022_140_857e23</span>;</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>通常使用工具类调用常量时要求用类名.常量名例如PhysicalConstants.AVOGADROS_NUMBER.但是如果你大量的使用常量时，可以通过导入工具类来直接使用常量：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="keyword">static</span> com.effectivejava.science.PhysicalConstants.*; </span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Test</span> </span>&#123;</span><br><span class="line"><span class="function"><span class="keyword">double</span> <span class="title">atoms</span><span class="params">(<span class="keyword">double</span> mols)</span> </span>&#123;</span><br><span class="line"> <span class="keyword">return</span> AVOGADROS_NUMBER * mols;</span><br><span class="line"> &#125; ... <span class="comment">// Many more uses of PhysicalConstants justify static import </span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>接口应该仅被用于定义类型，而不应该用于仅仅导出常量。</p>
+<h2 id="第23条-优先使用类层级结构，减少使用tag标记类"><a href="#第23条-优先使用类层级结构，减少使用tag标记类" class="headerlink" title="第23条 优先使用类层级结构，减少使用tag标记类"></a>第23条 优先使用类层级结构，减少使用tag标记类</h2><p>tag类总是不太恰当的，如果你打算写一个类用tag来区分不同行为，考虑将其替换成类层级关系。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="function"><span class="keyword">abstract</span> <span class="keyword">double</span> <span class="title">area</span><span class="params">()</span></span>;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> radius;</span><br><span class="line">       Circle(<span class="keyword">double</span> radius) &#123; <span class="keyword">this</span>.radius = radius; &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> Math.PI * (radius * radius); &#125;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line">   <span class="class"><span class="keyword">class</span> <span class="title">Rectangle</span> <span class="keyword">extends</span> <span class="title">Figure</span> </span>&#123;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> length;</span><br><span class="line">       <span class="keyword">final</span> <span class="keyword">double</span> width;</span><br><span class="line">       Rectangle(<span class="keyword">double</span> length, <span class="keyword">double</span> width) &#123;</span><br><span class="line">           <span class="keyword">this</span>.length = length;</span><br><span class="line">           <span class="keyword">this</span>.width = width;</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="meta">@Override</span> <span class="function"><span class="keyword">double</span> <span class="title">area</span><span class="params">()</span> </span>&#123; <span class="keyword">return</span> length * width; &#125;</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这个类层次修复了刚才提到的所有tag类的缺点。</p>
+<h2 id="第24条-内部类优先设置成静态的"><a href="#第24条-内部类优先设置成静态的" class="headerlink" title="第24条 内部类优先设置成静态的"></a>第24条 内部类优先设置成静态的</h2><ol>
+<li>嵌套类指的是定义在其他类中的类。当类仅仅只对另一个类服务时（而不对其他类服务）才应该被设计成嵌套类。如果一个类对多个类服务，那么它就应该被设计成顶层类。</li>
+<li>如果你声明了一个成员类不需要访问宿主类的对象，那么应该将其声明称static类型的。如果你忘记添加static标志，那么这个类就会隐式的被宿主类对象引用。正如前面说的，这个引用会消耗时间和空间。更严重的是，可能造成宿主对象在达到垃圾回收条件时不能被正常的回收（Item7），这会造成内存泄漏的风险，而且这很难被检查出来，因为这个引用是不可见的。</li>
+<li>在lambdas被添加到Java之前（Chapter6），匿名类是创建小函数对象和执行间断逻辑的首选方案，但是现在lambdas是首选方案（Item42）</li>
+</ol>
+<h2 id="第25条-保持一个源文件只包含一个顶层类"><a href="#第25条-保持一个源文件只包含一个顶层类" class="headerlink" title="第25条 保持一个源文件只包含一个顶层类"></a>第25条 保持一个源文件只包含一个顶层类</h2><p>虽然Java编译器允许你在一个源文件中定义多个顶层类，但是你这么做也没有任何好处，反而会有一些明显的坏处。<strong>主要的坏处是：可能会造成一个类有多种实现。</strong>最终使用哪一种实现依赖于源文件被添加到编译器的先后顺序。</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Cache占用过多内存解决方案/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="小华">
+      <meta itemprop="description" content="个人学习博客">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="萌面超人">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/11/04/Cache占用过多内存解决方案/" itemprop="url">
+                  Cache占用过多内存解决方案
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-11-04 22:14:36" itemprop="dateCreated datePublished" datetime="2018-11-04T22:14:36+08:00">2018-11-04</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2018-11-08 21:20:30" itemprop="dateModified" datetime="2018-11-08T21:20:30+08:00">2018-11-08</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"><a href="#Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案" class="headerlink" title="Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案"></a>Linux服务器Cache占用过多内存导致系统内存不足最终java应用程序崩溃解决方案</h1><h2 id="常见原因分析"><a href="#常见原因分析" class="headerlink" title="常见原因分析"></a>常见原因分析</h2><h3 id="1-程序的原因导致内存泄漏"><a href="#1-程序的原因导致内存泄漏" class="headerlink" title="1. 程序的原因导致内存泄漏"></a>1. 程序的原因导致内存泄漏</h3><p>检查是否是因为内存泄漏，使用jdk自带的jmap -F -dump:live,format=b,file=/usr/local/sztFront/logs/heapdump.bin命令输出过几次dump文件，通过MemoryAnalyzer分析</p>
+<h3 id="2-日志接收报文"><a href="#2-日志接收报文" class="headerlink" title="2. 日志接收报文"></a>2. 日志接收报文</h3><p>检查是否是因为日志接收报文过大，将日志关掉试试。</p>
+<h3 id="3-Cached的值过大，导致系统没有可以再分配的内存空间"><a href="#3-Cached的值过大，导致系统没有可以再分配的内存空间" class="headerlink" title="3. Cached的值过大，导致系统没有可以再分配的内存空间"></a>3. Cached的值过大，导致系统没有可以再分配的内存空间</h3><p>Cached只要用来缓存文件的，经常读写的文件会被缓存到Cached中，可以增加读写效率，该功能是Linux系统内核提供的，从2.6.16以后的核心版本才提供，也就是老版的操作系统，如红旗DC 5.0、RHEL 4.x之前的版本都没有。</p>
+<h4 id="对应解决方案"><a href="#对应解决方案" class="headerlink" title="对应解决方案"></a>对应解决方案</h4><ol>
+<li>修改/proc/sys/vm/drop_caches，释放Slab占用的cache内存空间（参考drop_caches的官方文档）【手动】</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Writing to this will cause the kernel to drop clean caches, dentries and inodes from memory, causing that memory to become free.</span><br><span class="line">To free pagecache:</span><br><span class="line">* echo 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free dentries and inodes:</span><br><span class="line">* echo 2 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">To free pagecache, dentries and inodes:</span><br><span class="line">* echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">As this is a non-destructive operation, and dirty objects are notfreeable, the user should run &quot;sync&quot; first in order to make sure allcached objects are freed.</span><br><span class="line">This tunable was added in 2.6.16</span><br><span class="line">//注意：在执行这三条命令前先执行sync命令.</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>编写shell脚本定时清理内存<br>1、编写脚本<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">#! /bin/sh</span><br><span class="line">used=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $3&#125;&apos;`</span><br><span class="line">free=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $4&#125;&apos;`</span><br><span class="line">echo &quot;===========================&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">date &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">echo &quot;Memory usage before | [Use：$&#123;used&#125;MB][Free：$&#123;free&#125;MB]&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">if [ $free -le 4000 ] ; then</span><br><span class="line">                sync &amp;&amp; echo 1 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">                sync &amp;&amp; echo 2 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">                sync &amp;&amp; echo 3 &gt; /proc/sys/vm/drop_caches</span><br><span class="line">				used_ok=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $3&#125;&apos;`</span><br><span class="line">				free_ok=`free -m | awk &apos;NR==2&apos; | awk &apos;&#123;print $4&#125;&apos;`</span><br><span class="line">				echo &quot;Memory usage after | [Use：$&#123;used_ok&#125;MB][Free：$&#123;free_ok&#125;MB]&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">                echo &quot;OK&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">else</span><br><span class="line">                echo &quot;Not required&quot; &gt;&gt; /app/memory/logs/mem.log</span><br><span class="line">fi</span><br><span class="line">exit 1</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>2、使用crontab -e命令编辑当前用户的crontab<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">0 6 * * * /usr/local/tomcat/sztFileFront/bin/freemem.sh</span><br></pre></td></tr></table></figure></p>
+<p>3、重启crond服务</p>
+<p>/sbin/service crond restart</p>
+<p>4、查看crond服务是否重启成功</p>
+<p>/sbin/service crond status</p>
+<p>附:Linux定时任务详解<br><a href="https://www.cnblogs.com/intval/p/5763929.html" target="_blank" rel="noopener">https://www.cnblogs.com/intval/p/5763929.html</a></p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/11/04/Effective-Java-3rd第3章(10~14)/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -888,7 +1304,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">33</span>
+                    <span class="site-state-item-count">35</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>
@@ -919,7 +1335,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">9</span>
+                      
+                    
+                    <span class="site-state-item-count">10</span>
                     <span class="site-state-item-name">分类</span>
                   </a>
                 </div>
@@ -970,7 +1388,9 @@
                     
                       
                     
-                    <span class="site-state-item-count">19</span>
+                      
+                    
+                    <span class="site-state-item-count">20</span>
                     <span class="site-state-item-name">标签</span>
                   </a>
                 </div>
